@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>[hidden]{display:none!important}img{max-width:100%}</style>
+<script data-goatcounter="https://eliorch.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <!doctype html>
@@ -15,7 +16,7 @@
 <title>מבוא · מערכות הפעלה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;500;600;700;800&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 /* Layout: right-side sticky chapter rail (like a man-page index) + one reading column; boxes are color-coded by role. */
 :root{
@@ -245,6 +246,93 @@ main bdi, .tr-note bdi{white-space:nowrap}
 </style>
 
 
+<style id="theme2">
+/* ===== theme v2 — warm paper, indigo rail, vivid role colours (after the comsum summary site) ===== */
+:root{
+  --bg:#fbf9f3; --surface:#fffefa; --sunk:#f3f0e8; --fg:#1c1917; --muted:#6f6863; --line:#e7e5e0;
+  --ink:#4338ca; --amber:#b45309;
+  --theory:#1d4ed8; --theory-bg:#eff6ff; --theory-edge:#bfdbfe;
+  --formula:#6d28d9; --formula-bg:#f5f3ff; --formula-edge:#ddd6fe;
+  --example:#047857; --example-bg:#ecfdf5; --example-edge:#a7f3d0;
+  --warn:#be123c; --warn-bg:#fff1f2; --warn-edge:#fecdd3;
+  --exercise:#b45309; --exercise-bg:#fef9e7; --exercise-edge:#fcd34d;
+  --summary:#334155; --summary-bg:#f1f5f9; --summary-edge:#cbd5e1;
+  --code-bg:#f5f3ee; --code-fg:#1c1917;
+  --chip-fg:#be185d; --chip-bg:#f5f5f4; --chip-edge:#e7e5e4;
+  --rail-1:#1e1b4b; --rail-2:#312e81; --rail-fg:#c7d2fe; --rail-hi:#fbbf24;
+  --shadow-sm:0 1px 2px rgba(28,25,23,.04),0 1px 3px rgba(28,25,23,.06);
+  --f-display:"Frank Ruhl Libre",Georgia,serif;
+  --f-body:"Assistant","IBM Plex Sans Hebrew",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15131d; --surface:#1c1a26; --sunk:#24212f; --fg:#ece9f4; --muted:#a29db3; --line:#34304a;
+  --ink:#a5b4fc; --amber:#fbbf24;
+  --theory:#93c5fd; --theory-bg:#16213a; --theory-edge:#2a4373;
+  --formula:#c4b5fd; --formula-bg:#221b3b; --formula-edge:#40346b;
+  --example:#6ee7b7; --example-bg:#0f2a23; --example-edge:#1f5646;
+  --warn:#fda4af; --warn-bg:#33151d; --warn-edge:#6b2535;
+  --exercise:#fcd34d; --exercise-bg:#2c230f; --exercise-edge:#5d4815;
+  --summary:#cbd5e1; --summary-bg:#1f2431; --summary-edge:#3b4357;
+  --code-bg:#100e17; --code-fg:#e6e3ee;
+  --chip-fg:#f9a8d4; --chip-bg:#2a2236; --chip-edge:#46395a;
+  --rail-1:#12102b; --rail-2:#1f1b4d; --shadow-sm:none;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#15131d; --surface:#1c1a26; --sunk:#24212f; --fg:#ece9f4; --muted:#a29db3; --line:#34304a;
+  --ink:#a5b4fc; --amber:#fbbf24;
+  --theory:#93c5fd; --theory-bg:#16213a; --theory-edge:#2a4373;
+  --formula:#c4b5fd; --formula-bg:#221b3b; --formula-edge:#40346b;
+  --example:#6ee7b7; --example-bg:#0f2a23; --example-edge:#1f5646;
+  --warn:#fda4af; --warn-bg:#33151d; --warn-edge:#6b2535;
+  --exercise:#fcd34d; --exercise-bg:#2c230f; --exercise-edge:#5d4815;
+  --summary:#cbd5e1; --summary-bg:#1f2431; --summary-edge:#3b4357;
+  --code-bg:#100e17; --code-fg:#e6e3ee;
+  --chip-fg:#f9a8d4; --chip-bg:#2a2236; --chip-edge:#46395a;
+  --rail-1:#12102b; --rail-2:#1f1b4d; --shadow-sm:none;
+  color-scheme:dark }
+body{font-size:17px;background-image:radial-gradient(circle at 20% 0%,rgba(99,102,241,.05),transparent 40%),radial-gradient(circle at 80% 100%,rgba(245,158,11,.05),transparent 40%);background-attachment:fixed}
+/* indigo side rail */
+nav.side{background:linear-gradient(180deg,var(--rail-1),var(--rail-2));color:var(--rail-fg);border-radius:16px;padding:22px 14px 18px;box-shadow:0 6px 24px rgba(30,27,75,.18);max-height:calc(100vh - 32px)}
+nav.side a{color:var(--rail-fg);border-radius:7px;border-inline-start:3px solid transparent}
+nav.side a:hover{background:rgba(255,255,255,.07);color:#fff}
+nav.side a.brand,nav.side .brand{color:#fff;font-weight:700;padding:0 10px}
+nav.side .sub{color:#a5b4fc;padding:0 10px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:14px}
+nav.side a.ch{color:#e0e7ff}
+nav.side a.ch.here,nav.side a.active{color:#fff;background:rgba(255,255,255,.12);border-inline-start-color:var(--rail-hi)}
+nav.side a.sec{color:#a5b4fc}
+nav.side a.xlink{border:1.5px solid var(--rail-hi);color:var(--rail-hi);text-align:center}
+nav.side a.xlink:hover{background:var(--rail-hi);color:var(--rail-1)}
+nav.side::-webkit-scrollbar{width:6px} nav.side::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:3px}
+/* headings */
+h1,h2,h3{font-family:var(--f-display);font-weight:700}
+h1{font-size:44px;letter-spacing:-.02em;line-height:1.15}
+h2{font-size:29px;color:var(--fg);position:relative;padding-inline-start:18px}
+h2::before{content:"";position:absolute;inset-inline-start:0;top:.32em;bottom:.32em;width:4px;border-radius:2px;background:var(--ink)}
+h3{font-family:var(--f-body);font-weight:700;font-size:20px}
+.ch-num{display:inline-block;font-family:var(--f-body);font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--ink);background:color-mix(in srgb,var(--ink) 12%,var(--surface));padding:5px 12px;border-radius:99px}
+.ch-head{border-bottom:1px solid var(--line)}
+.hook{font-size:18.5px}
+/* role boxes: full coloured edge, tinted paper, strong title */
+.theory{--ce:var(--theory-edge)} .formula{--ce:var(--formula-edge)} .example{--ce:var(--example-edge)}
+.warn{--ce:var(--warn-edge)} .exercise{--ce:var(--exercise-edge)} .summary{--ce:var(--summary-edge)}
+.box{border:1px solid var(--ce,var(--line));border-inline-start:5px solid var(--c);border-radius:10px;box-shadow:var(--shadow-sm);padding:14px 18px}
+.box-title{font-size:15px;letter-spacing:0;font-weight:800}
+/* inline code as a coloured chip */
+:not(pre)>code{color:var(--chip-fg);background:var(--chip-bg);border:1px solid var(--chip-edge);border-radius:5px;padding:0 6px}
+/* glossary tooltips */
+.gloss{border-bottom:1.5px dashed color-mix(in srgb,var(--ink) 55%,transparent);cursor:help;text-decoration:none}
+code.gloss{border-bottom-style:dashed}
+.gloss:hover,.gloss:focus{background:color-mix(in srgb,var(--ink) 10%,transparent);outline:none;border-radius:3px}
+#gloss-tip{position:fixed;z-index:9999;max-width:340px;background:var(--fg);color:var(--bg);padding:10px 14px;border-radius:9px;font:400 13.5px/1.6 var(--f-body);direction:rtl;text-align:right;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .12s}
+#gloss-tip.show{opacity:1}
+#gloss-tip b{display:block;font-size:14px;margin-bottom:2px;color:var(--rail-hi);unicode-bidi:isolate;text-align:right}
+#gloss-tip bdi{unicode-bidi:isolate;font-weight:600}
+#gloss-tip .arrow{position:absolute;width:0;height:0;border:6px solid transparent}
+#gloss-tip.above .arrow{top:100%;border-top-color:var(--fg)}
+#gloss-tip.below .arrow{bottom:100%;border-bottom-color:var(--fg)}
+@media (max-width:860px){nav.side{border-radius:12px;max-height:none}}
+@media (max-width:600px){h1{font-size:34px} h2{font-size:24px} h1 bdi,h2 bdi,h3 bdi{white-space:normal}}
+</style>
 </head>
 <body>
 <div class="wrap" dir="rtl" lang="he">
@@ -902,6 +990,239 @@ document.querySelectorAll('.tree').forEach(el => {
 })();
 </script>
 
+<script id="gloss2">
+/* ===== glossary tooltips =====
+   Hovering (or tapping) a course term shows a short definition.
+   Only the first occurrence of each term in every section (h2) is marked, so the text stays calm.
+   One floating tip on <body> (position:fixed), clamped to the viewport. */
+(function () {
+  const DEFS = [
+    // [definition, ...term variants]   — Hebrew variants may take prefixes ו/ה/ב/ל/כ/מ/ש
+    // --- מבוא ומצבי מעבד
+    ['Central Processing Unit — המעבד: מריץ את הפקודות של התהליכים, אחת אחרי השנייה.', 'CPU'],
+    ['Random Access Memory — הזיכרון הראשי (הפיזי) של המחשב. מהיר, אבל נמחק כשהמחשב כבוי.', 'RAM'],
+    ['Input/Output — קלט ופלט: גישה לדיסק, למקלדת, לרשת וכו׳. איטי מאוד ביחס למעבד.', 'I/O'],
+    ['Kernel — הגרעין של מערכת ההפעלה: רץ ב-kernel mode ומנהל את החומרה, הזיכרון והתהליכים.', 'kernel', 'Kernel', 'קרנל'],
+    ['מצב מעבד עם הרשאות מלאות: אפשר לגשת לחומרה ולבצע פקודות מוגנות. רק הקרנל רץ בו.', 'kernel mode', 'Kernel mode', 'Kernel Mode'],
+    ['מצב מעבד מוגבל: אין גישה ישירה לחומרה. פעולה רגישה דורשת קריאת מערכת.', 'user mode', 'User mode', 'User Mode'],
+    ['קריאת מערכת — בקשה של תהליך מהקרנל לבצע פעולה מוגנת (למשל read או fork). המעבר לקרנל נעשה בפקודת trap.', 'system call', 'syscall', 'System call', 'קריאת מערכת', 'קריאות מערכת', 'קריאות המערכת'],
+    ['פקודה שמעבירה את המעבד ל-kernel mode וקופצת לקוד קרנל שנקבע מראש (לפי טבלת ה-trap). כך מתבצעת קריאת מערכת.', 'trap', 'Trap'],
+    ['החזרה מהקרנל לתהליך: משחזרת את הרגיסטרים ומחזירה את המעבד ל-user mode.', 'return-from-trap'],
+    ['פסיקה — אות מהחומרה (טיימר, דיסק, מקלדת) שעוצר את מה שרץ ומעביר את השליטה לקרנל.', 'interrupt', 'Interrupt', 'פסיקה', 'פסיקות', 'פסיקת טיימר'],
+    ['התהליך רץ ישירות על המעבד (מהיר), אבל עם שתי הגבלות: user mode, ופסיקת טיימר שמחזירה את השליטה לקרנל.', 'Limited Direct Execution'],
+    ['החלפת הקשר — שמירת המצב של התהליך הנוכחי (רגיסטרים) ב-PCB שלו, וטעינת המצב של תהליך אחר כדי להריץ אותו.', 'context switch', 'Context Switch', 'Context switch', 'החלפת הקשר', 'החלפות הקשר'],
+    // --- תהליכים
+    ['תהליך — תוכנית בזמן ריצה: עם מרחב כתובות, רגיסטרים וקבצים פתוחים משלו.', 'Process'],
+    ['Process Control Block — המבנה שבו הקרנל שומר את כל המידע על תהליך: מצב, PID, רגיסטרים שמורים, קבצים פתוחים.', 'PCB'],
+    ['Process ID — מספר מזהה ייחודי של תהליך.', 'PID'],
+    ['יוצר תהליך בן שהוא העתק של ההורה. מחזיר 0 לבן ואת ה-PID של הבן להורה; בכישלון מחזיר מספר שלילי.', 'fork', 'fork()'],
+    ['מחליף את התוכנית שרצה בתהליך בתוכנית חדשה. ה-PID נשאר. אם הצליח – לא חוזר.', 'exec', 'execvp', 'exec()', 'execvp()'],
+    ['ההורה מחכה שבן יסתיים ואוסף את סטטוס היציאה שלו (כך הבן לא נשאר זומבי). אם אין בנים – מחזיר מיד מספר שלילי.', 'wait', 'waitpid', 'wait()', 'waitpid()'],
+    ['מסיים את התהליך עם קוד יציאה, שההורה יכול לקבל ב-wait.', 'exit', 'exit()'],
+    ['זומבי — תהליך שהסתיים, אבל ההורה עוד לא אסף אותו ב-wait. נשארת ממנו רק רשומה בטבלת התהליכים.', 'zombie', 'Zombie', 'זומבי', 'זומבים'],
+    ['יתום — תהליך שההורה שלו הסתיים לפניו. init מאמץ אותו, ויאסוף אותו כשיסתיים.', 'orphan', 'יתום', 'יתומים'],
+    ['התהליך הראשון במערכת (PID 1). מאמץ יתומים ואוסף אותם.', 'init'],
+    ['תהליך שרץ ברקע, בלי טרמינל, ומספק שירות (למשל שרת).', 'daemon'],
+    ['תוכנית שקוראת פקודות מהמשתמש ומריצה אותן – בעזרת fork, exec ו-wait.', 'shell', 'Shell'],
+    ['מצב של תהליך: מוכן לרוץ, ומחכה שהמתזמן ייתן לו את המעבד.', 'Ready'],
+    ['מצב של תהליך: רץ עכשיו על המעבד.', 'Running'],
+    ['מצב של תהליך: מחכה לאירוע (למשל סיום I/O) ולא יכול לרוץ עד שיקרה.', 'Blocked'],
+    // --- תזמון
+    ['מתזמן — החלק בקרנל שמחליט איזה תהליך ירוץ עכשיו על המעבד.', 'scheduler', 'מתזמן', 'המתזמן'],
+    ['First In First Out — מי שהגיע ראשון מטופל ראשון. בתזמון: לפי סדר ההגעה, כל עבודה עד הסוף. בהחלפת דפים: מפנים את הדף שנטען הכי מוקדם.', 'FIFO'],
+    ['First Come First Served — שם נוסף ל-FIFO בתזמון: מריצים לפי סדר ההגעה, כל עבודה עד הסוף.', 'FCFS'],
+    ['Shortest Job First — מריצים קודם את העבודה הקצרה ביותר מבין אלה שכבר הגיעו. לא מפקיע.', 'SJF'],
+    ['Shortest Remaining Time First — כמו SJF, אבל מפקיע: כשמגיעה עבודה שנשאר לה פחות זמן, היא מקבלת את המעבד.', 'SRTF', 'STCF'],
+    ['Round Robin — כל עבודה רצה quantum אחד ועוברת לסוף התור. זמן תגובה טוב, turnaround גרוע.', 'Round Robin', 'RR'],
+    ['Multi-Level Feedback Queue — כמה תורים בעדיפויות שונות. עבודה שמנצלת quantum שלם יורדת בעדיפות, וכל פרק זמן מעלים את כולן למעלה (boost) כדי למנוע הרעבה.', 'MLFQ'],
+    ['פרק הזמן שתהליך רץ לפני שהמתזמן מחליף אותו (ב-RR וב-MLFQ). נקרא גם time slice.', 'quantum', 'time slice', 'קוונטום'],
+    ['הזמן מהגעת העבודה ועד שהיא מסתיימת: T_completion − T_arrival.', 'Turnaround', 'turnaround'],
+    ['הזמן מהגעת העבודה ועד שהיא רצה בפעם הראשונה: T_firstrun − T_arrival.', 'Response', 'response time'],
+    ['מפקיע — אלגוריתם שיכול לעצור עבודה באמצע ולתת את המעבד לעבודה אחרת.', 'preemptive', 'מפקיע'],
+    ['הרעבה — עבודה שמחכה בלי סוף, כי תמיד יש עבודה אחרת שקודמת לה.', 'starvation', 'הרעבה'],
+    ['תרשים זמנים: איזו עבודה רצה על המעבד בכל רגע.', 'Gantt'],
+    // --- סיגנלים
+    ['סיגנל — הודעה אסינכרונית לתהליך על אירוע. התהליך מגיב לפי ה-handler שרשם, או לפי ברירת המחדל.', 'signal', 'סיגנל', 'סיגנלים'],
+    ['פונקציה שהתהליך רושם (ב-signal או ב-sigaction) כדי לטפל בסיגנל מסוים.', 'handler'],
+    ['נשלח להורה כשבן שלו מסתיים (או נעצר). ברירת המחדל: התעלמות.', 'SIGCHLD'],
+    ['הורג את התהליך מיד. אי אפשר לתפוס, לחסום או להתעלם ממנו.', 'SIGKILL'],
+    ['נשלח כשלוחצים Ctrl+C בטרמינל. ברירת המחדל: סיום התהליך.', 'SIGINT'],
+    ['משהה את התהליך (עד SIGCONT). אי אפשר לתפוס או להתעלם ממנו.', 'SIGSTOP'],
+    ['קריאת מערכת שרושמת handler לסיגנל, עם שליטה מלאה (מסכה ודגלים).', 'sigaction'],
+    ['שליחת סיגנל לתהליך – לא בהכרח כדי להרוג אותו.', 'kill'],
+    // --- הפניות וצינורות
+    ['File Descriptor — מספר שמייצג קובץ פתוח בתהליך: אינדקס בטבלת הקבצים הפתוחים שלו. 0 = stdin, 1 = stdout, 2 = stderr.', 'fd', 'FD', 'file descriptor', 'descriptors'],
+    ['קלט סטנדרטי – fd 0. כברירת מחדל: המקלדת.', 'stdin'],
+    ['פלט סטנדרטי – fd 1. כברירת מחדל: הטרמינל.', 'stdout'],
+    ['פלט שגיאות – fd 2. כברירת מחדל: הטרמינל. בלי חוצץ.', 'stderr'],
+    ['dup2(oldfd, newfd) — סוגר את newfd (אם פתוח) וגורם לו להצביע לאותו קובץ כמו oldfd. כך עושים הפניה.', 'dup2', 'dup2()'],
+    ['יוצר עותק של fd, במספר הפנוי הנמוך ביותר.', 'dup', 'dup()'],
+    ['צינור — ערוץ חד-כיווני בין תהליכים, עם fd לקריאה ו-fd לכתיבה. read חוסם כשאין נתונים, ומחזיר 0 (EOF) רק כשכל צדי הכתיבה סגורים.', 'pipe', 'pipe()', 'צינור', 'צינורות'],
+    ['End Of File — read מחזיר 0: אין יותר מה לקרוא.', 'EOF'],
+    ['חוצץ — printf כותב קודם לחוצץ בזיכרון של התהליך. לטרמינל הוא נשפך בכל ירידת שורה; לקובץ או ל-pipe רק כשהוא מתמלא. fork משכפל גם את החוצץ.', 'buffer', 'חוצץ'],
+    ['קובע איך יעבוד החוצץ של stream. setbuf(stdout, NULL) מבטל אותו – כל printf נכתב מיד.', 'setbuf'],
+    ['מזיז את מיקום הקריאה/הכתיבה בקובץ פתוח.', 'lseek'],
+    // --- זיכרון וירטואלי
+    ['זיכרון וירטואלי — לכל תהליך נראה שיש לו מרחב כתובות פרטי ורציף משלו; החומרה והקרנל מתרגמים כל כתובת וירטואלית לפיזית.', 'VM', 'virtual memory', 'זיכרון וירטואלי'],
+    ['מרחב כתובות — כל הכתובות שתהליך רואה: קוד, נתונים, ערימה ומחסנית.', 'address space', 'מרחב כתובות', 'מרחב הכתובות'],
+    ['Memory Management Unit — רכיב חומרה שמתרגם כל כתובת וירטואלית לכתובת פיזית.', 'MMU'],
+    ['לכל תהליך רגיסטר base שמוסיפים לכל כתובת, ורגיסטר bounds שבודק שהכתובת בתחום.', 'Base and Bounds'],
+    ['חלוקת מרחב הכתובות לסגמנטים (קוד, ערימה, מחסנית), לכל אחד base ו-bounds משלו.', 'Segmentation', 'סגמנטציה'],
+    ['מקום פנוי שמפוזר בחורים קטנים בין הקצאות: בסך הכל יש מספיק, אבל אין רצף גדול מספיק.', 'External fragmentation', 'external fragmentation'],
+    ['מקום מבוזבז בתוך יחידה שהוקצתה (למשל סוף דף שלא נוצל).', 'Internal fragmentation', 'internal fragmentation'],
+    ['חלוקת הזיכרון הווירטואלי לדפים בגודל קבוע, והפיזי למסגרות באותו גודל. כל דף יכול לשבת בכל מסגרת.', 'Paging'],
+    ['דף — יחידה בגודל קבוע של הזיכרון הווירטואלי.', 'page', 'Page'],
+    ['מסגרת — יחידה של הזיכרון הפיזי, בגודל של דף.', 'frame', 'frames', 'מסגרת', 'מסגרות'],
+    ['טבלת דפים — טבלה (לכל תהליך) שממפה כל מספר דף וירטואלי (VPN) למספר מסגרת (PFN).', 'page table', 'Page table', 'טבלת דפים', 'טבלת הדפים', 'טבלאות דפים'],
+    ['Page Table Entry — כניסה בטבלת הדפים: ה-PFN, וביטים כמו valid, present, dirty והרשאות.', 'PTE'],
+    ['Virtual Page Number — הביטים העליונים של הכתובת הווירטואלית: מספר הדף.', 'VPN'],
+    ['Physical Frame Number — מספר המסגרת בזיכרון הפיזי.', 'PFN'],
+    ['היסט — הביטים התחתונים של הכתובת: המיקום בתוך הדף. לא משתנה בתרגום.', 'offset', 'היסט'],
+    ['האם הדף שייך בכלל למרחב הכתובות של התהליך. גישה לדף לא valid – segmentation fault.', 'valid'],
+    ['האם הדף נמצא עכשיו בזיכרון הפיזי (ולא ב-swap). גישה לדף לא present – page fault.', 'Present', 'present'],
+    ['האם הדף שונה מאז שנטען. דף dirty צריך לכתוב לדיסק לפני שמפנים אותו.', 'Dirty', 'dirty'],
+    ['Translation Lookaside Buffer — מטמון חומרה קטן של תרגומים אחרונים (VPN ← PFN). חוסך גישה לטבלת הדפים.', 'TLB'],
+    ['Address Space ID — מזהה תהליך בכל כניסה ב-TLB, כדי שלא צריך לרוקן את ה-TLB בכל החלפת הקשר.', 'ASID'],
+    ['הרמה העליונה בטבלה היררכית: מצביעה לדפים של טבלת הדפים. מקצים רק דפי טבלה שבשימוש.', 'Page Directory', 'PD'],
+    ['Page Directory Entry — כניסה ב-page directory: מצביעה לדף אחד של טבלת הדפים.', 'PDE'],
+    ['גישה לדף שלא נמצא בזיכרון (present = 0). הקרנל מביא אותו מה-swap, ואז מריץ שוב את הפקודה.', 'Page Fault', 'page fault', 'page faults'],
+    ['אזור בדיסק שאליו מפנים דפים כשאין מקום בזיכרון הפיזי.', 'swap', 'Swap', 'Swapping', 'swapping'],
+    ['האלגוריתם האופטימלי: מפנה את הדף שישמש הכי רחוק בעתיד. אי אפשר לממש אותו – משמש להשוואה.', 'OPT'],
+    ['Least Recently Used — מפנה את הדף שלא השתמשו בו הכי הרבה זמן.', 'LRU'],
+    ['קירוב ל-LRU: מחוג עובר על הדפים במעגל. דף עם ביט שימוש 1 מקבל הזדמנות שנייה (הביט מתאפס); דף עם 0 מפונה.', 'Clock'],
+    ['אנומליית Belady — ב-FIFO, הוספת מסגרות יכולה דווקא להגדיל את מספר ה-page faults.', 'Belady'],
+    ['אחרי fork, ההורה והבן חולקים את אותן מסגרות לקריאה בלבד. רק כשאחד מהם כותב לדף – מעתיקים אותו.', 'Copy-on-Write', 'copy-on-write'],
+    ['ערימה — אזור להקצאות דינמיות (malloc). גדל לכיוון הכתובות הגבוהות – לכיוון המחסנית.', 'Heap', 'heap', 'ערימה'],
+    ['מחסנית — אזור למשתנים מקומיים ולקריאות לפונקציות. גדל לכיוון הכתובות הנמוכות – לכיוון הערימה.', 'Stack', 'stack', 'מחסנית'],
+    ['הקוד של התוכנית. לקריאה ולהרצה בלבד, ולכן אפשר לשתף אותו בין תהליכים.', 'Text'],
+    ['החלק במערכת ההפעלה שטוען את הקובץ הבינארי לזיכרון ומכין את התהליך לריצה.', 'loader'],
+    // --- סביבת העבודה
+    ['תוכנה שמריצה מכונות וירטואליות – מחשב שלם בתוך המחשב שלך.', 'VirtualBox'],
+    ['כלי שמקים מכונה וירטואלית מוגדרת מראש, מתוך קובץ הגדרות אחד.', 'Vagrant'],
+    ['משנה את ההרשאות של קובץ (קריאה, כתיבה, הרצה).', 'chmod'],
+  ];
+
+  const HEBR = /[֐-׿]/;
+  const GLOSSARY = {}, KEY = {};
+  DEFS.forEach((row, k) => { for (let i = 1; i < row.length; i++) { GLOSSARY[row[i]] = row[0]; KEY[row[i]] = k; } });
+  const esc = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const EN = Object.keys(GLOSSARY).filter(t => !HEBR.test(t)).sort((a, b) => b.length - a.length);
+  const HE = Object.keys(GLOSSARY).filter(t => HEBR.test(t)).sort((a, b) => b.length - a.length);
+  // English: whole word. Hebrew: optional one/two-letter prefix (ו ה ב ל כ מ ש) kept outside the mark.
+  const RE = new RegExp('(?<![A-Za-z0-9_])(' + EN.map(esc).join('|') + ')(?![A-Za-z0-9_])' +
+                        '|(?<![א-ת])([ובלכמהש]{0,2})(' + HE.map(esc).join('|') + ')(?![א-ת])', 'g');
+
+  const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'PRE', 'TEXTAREA', 'A', 'BUTTON', 'H1', 'H2', 'H3', 'NAV', 'SVG', 'INPUT', 'SELECT', 'LABEL', 'OPTION', 'TH']);
+  function skipped(el) {
+    for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+      if (SKIP_TAGS.has(n.tagName.toUpperCase())) return true;
+      if (n.classList && (n.classList.contains('gloss') || n.classList.contains('box-title') || n.classList.contains('pager') || n.classList.contains('sim') || n.classList.contains('drill'))) return true;
+    }
+    return false;
+  }
+
+  let tip = null, arrow = null, current = null, pinned = false;
+  function ensureTip() {
+    if (tip) return;
+    tip = document.createElement('div'); tip.id = 'gloss-tip'; tip.setAttribute('role', 'tooltip');
+    arrow = document.createElement('div'); arrow.className = 'arrow';
+    tip.appendChild(arrow); document.body.appendChild(tip);
+  }
+  function setContent(span) {
+    while (tip.childNodes.length > 1) tip.removeChild(tip.firstChild);
+    const text = span.getAttribute('data-tip') || '';
+    const head = document.createElement('b'); head.textContent = span.getAttribute('data-term');
+    head.dir = HEBR.test(head.textContent) ? 'rtl' : 'ltr';
+    const sep = text.indexOf(' — ');
+    const body = document.createElement('span');
+    if (sep > 0 && !HEBR.test(text.slice(0, sep))) {
+      const bdi = document.createElement('bdi'); bdi.dir = 'ltr'; bdi.textContent = text.slice(0, sep);
+      body.appendChild(bdi); body.appendChild(document.createTextNode(text.slice(sep)));
+    } else body.textContent = sep > 0 ? text.slice(sep + 3) : text;   // a Hebrew name before the dash repeats the heading
+    tip.insertBefore(body, tip.firstChild); tip.insertBefore(head, tip.firstChild);
+  }
+  function show(span) {
+    ensureTip(); current = span; setContent(span);
+    tip.classList.remove('above', 'below'); tip.classList.add('show');
+    const r = span.getBoundingClientRect(), vw = window.innerWidth, margin = 8, gap = 9;
+    tip.style.maxWidth = Math.min(340, vw - 2 * margin) + 'px';
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = Math.max(margin, Math.min(r.left + r.width / 2 - tw / 2, vw - tw - margin));
+    let top = r.top - th - gap;
+    if (top < margin) { top = r.bottom + gap; tip.classList.add('below'); } else tip.classList.add('above');
+    tip.style.left = left + 'px'; tip.style.top = top + 'px';
+    arrow.style.left = Math.max(10, Math.min(r.left + r.width / 2 - left - 6, tw - 22)) + 'px';
+  }
+  function hide() { current = null; if (tip) tip.classList.remove('show'); }
+  function mark(el, term) {
+    el.classList.add('gloss'); el.setAttribute('data-tip', GLOSSARY[term]); el.setAttribute('data-term', term);
+    el.tabIndex = 0;
+  }
+
+  function run() {
+    const root = document.querySelector('main') || document.body;
+    const h2s = [...root.querySelectorAll('h2')];
+    let hi = 0, seen = new Set();
+    const section = node => { while (hi < h2s.length && (h2s[hi].compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)) { hi++; seen = new Set(); } };
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+      acceptNode(n) {
+        if (n.nodeType === 1) return SKIP_TAGS.has(n.tagName.toUpperCase()) || skipped(n) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+        return n.nodeValue && n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      }
+    });
+    const jobs = [];
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      section(n);
+      if (n.nodeType === 1) {
+        // <code>fork</code> – the whole element is a term
+        if (n.tagName === 'CODE') {
+          const t = n.textContent.trim();
+          if (GLOSSARY[t] !== undefined && !seen.has(KEY[t])) { seen.add(KEY[t]); jobs.push(['el', n, t]); }
+        }
+        continue;
+      }
+      if (n.parentElement && n.parentElement.closest('code')) continue;
+      const text = n.nodeValue, hits = [];
+      RE.lastIndex = 0; let m;
+      while ((m = RE.exec(text)) !== null) {
+        const term = m[1] || m[3], pre = m[1] ? '' : m[2];
+        if (seen.has(KEY[term])) continue;
+        seen.add(KEY[term]); hits.push([m.index + pre.length, term]);
+      }
+      if (hits.length) jobs.push(['txt', n, hits]);
+    }
+    for (const [kind, n, x] of jobs) {
+      if (kind === 'el') { mark(n, x); continue; }
+      const text = n.nodeValue, frag = document.createDocumentFragment(); let last = 0;
+      for (const [i, term] of x) {
+        if (i > last) frag.appendChild(document.createTextNode(text.slice(last, i)));
+        const s = document.createElement('span'); s.textContent = term; mark(s, term);
+        frag.appendChild(s); last = i + term.length;
+      }
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      n.parentNode.replaceChild(frag, n);
+    }
+    document.addEventListener('mouseover', e => {
+      const g = e.target.closest && e.target.closest('.gloss');
+      if (g && g !== current) { show(g); pinned = false; } else if (!g && current && !pinned) hide();
+    });
+    document.addEventListener('click', e => {
+      const g = e.target.closest && e.target.closest('.gloss');
+      // a click pins the tip (a tap on a phone also fires mouseover first); a second click on the same term closes it
+      if (g) { if (g === current && pinned && tip.classList.contains('show')) { hide(); pinned = false; } else { show(g); pinned = true; } }
+      else { hide(); pinned = false; }
+    });
+    let pointer = false;   // keyboard focus shows the tip; a click/tap is handled by the click toggle above
+    document.addEventListener('pointerdown', () => { pointer = true; setTimeout(() => pointer = false, 400); });
+    document.addEventListener('focusin', e => { if (!pointer && e.target.classList && e.target.classList.contains('gloss')) show(e.target); });
+    document.addEventListener('focusout', hide);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('resize', hide);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+})();
+</script>
 </body>
 </html>
 
