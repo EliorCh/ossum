@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>מבוא · מערכות הפעלה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: right-side sticky chapter rail (like a man-page index) + one reading column; boxes are color-coded by role. */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --sunk:#eceff3; --fg:#1b2430; --muted:#5b6676; --line:#d6dbe2;
+  --ink:#1d5f8f;           /* course blue, from the slides */
+  --amber:#b86a00;         /* highlight / keypoint */
+  --theory:#1d5f8f; --theory-bg:#e8f1f8;
+  --formula:#6b3fa0; --formula-bg:#f1ebf8;
+  --example:#1f7a4d; --example-bg:#e7f4ed;
+  --warn:#b3261e; --warn-bg:#fbebea;
+  --exercise:#8a5a00; --exercise-bg:#fbf2df;
+  --summary:#3c4757; --summary-bg:#eef0f3;
+  --code-bg:#f2f4f7; --code-fg:#1b2430;
+  --hl-kw:#a4237a; --hl-str:#1f7a4d; --hl-num:#b86a00; --hl-com:#7a8494; --hl-fn:#1d5f8f; --hl-type:#6b3fa0;
+  --f-display:"Secular One","IBM Plex Sans Hebrew",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Hebrew",system-ui,"Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{direction:rtl;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;line-height:1.75;margin:0}
+.wrap{display:flex;gap:32px;max-width:1240px;margin:0 auto;padding-block:24px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav.side{flex:0 0 250px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:flex-start;
+  max-height:calc(100vh - 32px);overflow-y:auto;font-size:14.5px;padding-inline-end:8px}
+nav.side .brand{font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px}
+nav.side .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+nav.side a{display:block;color:var(--fg);text-decoration:none;padding:3px 10px;border-inline-start:2px solid transparent}
+nav.side a:hover{color:var(--ink)}
+nav.side a.ch{font-weight:700;margin-top:14px}
+nav.side a.sec{color:var(--muted);font-size:13.5px}
+nav.side a.active{border-inline-start-color:var(--ink);color:var(--ink)}
+main{flex:1;min-width:0;max-width:820px}
+main p, main li, .box-body p, .box-body li{direction:rtl;unicode-bidi:isolate;text-align:right}
+main strong, .box-body strong{margin-inline-end:.15em}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;line-height:1.3}
+.chapter{margin-top:56px;padding-top:8px}
+.chapter:first-of-type{margin-top:8px}
+.ch-head{border-bottom:2px solid var(--line);padding-bottom:14px;margin-bottom:8px}
+.ch-num{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+h1{font-size:34px;margin:4px 0 6px;color:var(--fg)}
+.hook{color:var(--muted);margin:0}
+h2{font-size:24px;margin:40px 0 10px;color:var(--ink)}
+h3{font-size:19px;margin:26px 0 6px}
+.t,.ltr{direction:ltr;unicode-bidi:isolate}
+code{direction:ltr;unicode-bidi:isolate}
+main :not(pre) > code{white-space:nowrap}
+svg{direction:ltr}
+code,.t{font-family:var(--f-mono);font-size:.9em}
+p code, li code, td code, .box-body code{background:var(--sunk);padding:1px 5px;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{direction:ltr;text-align:left;background:var(--code-bg);color:var(--code-fg);border:1px solid var(--line);
+  border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;margin:12px 0}
+main pre code, .box-body pre code{background:none;padding:0;font-size:inherit;border-radius:0}
+.hljs-keyword,.hljs-built_in{color:var(--hl-kw)} .hljs-string{color:var(--hl-str)} .hljs-number,.hljs-literal{color:var(--hl-num)}
+.hljs-comment{color:var(--hl-com);font-style:italic} .hljs-title,.hljs-function .hljs-title{color:var(--hl-fn)} .hljs-type,.hljs-meta{color:var(--hl-type)}
+.hljs-variable,.hljs-params{color:inherit}
+
+/* boxes */
+.box{border:1px solid var(--line);border-inline-start:4px solid var(--c);background:var(--cb);border-radius:6px;padding:12px 16px;margin:16px 0}
+.box-title{font-weight:700;color:var(--c);font-size:14px;letter-spacing:.02em;margin-bottom:4px}
+.box-body > :first-child{margin-top:0} .box-body > :last-child{margin-bottom:0}
+.theory{--c:var(--theory);--cb:var(--theory-bg)} .formula{--c:var(--formula);--cb:var(--formula-bg)}
+.example{--c:var(--example);--cb:var(--example-bg)} .warn{--c:var(--warn);--cb:var(--warn-bg)}
+.exercise{--c:var(--exercise);--cb:var(--exercise-bg)} .summary{--c:var(--summary);--cb:var(--summary-bg)}
+.keypoint{background:linear-gradient(transparent 60%, color-mix(in srgb,var(--amber) 28%, transparent) 60%);font-weight:500}
+.fline{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:15px;margin:8px 0;padding:6px;background:var(--surface);border-radius:4px}
+
+/* function cards */
+.fn{border:1px solid var(--line);background:var(--surface);border-radius:8px;margin:14px 0;overflow:hidden}
+.fn-sig{direction:ltr;text-align:left;font-family:var(--f-mono);font-size:14.5px;background:var(--sunk);padding:8px 14px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.fn-body{padding:10px 14px}
+.fn-body dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.fn-body dt{color:var(--muted);font-size:14px;font-weight:700}
+.fn-body dd{margin:0;min-width:0}
+
+/* tables */
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:right;vertical-align:top}
+th{background:var(--sunk);font-weight:700}
+td.mono,td.num{direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums}
+
+/* figures */
+figure{margin:18px 0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto}
+figure svg{display:block;margin:0 auto;max-width:100%}
+figcaption{color:var(--muted);font-size:14px;text-align:center;margin-top:6px}
+svg text{font-family:var(--f-body)}
+svg .mono{font-family:var(--f-mono)}
+
+/* reveal */
+details.sol{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+details.sol summary{cursor:pointer;color:var(--exercise);font-weight:700;list-style:none}
+details.sol summary::before{content:"◂ ";display:inline-block;transition:transform .15s}
+details.sol[open] summary::before{transform:rotate(-90deg)}
+details.sol summary:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;margin:18px 0}
+.sim-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.sim label{font-size:14px;color:var(--muted)}
+.sim select,.sim input,.sim button{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.sim input[type=number]{width:64px;direction:ltr}
+.sim button{cursor:pointer;background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.sim button.ghost{background:transparent;color:var(--ink)}
+.jobs{display:flex;flex-wrap:wrap;gap:8px}
+.job{display:flex;gap:6px;align-items:center;background:var(--sunk);padding:4px 8px;border-radius:6px;font-family:var(--f-mono);font-size:13px}
+.gantt{overflow-x:auto}
+.legend{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sim .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer}
+
+
+/* dry-run tracer */
+.trace{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:18px 0;overflow:hidden}
+.trace:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tr-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.tr-title{font-family:var(--f-display);color:var(--ink);font-size:17px}
+.tr-vars{display:flex;flex-wrap:wrap;gap:6px}
+.trace .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body)}
+.trace .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tr-body{display:flex;flex-direction:column}
+.tr-vis{min-width:0}
+.tr-note{padding:12px 14px;background:var(--theory-bg);border-top:1px solid var(--line);direction:rtl;unicode-bidi:isolate;text-align:right;line-height:1.7}
+.tr-grid{display:flex;flex-wrap:wrap;gap:14px;padding:12px 14px}
+.tr-code{flex:1 1 330px;min-width:0}
+.tr-side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tr-pre{margin:0;padding:8px 0;font-size:13.5px;overflow-x:auto}
+.tr-pre > code{display:block;min-width:max-content}
+.tr-ln{display:flex;gap:10px;align-items:center;padding:1px 10px;min-height:1.7em}
+.tr-ln.act{background:color-mix(in srgb,var(--amber) 18%,transparent)}
+.tr-num{color:var(--muted);min-width:1.6em;text-align:right;user-select:none}
+.tr-src{flex:1;white-space:pre}
+.tr-mk{display:flex;gap:4px}
+.tr-pid{font-size:11px;font-weight:600;border:1.5px solid var(--pc);color:var(--pc);border-radius:999px;padding:0 6px;line-height:1.5;background:var(--surface)}
+.tr-pid.on{background:var(--pc);color:var(--surface)}
+.tr-table{font-size:13.5px}
+.tr-table th,.tr-table td{padding:4px 8px}
+.tr-table tr.act td{background:color-mix(in srgb,var(--amber) 14%,var(--surface))}
+.tr-table tr.st-reaped td{color:var(--muted);text-decoration:line-through}
+.tr-table tr.st-zombie .tr-st{color:var(--warn);font-weight:700}
+.tr-table tr.st-blocked .tr-st{color:var(--exercise);font-weight:700}
+.tr-table tr.st-running .tr-st,.tr-table tr.st-kernel .tr-st{color:var(--example);font-weight:700}
+.tr-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pc);margin-inline-end:6px;vertical-align:middle}
+.tr-buf{white-space:pre-wrap;font-size:12.5px;min-width:11em}
+.tr-table td.num{white-space:nowrap}
+.tr-tree{overflow-x:auto}
+.tr-tree svg{display:block;margin:0 auto}
+.tr-outwrap{padding:0 14px 10px}
+.tr-label{font-size:13px;color:var(--muted);margin-bottom:4px}
+.tr-out{margin:0;min-height:2.4em;white-space:pre-wrap}
+.tr-o{color:var(--pc);font-weight:600}
+.tr-o.new{background:color-mix(in srgb,var(--pc) 16%,transparent)}
+.tr-empty{color:var(--muted);font-family:var(--f-body);direction:rtl;unicode-bidi:isolate}
+.tr-ctrl{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);background:var(--sunk)}
+.tr-ctrl button{font:inherit;font-size:14px;padding:6px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
+.tr-ctrl button.ghost{background:transparent;color:var(--ink)}
+.tr-ctrl button:disabled{opacity:.4;cursor:default}
+.tr-count{font-size:13px;color:var(--muted);margin-inline:auto}
+
+@media (max-width:860px){
+  .wrap{flex-direction:column;gap:8px}
+  nav.side{position:static;max-height:none;flex:none;border-bottom:1px solid var(--line);padding-bottom:12px}
+  nav.side a.sec{display:none}
+  h1{font-size:28px}
+}
+
+/* ---- wide screens: the page widens, prose keeps its reading width, dry runs sit side by side ---- */
+@media (min-width:1400px){
+  .wrap{max-width:1700px}
+  main{max-width:none}
+  main > section > *, main .box, main details > *{max-width:820px}
+  main > section > .trace, main .box:has(.trace), main details:has(.trace) > *, main .box .trace, main > section > .sim{max-width:none}
+  main .box:has(.trace) > .box-body > :not(details):not(.trace){max-width:788px}
+  .tr-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);grid-template-areas:"vis note";align-items:stretch}
+  .tr-vis{grid-area:vis}
+  .tr-note{grid-area:note;border-top:none;border-inline-start:1px solid var(--line);font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+nav.side a.brand{display:block;font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px;padding:0;border:0;text-decoration:none}
+nav.side a.ch.here{color:var(--ink);border-inline-start-color:var(--ink)}
+.pager{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin-top:56px;padding-top:18px;border-top:2px solid var(--line)}
+.pager a{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 16px}
+.pager a:hover{border-color:var(--ink)}
+.pager a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pager .dir{font-size:13px;color:var(--muted)}
+.pager .nm{font-family:var(--f-display);font-size:19px;color:var(--ink)}
+.pager a.next{text-align:left}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:24px 0}
+@media (min-width:1100px){.cards{grid-template-columns:repeat(6,minmax(0,1fr))}.card{grid-column:span 2}.card:nth-child(4){grid-column:2 / span 2}}
+main bdi, .tr-note bdi{white-space:nowrap}
+.card{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card:hover{border-color:var(--ink)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.card .num{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.card h2{margin:0;font-size:22px;color:var(--ink)}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.card ul{margin:4px 0 0;padding-inline-start:18px;font-size:14px;color:var(--fg)}
+.card .tag{font-size:12.5px;color:var(--exercise);font-weight:700;margin-top:auto;padding-top:6px}
+.hero{padding:8px 0 4px;border-bottom:2px solid var(--line)}
+.hero h1{font-size:38px;margin:4px 0 8px}
+</style>
+
+
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="he">
+<nav class="side" aria-label="תוכן העניינים">
+  <a class="brand" href="index.html">מערכות הפעלה</a>
+  <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
+  <a class="ch here" href="intro.html" aria-current="page">1 · מבוא</a>
+  <a class="sec" href="#what" data-id="what">מהי מערכת הפעלה</a>
+  <a class="sec" href="#three" data-id="three">שלושת החלקים</a>
+  <a class="sec" href="#virt" data-id="virt">וירטואליזציה של CPU וזיכרון</a>
+  <a class="sec" href="#conc" data-id="conc">מקביליות</a>
+  <a class="sec" href="#pers" data-id="pers">אחסון</a>
+  <a class="sec" href="#kernel" data-id="kernel">קרנל, אירועים וקריאות מערכת</a>
+  <a class="sec" href="#hist" data-id="hist">היסטוריה</a>
+  <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
+  <a class="ch" href="processes.html">3 · תהליכים</a>
+  <a class="ch" href="scheduling.html">4 · תזמון</a>
+  <a class="ch" href="signals.html">5 · זומבים וסיגנלים</a>
+  <a class="ch" href="redir.html">6 · הפניות וצינורות</a>
+  <a class="ch" href="vmem.html">7 · זיכרון וירטואלי</a>
+</nav>
+<main>
+<section class="chapter" id="ch1" style="margin-top:8px">
+<div class="ch-head">
+  <div class="ch-num">Chapter 1 · Introduction</div>
+  <h1>מבוא למערכות הפעלה</h1>
+  <p class="hook">הפרק שמסדר את כל המפה: שלושת הנושאים של הקורס, ומה הקרנל בעצם עושה. כמעט כל שאלה במבחן נשענת על המושגים כאן.</p>
+</div>
+
+<h2 id="what">מהי מערכת הפעלה</h2>
+<p>מערכת הפעלה היא <strong>שכבת ביניים</strong> בין תוכניות המשתמש לחומרה. היא עושה שני דברים: <span class="keypoint">מפשטת <bdi dir="ltr">(abstraction)</bdi></span> את החומרה ו<span class="keypoint">מנהלת</span> את המשאבים שלה – המעבד, הזיכרון הראשי, והתקני הקלט/פלט (דיסק, רשת, מקלדת, עכבר, מסך).</p>
+
+<figure>
+<svg viewBox="0 0 520 230" width="520" role="img" aria-label="שכבות: משתמשים, אפליקציות, מערכת הפעלה, חומרה">
+  <g font-size="16" text-anchor="middle">
+    <rect x="60" y="10" width="400" height="44" rx="6" fill="var(--sunk)" stroke="var(--line)"/>
+    <text x="260" y="38" fill="var(--fg)" direction="rtl">משתמשים</text>
+    <rect x="60" y="62" width="400" height="44" rx="6" fill="var(--theory-bg)" stroke="var(--theory)"/>
+    <text x="260" y="90" fill="var(--fg)" direction="rtl">אפליקציות</text>
+    <rect x="60" y="114" width="400" height="44" rx="6" fill="var(--ink)"/>
+    <text x="260" y="142" fill="var(--surface)" font-weight="700" direction="rtl">מערכת ההפעלה</text>
+    <rect x="60" y="166" width="400" height="44" rx="6" fill="var(--sunk)" stroke="var(--line)"/>
+    <text x="260" y="194" fill="var(--fg)" direction="rtl">חומרה (CPU · RAM · I/O)</text>
+  </g>
+</svg>
+<figcaption>מערכת ההפעלה יושבת בין התוכניות לחומרה</figcaption>
+</figure>
+
+<div class="tbl"><table>
+<tr><th>תפקיד</th><th>CPU</th><th>זיכרון</th><th>אחסון</th></tr>
+<tr><td><strong>הפשטה:</strong> משאב וירטואלי עם פעולות מוגדרות</td><td>תוכנית רצה <bdi dir="ltr">(process / thread)</bdi></td><td>מרחב כתובות / זיכרון וירטואלי</td><td>קבצים, מערכת קבצים</td></tr>
+<tr><td><strong>ניהול משאבים:</strong> מי מקבל כמה ומתי</td><td>מי רץ עכשיו?</td><td>איפה המידע ב-<bdi dir="ltr">RAM</bdi> ומתי לגשת?</td><td>איפה ואיך הקבצים שמורים בדיסק?</td></tr>
+</table></div>
+
+<h3>מה קורה כשתוכנית רצה</h3>
+<p>המעבד עובד לפי מודל <strong>Von Neumann:</strong> בלולאה אינסופית הוא מביא פקודה מהזיכרון, מפענח אותה, מבצע אותה ועובר לפקודה הבאה. גם קוד התוכנית עצמו יושב בזיכרון.</p>
+<figure>
+<svg viewBox="0 0 560 120" width="560" role="img" aria-label="מחזור fetch decode execute">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <g font-size="14" text-anchor="middle" class="mono">
+    <rect x="10" y="35" width="110" height="44" rx="22" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="65" y="62" fill="var(--fg)">Fetch</text>
+    <rect x="150" y="35" width="110" height="44" rx="22" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="205" y="62" fill="var(--fg)">Decode</text>
+    <rect x="290" y="35" width="110" height="44" rx="22" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="345" y="62" fill="var(--fg)">Execute</text>
+    <rect x="430" y="35" width="120" height="44" rx="22" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="490" y="62" fill="var(--fg)">Next (PC++)</text>
+  </g>
+  <g stroke="var(--muted)" stroke-width="1.6" fill="none" marker-end="url(#ar)">
+    <path d="M120 57 H148"/><path d="M260 57 H288"/><path d="M400 57 H428"/>
+    <path d="M490 79 V105 H65 V81"/>
+  </g>
+</svg>
+</figure>
+
+<h2 id="three">שלושת החלקים <bdi dir="ltr">(Three Easy Pieces)</bdi></h2>
+<p>הקורס בנוי לפי הספר <bdi dir="ltr">Operating Systems: Three Easy Pieces</bdi> (<a href="http://ostep.org/">ostep.org</a>), וזה בדיוק שלושת הנושאים שלו:</p>
+<div class="tbl"><table>
+<tr><th>נושא</th><th>הרעיון</th><th>דוגמה בהרצאה</th></tr>
+<tr><td><strong>וירטואליזציה</strong></td><td>כל תוכנית "בעולם משלה" – כאילו המשאבים כולם שלה</td><td><code>cpu.c</code>, <code>mem.c</code></td></tr>
+<tr><td><strong>מקביליות</strong></td><td>הרבה דברים קורים בו-זמנית</td><td><code>threads.c</code></td></tr>
+<tr><td><strong>אחסון <bdi dir="ltr">(Persistence)</bdi></strong></td><td>מידע שנשמר אחרי סיום התוכנית או כיבוי המחשב</td><td><code>io.c</code></td></tr>
+</table></div>
+
+<h2 id="virt">וירטואליזציה של המעבד</h2>
+<p>התוכנית <code>cpu.c</code> מסתובבת שנייה ומדפיסה את הארגומנט שלה, לנצח:</p>
+<pre><code class="language-c">int main(int argc, char *argv[]) {
+    while (1) {
+        Spin(1);              // busy-loop for 1 second
+        printf("%s\n", argv[1]);
+    }
+}</code></pre>
+<p>מריצים ארבעה עותקים ברקע עם מעבד אחד בלבד:</p>
+<pre><code class="language-bash">prompt$ ./cpu A &amp; ./cpu B &amp; ./cpu C &amp; ./cpu D &amp;
+A
+B
+C
+D
+A
+B ...</code></pre>
+<div class="box theory"><div class="box-title">האשליה</div><div class="box-body">
+<p>מעבד פיזי אחד נראה כמו <strong>אינסוף מעבדים וירטואליים</strong>. מתחת למכסה המנוע מערכת ההפעלה מחליפה בין התהליכים מהר מאוד – זה נקרא <strong>Context Switch</strong>, ונראה אותו לעומק בפרק 3.</p>
+</div></div>
+
+<h3>וירטואליזציה של הזיכרון</h3>
+<p>זיכרון פיזי <bdi dir="ltr">(RAM)</bdi> הוא מערך של בתים: <strong>קריאה <bdi dir="ltr">(load)</bdi></strong> לפי כתובת, ו<strong>כתיבה <bdi dir="ltr">(store)</bdi></strong> לפי כתובת ונתון. התוכנית <code>mem.c</code> מקצה <code>int</code>, מדפיסה את הכתובת שלו, ומגדילה אותו כל שנייה:</p>
+<pre><code class="language-c">int *p = malloc(sizeof(int));
+printf("(%d) addr pointed to by p: %p\n", getpid(), p);
+*p = 0;
+while (1) { Spin(1); *p = *p + 1; printf("(%d) value of p: %d\n", getpid(), *p); }</code></pre>
+<pre><code class="language-bash">prompt$ ./mem 0 &amp; ./mem 100 &amp;
+(64) addr pointed to by p: 0x80052a0
+(65) addr pointed to by p: 0x80052a0
+(64) value of p: 1
+(65) value of p: 101
+(64) value of p: 2
+(65) value of p: 102</code></pre>
+<div class="box warn"><div class="box-title">שימו לב</div><div class="box-body">
+<p><span class="keypoint">אותה כתובת, ערכים שונים.</span> הכתובת <code>0x80052a0</code> היא <strong>כתובת וירטואלית</strong>, לא כתובת ב-<bdi dir="ltr">RAM</bdi>. לכל תהליך יש מרחב כתובות וירטואלי משלו, ומערכת ההפעלה ממפה אותו לזיכרון הפיזי (ולפעמים לאחסון משני).</p>
+</div></div>
+
+<h2 id="conc">מקביליות</h2>
+<p>שני <bdi dir="ltr">threads</bdi> מגדילים מונה משותף <code>loops</code> פעמים כל אחד:</p>
+<pre><code class="language-c">volatile int counter = 0;
+void *worker(void *arg) {
+    for (int i = 0; i &lt; loops; i++) counter++;
+    return NULL;
+}</code></pre>
+<div class="tbl"><table>
+<tr><th>קלט</th><th>תוצאה צפויה</th><th>תוצאה בפועל</th></tr>
+<tr><td class="num">loops = 100</td><td class="num">200</td><td class="num">200</td></tr>
+<tr><td class="num">loops = 10,000,000</td><td class="num">20,000,000</td><td class="num">10,478,053 · 10,148,993</td></tr>
+</table></div>
+<p>הסיבה: <code>counter++</code> הוא <strong>שלוש פקודות מעבד</strong> ולא פעולה <strong>אטומית</strong>. אם יש החלפת הקשר באמצע, עדכון אחד "נבלע":</p>
+<div class="tbl"><table>
+<tr><th>שלב</th><th>Thread 1</th><th>Thread 2</th><th class="num">counter</th></tr>
+<tr><td>1</td><td><code>reg ← counter</code> (0)</td><td></td><td class="num">0</td></tr>
+<tr><td>2</td><td><code>reg++</code> (1)</td><td></td><td class="num">0</td></tr>
+<tr><td>3</td><td><em>החלפת הקשר</em></td><td><code>reg ← counter</code> (0)</td><td class="num">0</td></tr>
+<tr><td>4</td><td></td><td><code>reg++</code> (1)</td><td class="num">0</td></tr>
+<tr><td>5</td><td></td><td><code>counter ← reg</code></td><td class="num">1</td></tr>
+<tr><td>6</td><td><code>counter ← reg</code></td><td></td><td class="num">1 ✗</td></tr>
+</table></div>
+<p>שתי הגדלות, אבל המונה עלה רק ב-1. עם מעט איטרציות זה כמעט לא קורה; עם מיליונים זה קורה הרבה. עוד נחזור לזה בחלק המקביליות.</p>
+
+<h2 id="pers">אחסון <bdi dir="ltr">(Persistence)</bdi></h2>
+<p>זיכרון המערכת <bdi dir="ltr">(DRAM)</bdi> הוא <strong>נדיף</strong> – המידע הולך לאיבוד בכיבוי או בקריסה. לכן צריך חומרה (דיסק, <bdi dir="ltr">SSD</bdi>) ותוכנה – <strong>מערכת הקבצים</strong> – שמתרגמת "קבצים ותיקיות" של המשתמש לבלוקים בהתקן.</p>
+<pre><code class="language-c">int fd = open(argv[1], O_WRONLY | O_CREAT, S_IRWXU);   // open (and create)
+char buffer[20] = "hello world\n";
+int rc = write(fd, buffer, strlen(buffer));            // write
+close(fd);                                             // close</code></pre>
+<p>כתיבה לדיסק דורשת להחליט איפה יישב המידע ולשלוח בקשות <bdi dir="ltr">I/O</bdi> להתקן – וזה איטי. לכן מערכת ההפעלה בדרך כלל <span class="keypoint">מעכבת כתיבות</span> בתקווה לאגד כמה יחד.</p>
+
+<h2 id="kernel">קרנל, אירועים וקריאות מערכת</h2>
+<div class="box theory"><div class="box-title">הקרנל</div><div class="box-body">
+<ul>
+<li>החלק המרכזי של מערכת ההפעלה, <strong>תמיד בזיכרון</strong>.</li>
+<li>רץ <strong>בתגובה לאירועים</strong> – קריאת מערכת, לחיצת מקש, שעון.</li>
+<li><span class="keypoint">הקרנל אינו תוכנית רצה.</span> הוא קוד שמופעל כשיש אירוע.</li>
+<li>לא כל מה שנראה כמו "מערכת ההפעלה" הוא קרנל: ה-<bdi dir="ltr">shell</bdi> של יוניקס, למשל, הוא אפליקציה רגילה.</li>
+</ul>
+</div></div>
+<p>אירוע (הזזת עכבר, מקש, תקשורת, חלוקה באפס, קריאת מערכת) <strong>קוטע</strong> את התוכנית הנוכחית ומריץ קוד קרנל. לכל סוג אירוע מוגדר בקרנל <strong>handler</strong>.</p>
+<div class="tbl"><table>
+<tr><th>סוג</th><th>מאפיין</th><th>דוגמה</th></tr>
+<tr><td><strong><bdi dir="ltr">Interrupt</bdi> (פסיקה)</strong></td><td>אסינכרוני – חיצוני לתוכנית</td><td>לחיצת מקש; הקרנל שומר אותה ואפשר לבדוק אחר כך</td></tr>
+<tr><td><strong><bdi dir="ltr">Trap</bdi> (מלכודת)</strong></td><td>סינכרוני – נגרם מהפקודה שרצה. נקרא גם <bdi dir="ltr">exception / fault</bdi></td><td>חלוקה באפס – הקרנל מסיים את התוכנית. <strong>לא בהכרח שגיאה:</strong> גם קריאת מערכת היא <bdi dir="ltr">trap</bdi></td></tr>
+</table></div>
+<p><strong>קריאת מערכת <bdi dir="ltr">(system call)</bdi>:</strong> תוכנית משתמש לא יכולה פשוט "לקפוץ" לקוד הקרנל. כשהיא רוצה לפתוח קובץ, להקצות זיכרון או לקרוא מהמקלדת, היא מבצעת <bdi dir="ltr">trap</bdi> מכוון – והמעבד עובר לקרנל באופן מבוקר.</p>
+
+<h2 id="hist">קצת היסטוריה</h2>
+<div class="tbl"><table>
+<tr><th>תקופה</th><th>מה היה</th><th>מושג מפתח</th></tr>
+<tr><td>מחשב קלאסי</td><td>קלט מסרט מנוקב או מתגים, לוחצים <bdi dir="ltr">Start</bdi>, רץ עד <bdi dir="ltr">halt</bdi>. תהליך יחיד.</td><td>—</td></tr>
+<tr><td>מערכות הפעלה מוקדמות</td><td>רק ספריות של פונקציות נפוצות (למשל <bdi dir="ltr">I/O</bdi> ברמה נמוכה). בלי הפשטה ובלי וירטואליזציה, תוכנית אחת בכל פעם.</td><td><strong>Batch mode</strong></td></tr>
+<tr><td>מעבר לספריות: הגנה</td><td><strong>User mode</strong> עם הגבלות חומרה; במקום לקרוא לפונקציית ספרייה – <strong>system call</strong> שמעלה הרשאה ל-<strong>kernel mode</strong> עם גישה מלאה לחומרה.</td><td>הפרדת הרשאות</td></tr>
+<tr><td>עידן ה-<bdi dir="ltr">Multiprogramming</bdi></td><td>טוענים כמה עבודות ומחליפים ביניהן מהר כדי לנצל טוב יותר את המשאבים.</td><td><strong>Context switch</strong>, מקביליות, <strong>הגנת זיכרון</strong></td></tr>
+</table></div>
+
+<div class="box summary"><div class="box-title">סיכום פרק 1</div><div class="box-body">
+<ul>
+<li>מערכת הפעלה = הפשטה + ניהול משאבים.</li>
+<li>שלושה נושאים: וירטואליזציה, מקביליות, אחסון.</li>
+<li>כתובת בתוכנית היא וירטואלית; <code>counter++</code> אינו אטומי.</li>
+<li>הקרנל רץ רק בתגובה לאירועים. <bdi dir="ltr">Interrupt</bdi> חיצוני, <bdi dir="ltr">Trap</bdi> פנימי (כולל <bdi dir="ltr">syscall</bdi>).</li>
+</ul>
+</div></div>
+</section>
+<nav class="pager" aria-label="מעבר בין נושאים">
+<a class="prev" href="index.html"><span class="dir">חזרה</span><span class="nm">דף הבית</span></a>
+<a class="next" href="workenv.html"><span class="dir">הנושא הבא</span><span class="nm">פרק 2 · סביבת העבודה</span></a>
+</nav>
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script>
+try { hljs.highlightAll(); } catch (e) {}
+
+/* ---------- scheduler core ---------- */
+function simulate(jobs, alg, q) {
+  jobs = jobs.map((j, i) => ({ name: j.name, arr: +j.arr, burst: +j.burst, idx: i, rem: +j.burst, first: null, done: null }));
+  const seg = []; let t = 0;
+  const push = (name, s, e) => { if (e <= s) return; const l = seg[seg.length - 1]; if (l && l.name === name && l.e === s) l.e = e; else seg.push({ name, s, e }); };
+  const byArr = (a, b) => a.arr - b.arr || a.idx - b.idx;
+  const left = () => jobs.some(j => j.rem > 0);
+  if (alg === 'FCFS' || alg === 'SJF') {
+    while (left()) {
+      const ready = jobs.filter(j => j.rem > 0 && j.arr <= t);
+      if (!ready.length) { const nx = Math.min(...jobs.filter(j => j.rem > 0).map(j => j.arr)); push('idle', t, nx); t = nx; continue; }
+      ready.sort(alg === 'SJF' ? (a, b) => a.burst - b.burst || byArr(a, b) : byArr);
+      const j = ready[0]; j.first = t; push(j.name, t, t + j.rem); t += j.rem; j.rem = 0; j.done = t;
+    }
+  } else if (alg === 'SRTF') {
+    while (left()) {
+      const ready = jobs.filter(j => j.rem > 0 && j.arr <= t);
+      if (!ready.length) { const nx = Math.min(...jobs.filter(j => j.rem > 0).map(j => j.arr)); push('idle', t, nx); t = nx; continue; }
+      ready.sort((a, b) => a.rem - b.rem || byArr(a, b));
+      const j = ready[0]; if (j.first === null) j.first = t;
+      const nextArr = Math.min(Infinity, ...jobs.filter(x => x.rem > 0 && x.arr > t).map(x => x.arr));
+      const run = Math.min(j.rem, nextArr - t);
+      push(j.name, t, t + run); t += run; j.rem -= run; if (!j.rem) j.done = t;
+    }
+  } else { // RR
+    q = Math.max(1, +q || 1);
+    const pending = jobs.slice().sort(byArr); const queue = [];
+    const admit = (upto) => { while (pending.length && pending[0].arr <= upto) queue.push(pending.shift()); };
+    admit(t);
+    while (queue.length || pending.length) {
+      if (!queue.length) { const nx = pending[0].arr; push('idle', t, nx); t = nx; admit(t); continue; }
+      const j = queue.shift(); if (j.first === null) j.first = t;
+      const run = Math.min(q, j.rem); push(j.name, t, t + run); t += run; j.rem -= run;
+      admit(t);
+      if (j.rem > 0) queue.push(j); else j.done = t;
+    }
+  }
+  const rows = jobs.map(j => ({ name: j.name, arr: j.arr, burst: j.burst, tat: j.done - j.arr, resp: j.first - j.arr }));
+  const avg = k => rows.reduce((s, r) => s + r[k], 0) / rows.length;
+  return { seg, rows, avgTat: avg('tat'), avgResp: avg('resp'), end: t };
+}
+
+/* ---------- rendering ---------- */
+const palette = ['var(--example)', 'var(--theory)', 'var(--exercise)', 'var(--formula)', 'var(--warn)', 'var(--summary)'];
+function colorOf(name, names) { return name === 'idle' ? 'var(--sunk)' : palette[names.indexOf(name) % palette.length]; }
+function fmt(x) { return Number.isInteger(x) ? String(x) : x.toFixed(2); }
+function gantt(res, names, title) {
+  const W = 560, L = 10, H = 34, scale = (W - 2 * L) / Math.max(1, res.end);
+  const step = res.end <= 20 ? 1 : res.end <= 40 ? 5 : res.end <= 100 ? 10 : Math.ceil(res.end / 10);
+  let s = `<svg viewBox="0 0 ${W} ${H + 40}" width="${W}" role="img" aria-label="Gantt">`;
+  res.seg.forEach(g => {
+    const x = L + g.s * scale, w = (g.e - g.s) * scale;
+    s += `<rect x="${x}" y="8" width="${w}" height="${H}" fill="${colorOf(g.name, names)}" stroke="var(--surface)" stroke-width="1"/>`;
+    if (w > 14 && g.name !== 'idle') s += `<text x="${x + w / 2}" y="${8 + H / 2 + 5}" text-anchor="middle" font-size="13" class="mono" fill="var(--surface)">${g.name}</text>`;
+  });
+  for (let v = 0; v <= res.end; v += step) {
+    const x = L + v * scale;
+    s += `<line x1="${x}" y1="${H + 8}" x2="${x}" y2="${H + 14}" stroke="var(--muted)"/><text x="${x}" y="${H + 28}" text-anchor="middle" font-size="11" class="mono" fill="var(--muted)">${v}</text>`;
+  }
+  s += '</svg>';
+  let tbl = '<div class="tbl"><table><tr><th>עבודה</th><th>הגעה</th><th>אורך</th><th>Turnaround</th><th>Response</th></tr>';
+  res.rows.forEach(r => tbl += `<tr><td class="mono">${r.name}</td><td class="num">${r.arr}</td><td class="num">${r.burst}</td><td class="num">${r.tat}</td><td class="num">${r.resp}</td></tr>`);
+  tbl += `<tr><th>ממוצע</th><td></td><td></td><td class="num">${fmt(res.avgTat)}</td><td class="num">${fmt(res.avgResp)}</td></tr></table></div>`;
+  return `<figure>${title ? `<figcaption style="margin:0 0 6px">${title}</figcaption>` : ''}${s}${tbl}</figure>`;
+}
+
+const presets = [
+  { label: 'FCFS · 10/10/10', alg: 'FCFS', jobs: [['A', 0, 10], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'FCFS · A=60', alg: 'FCFS', jobs: [['A', 0, 60], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'SJF · A=60', alg: 'SJF', jobs: [['A', 0, 60], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'SJF · B,C at t=10', alg: 'SJF', jobs: [['A', 0, 60], ['B', 10, 10], ['C', 10, 10]] },
+  { label: 'SRTF · B,C at t=10', alg: 'SRTF', jobs: [['A', 0, 60], ['B', 10, 10], ['C', 10, 10]] },
+  { label: 'RR · 5/5/5, q=1', alg: 'RR', q: 1, jobs: [['A', 0, 5], ['B', 0, 5], ['C', 0, 5]] },
+];
+const toJobs = p => p.jobs.map(([name, arr, burst]) => ({ name, arr, burst }));
+
+/* lecture figures */
+(function () {
+  const box = document.getElementById('lec-gantts'); if (!box) return;
+  const L = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const caps = [L('FCFS') + ': שלוש עבודות של 10, ממוצע 20', L('FCFS') + ': עבודה ' + L('A') + ' הארוכה ראשונה, ממוצע 70', L('SJF') + ': אותן עבודות, ממוצע 36.67', L('SJF') + ': ' + L('B') + ' ו-' + L('C') + ' מגיעות בזמן 10, ממוצע 63.33', L('SRTF') + ': אותו מקרה, ממוצע 36.67'];
+  let html = '';
+  presets.slice(0, 5).forEach((p, i) => { const j = toJobs(p); html += gantt(simulate(j, p.alg, p.q), j.map(x => x.name), caps[i]); });
+  box.innerHTML = html;
+  const rr = presets[5], rj = toJobs(rr);
+  document.getElementById('rr-gantt').innerHTML = gantt(simulate(rj, 'RR', 1), rj.map(x => x.name));
+})();
+
+/* interactive simulator */
+(function () {
+  const jobsEl = document.getElementById('jobs'), out = document.getElementById('out');
+  if (!jobsEl) return;
+  const alg = document.getElementById('alg'), q = document.getElementById('q');
+  let jobs = toJobs(presets[4]), uid = 0;
+  function renderJobs() {
+    jobsEl.innerHTML = '';
+    jobs.forEach((j, i) => {
+      const d = document.createElement('div'); d.className = 'job'; const id = 'j' + (uid++);
+      d.innerHTML = `<strong>${j.name}</strong><label for="${id}a">הגעה</label><input id="${id}a" type="number" min="0" value="${j.arr}"><label for="${id}b">אורך</label><input id="${id}b" type="number" min="1" value="${j.burst}"><button class="ghost" type="button" aria-label="הסר ${j.name}">×</button>`;
+      d.querySelector(`#${id}a`).oninput = e => { j.arr = Math.max(0, +e.target.value || 0); };
+      d.querySelector(`#${id}b`).oninput = e => { j.burst = Math.max(1, +e.target.value || 1); };
+      d.querySelector('button').onclick = () => { if (jobs.length > 1) { jobs.splice(i, 1); renderJobs(); run(); } };
+      jobsEl.appendChild(d);
+    });
+  }
+  function run() {
+    q.disabled = alg.value !== 'RR';
+    const res = simulate(jobs, alg.value, q.value);
+    out.innerHTML = gantt(res, jobs.map(j => j.name), alg.value + (alg.value === 'RR' ? ` · quantum ${q.value}` : ''));
+  }
+  document.getElementById('add').onclick = () => { if (jobs.length >= 6) return; jobs.push({ name: 'ABCDEF'[jobs.length] || 'X', arr: 0, burst: 5 }); renderJobs(); run(); };
+  document.getElementById('run').onclick = run;
+  alg.onchange = run; q.oninput = run;
+  const pc = document.getElementById('presets');
+  presets.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = p.label;
+    b.onclick = () => { jobs = toJobs(p); alg.value = p.alg; if (p.q) q.value = p.q; renderJobs(); run(); }; pc.appendChild(b); });
+  alg.value = 'SRTF'; renderJobs(); run();
+})();
+
+/* ================= dry-run tracer ================= */
+(function () {
+  const C = x => '<code>' + x + '</code>';
+  const E = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const PCOL = ['var(--example)', 'var(--theory)', 'var(--exercise)', 'var(--formula)', 'var(--warn)', 'var(--summary)'];
+  const ST = { running: 'רץ', ready: 'מוכן', blocked: 'חסום', zombie: 'זומבי', reaped: 'נאסף', kernel: 'בקרנל' };
+
+  /* ---- builder ---- */
+  function B(code) {
+    const t = { code, procs: [], out: [], steps: [] };
+    const P = pid => t.procs.find(p => p.pid === pid);
+    const api = {
+      proc(pid, ppid, line, vars, extra) { t.procs.push(Object.assign({ pid, ppid, line, vars: vars || {}, state: 'running', prog: null, buf: '' }, extra || {})); return api; },
+      fork(par, child) { const p = P(par); t.procs.push({ pid: child, ppid: par, line: p.line, vars: JSON.parse(JSON.stringify(p.vars)), state: 'ready', prog: p.prog, buf: p.buf }); return api; },
+      at(pid, line) { P(pid).line = line; return api; },
+      v(pid, k, val) { P(pid).vars[k] = val; return api; },
+      st(pid, s) { P(pid).state = s; if (s === 'reaped' || s === 'zombie') P(pid).line = null; return api; },
+      ppid(pid, pp) { P(pid).ppid = pp; return api; },
+      prog(pid, name) { P(pid).prog = name; return api; },
+      buf(pid, s) { P(pid).buf = s; return api; },
+      print(pid, text) { t.out.push({ pid, text }); return api; },
+      snap(active, note) {
+        t.steps.push({ procs: JSON.parse(JSON.stringify(t.procs)), out: t.out.slice(), active, note });
+        t.procs.forEach(p => { if (p.state === 'running' && p.pid !== active) p.state = 'ready'; });
+        return api;
+      },
+      run(pid) { t.procs.forEach(p => { if (p.state === 'running') p.state = 'ready'; }); P(pid).state = 'running'; return api; },
+      done() { return t; }
+    };
+    return api;
+  }
+
+  const KF = (par, child) => `<strong>מאחורי הקלעים:</strong> ${C('fork')} היא קריאת מערכת, ולכן ${E(par)} מבצע ${E('trap')} ועובר לקרנל. הקרנל מקצה ${E('PID')} חדש (${child}), יוצר ${E('PCB')} חדש בטבלת התהליכים ומעתיק לתוכו את מרחב הכתובות של ההורה, את האוגרים ואת הקבצים הפתוחים. בפועל ההעתקה עצלה, בשיטת ${E('copy-on-write')}. שני התהליכים נמצאים עכשיו באותה נקודה בקוד.`;
+  const RET = (par, child) => `הקרנל קובע ערך החזרה שונה לכל אחד: ההורה ${E(par)} מקבל ${child} (ה-${E('PID')} של הילד), והילד ${E(child)} מקבל 0. מכאן הם ממשיכים בנפרד, וכל אחד עובד על <strong>העותק שלו</strong> של המשתנים.`;
+
+  const traces = {};
+
+  /* 1. basic fork */
+  traces.basic = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int main() {', '    pid_t pid1 = getpid();', '    pid_t pid2 = fork();', '    printf("%d\\n", getpid());', '    printf("%d\\n", pid1);', '    printf("%d\\n", pid2);', '}']);
+    b.proc(5, 1, 1).snap(5, `יש תהליך אחד, ${E('PID 5')}. הוא מתחיל לרוץ ב-${C('main')}.`);
+    b.at(5, 2).v(5, 'pid1', 5).snap(5, `${C('getpid()')} מחזירה 5, והערך נשמר ב-${C('pid1')}. שימו לב: זה קורה <strong>לפני</strong> ה-${C('fork')}, ולכן העותק של הילד יקבל את אותו ערך.`);
+    b.at(5, 3).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'pid2', 6).v(6, 'pid2', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 4).print(5, '5\n').snap(5, `המתזמן ממשיך להריץ את ההורה. ${C('getpid()')} מחזירה לו 5.`);
+    b.at(5, 5).print(5, '5\n').snap(5, `${C('pid1')} של ההורה הוא 5.`);
+    b.at(5, 6).print(5, '6\n').snap(5, `${C('pid2')} של ההורה הוא 6, ה-${E('PID')} של הילד.`);
+    b.at(5, 7).st(5, 'reaped').run(6).at(6, 4).print(6, '6\n').snap(6, `ההורה סיים. הילד, שהיה במצב "מוכן", מקבל עכשיו את המעבד וממשיך משורה 4 – בדיוק מאיפה ש-${C('fork')} חזר אליו. ${C('getpid()')} מחזירה לו 6.`);
+    b.ppid(6, 1).at(6, 5).print(6, '5\n').snap(6, `${C('pid1')} של הילד הוא 5: הערך הועתק מההורה. וכיוון שההורה כבר מת, הילד נעשה <strong>יתום</strong>, ולכן אומץ ע"י ${C('init')} וה-${E('PPID')} שלו הוא עכשיו 1.`);
+    b.at(6, 6).print(6, '0\n').snap(6, `${C('pid2')} של הילד הוא 0 – הערך ש-${C('fork')} החזיר לו.`);
+    b.at(6, 7).st(6, 'reaped').snap(null, `גם הילד סיים, ו-${C('init')} אוסף אותו. סדר אחר (הילד רץ ראשון, או החלפות באמצע) היה נותן סדר שורות אחר, אבל אותן שש שורות.`);
+    return b.done(); })() }];
+
+  /* 2. fork + wait, private copy */
+  traces.waitx = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int x = 0;', 'int rc = fork();', 'if (rc) {', '    wait(NULL);', '} else {', '    x += 3;', '}', 'printf("%d\\n", x);']);
+    b.proc(5, 1, 1, { x: 0 }).snap(5, `${E('PID 5')} מאתחל ${C('x = 0')}.`);
+    b.at(5, 2).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'rc', 6).v(6, 'rc', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 4).st(5, 'blocked').snap(5, `ההורה: ${C('rc')} הוא 6, כלומר "אמת", ונכנס ל-${C('if')}. ${C('wait')} היא קריאת מערכת: הקרנל בודק אם יש ילד שכבר הסתיים. אין, ולכן ההורה עובר למצב <strong>חסום</strong> ולא מקבל מעבד עד שילד יסתיים.`);
+    b.run(6).at(6, 6).v(6, 'x', 3).snap(6, `המתזמן מריץ את הילד. אצלו ${C('rc')} הוא 0, ולכן הוא ב-${C('else')} ומגדיל את ${C('x')} ל-3. זה משנה <strong>רק את העותק שלו</strong> – ה-${C('x')} של ההורה עדיין 0.`);
+    b.at(6, 8).print(6, '3\n').snap(6, `הילד מדפיס 3.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `הילד מסיים. הקרנל לא מוחק אותו מיד: הוא הופך ל<strong>זומבי</strong> (נשאר בטבלה עם סטטוס היציאה), שולח ${E('SIGCHLD')} להורה ומעיר אותו – ההורה עובר מ"חסום" ל"מוכן".`);
+    b.run(5).st(6, 'reaped').snap(5, `ה-${C('wait')} של ההורה חוזר עם 6 ו<strong>אוסף</strong> את הזומבי – הרשומה שלו נמחקת מטבלת התהליכים.`);
+    b.at(5, 8).print(5, '0\n').snap(5, `ההורה מדפיס את ה-${C('x')} שלו: 0. בזכות ה-${C('wait')} הסדר תמיד 3 ואז 0.`);
+    b.st(5, 'reaped').snap(null, `סוף.`);
+    return b.done(); })() }];
+
+  /* 3. exec */
+  traces.exec = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int rc = fork();', 'if (rc == 0) {', '    char *args[] = { "wc", "-l", "exec.c", NULL };', '    execvp(args[0], args);', '    printf("this shouldn\'t print out\\n");', '} else {', '    int rc_wait = wait(NULL);', '    printf("I am parent of %d (rc_wait:%d)\\n", rc, rc_wait);', '}']);
+    b.proc(5, 1, 1, {}, { prog: 'exec_demo' }).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'rc', 6).v(6, 'rc', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 7).st(5, 'blocked').snap(5, `ההורה נכנס ל-${C('else')} ונחסם ב-${C('wait')} עד שהילד יסתיים.`);
+    b.run(6).at(6, 3).v(6, 'args', '{wc, -l, exec.c}').snap(6, `הילד בונה את מערך הארגומנטים. האיבר הראשון הוא שם התוכנית, והמערך מסתיים ב-${C('NULL')}.`);
+    b.at(6, 4).st(6, 'kernel').snap(6, `${C('execvp')} היא קריאת מערכת. הקרנל טוען את התוכנית ${C('wc')} מהדיסק <strong>לתוך אותו תהליך.</strong> הוא זורק את ה-${E('Text')}, ה-${E('Data')}, ה-${E('Heap')} וה-${E('Stack')} של הילד, וטוען את אלה של ${C('wc')}. ה-${E('PID')}, ה-${E('PPID')} והקבצים הפתוחים לא משתנים.`);
+    b.prog(6, 'wc').at(6, null).st(6, 'running').v(6, 'args', undefined).v(6, 'rc', undefined).snap(6, `עכשיו תהליך 6 מריץ את ה-${C('main')} של ${C('wc')}. הקוד שלנו כבר לא קיים בזיכרון שלו, ולכן אין לו שורה מסומנת – ושורה 5 <strong>לעולם לא תרוץ</strong>, כי ${C('exec')} שהצליח לא חוזר.`);
+    b.print(6, '27 exec.c\n').snap(6, `${C('wc -l')} מדפיס את מספר השורות בקובץ.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `${C('wc')} מסיים, תהליך 6 הופך לזומבי וההורה מתעורר.`);
+    b.run(5).st(6, 'reaped').v(5, 'rc_wait', 6).snap(5, `${C('wait')} מחזיר 6 ואוסף את הזומבי.`);
+    b.at(5, 8).print(5, 'I am parent of 6 (rc_wait:6)\n').snap(5, `ההורה מדפיס. ${C('rc')} ו-${C('rc_wait')} שווים, כי זה אותו ילד.`);
+    b.st(5, 'reaped').snap(null, `כך בדיוק ה-${E('shell')} מריץ כל פקודה: ${C('fork')}, בילד ${C('exec')}, ובהורה ${C('wait')}.`);
+    return b.done(); })() }];
+
+  /* 4. SB20 */
+  traces.sb20 = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int i = 0;', 'if (fork()) {', '    ++i;', '    fork();', '}', 'else if (fork())', '    ++i;', 'printf("%d", i);']);
+    b.proc(5, 1, 1, { i: 0 }).snap(5, `${C('i = 0')}.`);
+    b.at(5, 2).fork(5, 6).snap(5, `${C('fork')} ראשון: נוצר תהליך 6 עם ${C('i = 0')}. להורה הוחזר 6 (אמת), לילד 0 (שקר).`);
+    b.at(5, 3).v(5, 'i', 1).snap(5, `ההורה נכנס ל-${C('if')} ומגדיל את ה-${C('i')} שלו ל-1.`);
+    b.at(5, 4).fork(5, 7).snap(5, `${C('fork')} שני, בתוך הבלוק: נוצר 7 – עותק של 5, ולכן גם אצלו ${C('i = 1')}. ערך ההחזרה לא נשמר, אז שניהם פשוט ממשיכים.`);
+    b.at(5, 8).print(5, '1').snap(5, `5 מדלג על ה-${C('else')} ומדפיס 1.`);
+    b.st(5, 'reaped').run(7).at(7, 8).print(7, '1').snap(7, `7 מדפיס 1.`);
+    b.st(7, 'reaped').run(6).at(6, 6).fork(6, 8).snap(6, `עכשיו 6. אצלו ה-${C('fork')} הראשון החזיר 0, ולכן הוא ב-${C('else if (fork())')} – ומבצע ${C('fork')} נוסף: נוצר 8 עם ${C('i = 0')}.`);
+    b.at(6, 7).v(6, 'i', 1).snap(6, `ל-6 הוחזר 8 (אמת), ולכן הוא מגדיל את ${C('i')} ל-1.`);
+    b.at(6, 8).print(6, '1').snap(6, `6 מדפיס 1.`);
+    b.st(6, 'reaped').run(8).at(8, 8).print(8, '0').snap(8, `ל-8 הוחזר 0, אז הוא לא מגדיל, ומדפיס 0.`);
+    b.st(8, 'reaped').snap(null, `פלט: ${C('1110')}. בסדר הרצה אחר ה-0 יכול להופיע בכל מקום, אבל תמיד יהיו שלושה 1 ואפס אחד.`);
+    return b.done(); })() }];
+
+  /* 5. SA20 with three schedules */
+  function sa20(order) {
+    const b = B(['fork();', 'if (fork() == 0) {', '    printf("B");', '} else {', '    wait(NULL);', '    printf("A");', '}']);
+    b.proc(5, 1, 1).fork(5, 6).snap(5, `${C('fork')} ראשון: יש עכשיו 5 ו-6. ערך ההחזרה לא נשמר, אז שניהם ממשיכים לשורה 2.`);
+    b.at(5, 2).fork(5, 7).snap(5, `5 מבצע את ה-${C('fork')} השני ויוצר את 7. ל-7 הוחזר 0, ולכן הוא ידפיס ${C('B')}.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `5 קיבל ערך חיובי, נכנס ל-${C('else')} ונחסם ב-${C('wait')}. שימו לב: <strong>יש לו שני ילדים</strong> – 6 ו-7 – ו-${C('wait')} יחזור כשאחד מהם, לא משנה איזה, יסתיים.`);
+    b.run(6).at(6, 2).fork(6, 8).snap(6, `6 מגיע לשורה 2 ויוצר את 8, שידפיס ${C('B')}.`);
+    b.at(6, 5).st(6, 'blocked').snap(6, `6 נחסם ב-${C('wait')}. לו יש ילד אחד: 8.`);
+    if (order === 'BBAA') {
+      b.run(7).at(7, 3).print(7, 'B').snap(7, `7 מדפיס ${C('B')}.`);
+      b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים והופך לזומבי. 5 מתעורר.`);
+      b.run(8).at(8, 3).print(8, 'B').snap(8, `לפני ש-5 מספיק לרוץ, המתזמן מריץ את 8, שמדפיס ${C('B')}.`);
+      b.st(8, 'zombie').st(6, 'ready').snap(null, `8 מסיים. 6 מתעורר.`);
+      b.run(5).st(7, 'reaped').at(5, 6).print(5, 'A').snap(5, `5 רץ: ${C('wait')} אסף את 7, ו-5 מדפיס ${C('A')}.`);
+      b.st(5, 'reaped').run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'reaped').snap(null, `פלט: ${C('BBAA')} – הסדר הנפוץ.`);
+    } else if (order === 'BABA') {
+      b.run(7).at(7, 3).print(7, 'B').snap(7, `7 מדפיס ${C('B')}.`);
+      b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים והופך לזומבי. 5 מתעורר.`);
+      b.run(5).st(7, 'reaped').at(5, 6).print(5, 'A').snap(5, `הפעם 5 רץ מיד: ${C('wait')} אוסף את 7, ו-5 מדפיס ${C('A')}.`);
+      b.st(5, 'reaped').ppid(6, 1).run(8).at(8, 3).print(8, 'B').snap(8, `5 מסיים; 6 נעשה יתום ומאומץ ע"י ${C('init')}. עכשיו 8 מדפיס ${C('B')}.`);
+      b.st(8, 'zombie').run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 מתעורר, אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'reaped').snap(null, `פלט: ${C('BABA')}.`);
+    } else {
+      b.run(8).at(8, 3).print(8, 'B').snap(8, `המתזמן מריץ קודם את 8, שמדפיס ${C('B')}. 7 עדיין לא רץ בכלל.`);
+      b.st(8, 'zombie').st(6, 'ready').snap(null, `8 מסיים והופך לזומבי; 6 מתעורר.`);
+      b.run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'zombie').st(5, 'ready').snap(null, `<strong>כאן המלכודת:</strong> 6 מסיים, והוא ילד של 5. הקרנל מעיר את 5 – כי ${C('wait')} מחכה לילד <em>כלשהו</em>, ו-6 הוא ילד שהסתיים.`);
+      b.run(5).st(6, 'reaped').at(5, 6).print(5, 'A').snap(5, `${C('wait')} של 5 חוזר עם 6 (לא עם 7!), ו-5 מדפיס ${C('A')} – בזמן ש-7 עוד לא הדפיס כלום.`);
+      b.st(5, 'reaped').ppid(7, 1).run(7).at(7, 3).print(7, 'B').snap(7, `5 מסיים, 7 נעשה יתום ומאומץ ע"י ${C('init')}. רק עכשיו 7 רץ ומדפיס ${C('B')}.`);
+      b.st(7, 'reaped').snap(null, `פלט: ${C('BAAB')}. נדיר, אבל חוקי לגמרי.`);
+    }
+    return b.done();
+  }
+  traces.sa20 = () => [{ label: 'BBAA', t: sa20('BBAA') }, { label: 'BABA', t: sa20('BABA') }, { label: 'BAAB', t: sa20('BAAB') }];
+
+  /* 6. AA24 */
+  traces.aa24 = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['char *str = "hello";', 'if (fork() && fork()) {', '    wait(NULL);', '    printf("1: %s\\n", str);', '    wait(NULL);', '    printf("1: %s\\n", str);', '} else {', '    wait(NULL);', '    printf("0: %s\\n", str);', '    str = "goodbye";', '    wait(NULL);', '    printf("0: %s\\n", str);', '}']);
+    b.proc(5, 1, 1, { str: '"hello"' }).snap(5, `${C('str')} מצביע ל-${C('"hello"')}.`);
+    b.at(5, 2).fork(5, 6).snap(5, `ה-${C('fork')} השמאלי ב-${C('&&')}: נוצר 6. ל-5 הוחזר 6 (אמת), ל-6 הוחזר 0 (שקר).`);
+    b.fork(5, 7).snap(5, `כי האופרנד הראשון אמת אצל 5, הוא מחשב גם את השני: עוד ${C('fork')}, ונוצר 7. ל-5 הוחזר 7, ל-7 הוחזר 0.`);
+    b.at(5, 3).st(5, 'blocked').snap(5, `אצל 5 שני האופרנדים אמת, אז הוא ב-${C('if')}, ונחסם ב-${C('wait')} הראשון.`);
+    b.run(6).at(6, 8).snap(6, `אצל 6 האופרנד הראשון 0 (שקר), ולכן ה-${C('fork')} השני <strong>לא בוצע בכלל</strong> (קיצור של ${C('&&')}). 6 ב-${C('else')}. ל-6 אין ילדים, אז ${C('wait')} מחזיר מיד ${E('-1')} ולא חוסם.`);
+    b.at(6, 9).print(6, '0: hello\n').snap(6, `6 מדפיס.`);
+    b.at(6, 10).v(6, 'str', '"goodbye"').snap(6, `6 משנה את ה-${C('str')} <strong>שלו</strong>. ל-5 ול-7 יש עותקים משלהם, והם עדיין ${C('"hello"')}.`);
+    b.at(6, 12).print(6, '0: goodbye\n').snap(6, `עוד ${C('wait')} שחוזר מיד, והדפסה.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `6 מסיים, הופך לזומבי ומעיר את 5.`);
+    b.run(5).st(6, 'reaped').at(5, 4).print(5, '1: hello\n').snap(5, `${C('wait')} של 5 אסף את 6. 5 מדפיס את ה-${C('str')} שלו – ${C('hello')}.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `${C('wait')} השני: 7 עדיין חי, אז 5 נחסם שוב.`);
+    b.run(7).at(7, 9).print(7, '0: hello\n').snap(7, `7 (ה-${C('fork')} השני החזיר לו 0) ב-${C('else')}, ה-${C('wait')} שלו חוזר מיד, והוא מדפיס.`);
+    b.at(7, 12).v(7, 'str', '"goodbye"').print(7, '0: goodbye\n').snap(7, `7 משנה את העותק שלו ומדפיס.`);
+    b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים ומעיר את 5.`);
+    b.run(5).st(7, 'reaped').at(5, 6).print(5, '1: hello\n').snap(5, `5 אוסף את 7 ומדפיס שוב ${C('hello')}. השורה הזו תמיד אחרונה: היא באה אחרי ${C('wait')} שני, כלומר אחרי ששני הילדים סיימו.`);
+    b.st(5, 'reaped').snap(null, `סוף. שש שורות.`);
+    return b.done(); })() }];
+
+  /* 7. stdout buffer */
+  function bufTrace(unbuf) {
+    const b = B(['printf("Good afternoon");', 'fork();', 'printf(", good evening");', 'fork();', 'printf(" and good night\\n");']);
+    const W = (pid, s, line, nl) => {
+      b.at(pid, line);
+      if (unbuf) { b.print(pid, s); return; }
+      const cur = b.done().procs.find(p => p.pid === pid).buf + s;
+      if (nl) { b.print(pid, cur); b.buf(pid, ''); } else b.buf(pid, cur);
+    };
+    b.proc(5, 1, 1);
+    W(5, 'Good afternoon', 1, false);
+    b.snap(5, unbuf ? `עם ${C('setbuf(stdout, NULL)')} אין באפר: הטקסט נשלח למסך מיד.` : `${C('printf')} לא כותב למסך. הוא מעתיק את הטקסט ל<strong>באפר</strong> בתוך הזיכרון של התהליך (עמודת "באפר"). בלי ${C('\\n')} הבאפר לא נשלח.`);
+    b.at(5, 2).fork(5, 6).snap(5, unbuf ? `${C('fork')}: נוצר 6. הבאפר ריק, אז אין מה להעתיק.` : `${C('fork')} מעתיק את כל הזיכרון של 5 – <strong>כולל הבאפר</strong>. עכשיו ל-6 יש עותק של "${E('Good afternoon')}" שעוד לא הודפס.`);
+    W(5, ', good evening', 3, false); W(6, ', good evening', 3, false);
+    b.snap(5, `שניהם מוסיפים "${E(', good evening')}".`);
+    b.at(5, 4).at(6, 4).fork(5, 7).fork(6, 8).snap(5, unbuf ? `עוד ${C('fork')} בכל תהליך: 4 תהליכים, כולם עם באפר ריק.` : `עוד ${C('fork')} בכל אחד: 7 מקבל עותק של הבאפר של 5, ו-8 של 6. ארבעה תהליכים, ובכל אחד אותו משפט חלקי.`);
+    [5, 6, 7, 8].forEach(p => W(p, ' and good night\n', 5, true));
+    b.snap(null, unbuf ? `כל תהליך מדפיס את השורה האחרונה. סך הכל: ${E('Good afternoon')} פעם אחת, ${E('good evening')} פעמיים, ${E('and good night')} ארבע פעמים.` : `כל אחד מוסיף את סוף המשפט עם ${C('\\n')} – ושורה חדשה גורמת לבאפר להישלח. כל אחד מארבעת התהליכים מדפיס את <strong>כל</strong> המשפט.`);
+    [5, 6, 7, 8].forEach(p => b.st(p, 'reaped'));
+    b.snap(null, unbuf ? `לכן בקורס תמיד מניחים ${C('setbuf(stdout, NULL)')}.` : `ארבע שורות זהות. זה מה שבלבל בשקף – והסיבה שתמיד משתמשים ב-${C('setbuf')}.`);
+    return b.done();
+  }
+  traces.buf = () => [{ label: 'עם באפר (ברירת מחדל)', t: bufTrace(false) }, { label: 'עם setbuf', t: bufTrace(true) }];
+
+  /* 8. zombie */
+  traces.zombie = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int rc = fork();', 'if (rc == 0) {', '    exit(0);', '}', 'sleep(10);', 'wait(NULL);']);
+    b.proc(5, 1, 1).fork(5, 6).v(5, 'rc', 6).v(6, 'rc', 0).snap(5, `${C('fork')}: נוצר 6.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `ההורה מדלג על ה-${C('if')} ונכנס ל-${C('sleep(10)')} – חסום ל-10 שניות.`);
+    b.run(6).at(6, 3).snap(6, `הילד נכנס ל-${C('if')} וקורא ל-${C('exit(0)')}.`);
+    b.st(6, 'zombie').snap(null, `הילד סיים, אבל <strong>לא נמחק</strong>. הקרנל משחרר את הזיכרון שלו, אבל משאיר את הרשומה בטבלת התהליכים – ה-${E('PID')} וסטטוס היציאה – כי ההורה עלול לבקש אותם ב-${C('wait')}. זה זומבי. ב-${C('ps')} הוא מופיע עם מצב ${E('Z')} או ${E('&lt;defunct&gt;')}. הקרנל גם שולח ${E('SIGCHLD')} להורה, אבל ברירת המחדל היא להתעלם ממנו.`);
+    b.snap(null, `ההורה עדיין ישן. כל עוד הוא לא קורא ל-${C('wait')}, הזומבי תופס רשומה בטבלה. הורה שרץ הרבה זמן ויוצר הרבה ילדים בלי לאסוף אותם ימלא את הטבלה בזומבים.`);
+    b.run(5).at(5, 6).st(6, 'reaped').snap(5, `ההורה מתעורר וקורא ל-${C('wait')}. יש ילד זומבי, אז ${C('wait')} חוזר מיד עם 6 ו<strong>אוסף</strong> אותו: הרשומה נמחקת. פתרון בלי לחכות: handler ל-${E('SIGCHLD')} שקורא ל-${C('waitpid')} (בהמשך הפרק).`);
+    b.st(5, 'reaped').snap(null, `סוף.`);
+    return b.done(); })() }];
+
+  /* ---- renderer ---- */
+  function colorOfPid(pid, all) { return PCOL[all.indexOf(pid) % PCOL.length]; }
+  function hl(line) {
+    try { return hljs.highlight(line, { language: 'c', ignoreIllegals: true }).value; } catch (e) { return esc(line); }
+  }
+  function treeSvg(procs, all) {
+    const nodes = procs.map(p => ({ pid: p.pid, par: p.ppid, state: p.state, c: [] }));
+    const byPid = Object.fromEntries(nodes.map(n => [n.pid, n]));
+    const roots = [];
+    // draw by original parent (first ppid seen) so the tree keeps its shape after adoption
+    nodes.forEach(n => { const op = (procs.find(p => p.pid === n.pid).origPpid) ?? n.par; const pn = byPid[op]; if (pn) pn.c.push(n); else roots.push(n); });
+    let leaf = 0; const all2 = [];
+    (function lay(list, d) { list.forEach(n => { n.d = d; if (n.c.length) { lay(n.c, d + 1); n.x = (n.c[0].x + n.c[n.c.length - 1].x) / 2; } else n.x = leaf++; all2.push(n); }); })(roots, 0);
+    const dx = 62, dy = 56, W = Math.max(leaf, 1) * dx, H = (Math.max(0, ...all2.map(n => n.d)) + 1) * dy;
+    const X = n => n.x * dx + dx / 2, Y = n => n.d * dy + 24;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="עץ תהליכים">`;
+    all2.forEach(n => n.c.forEach(k => s += `<line x1="${X(n)}" y1="${Y(n)}" x2="${X(k)}" y2="${Y(k)}" stroke="var(--line)" stroke-width="1.6"/>`));
+    all2.forEach(n => {
+      const gone = n.state === 'reaped', z = n.state === 'zombie';
+      s += `<circle cx="${X(n)}" cy="${Y(n)}" r="17" fill="${gone ? 'var(--sunk)' : 'var(--surface)'}" stroke="${colorOfPid(n.pid, all)}" stroke-width="${n.state === 'running' ? 3.5 : 2}" ${gone || z ? 'stroke-dasharray="4 3"' : ''}/>`;
+      s += `<text x="${X(n)}" y="${Y(n) + 5}" text-anchor="middle" font-size="14" class="mono" fill="${gone ? 'var(--muted)' : 'var(--fg)'}">${n.pid}</text>`;
+      if (z) s += `<text x="${X(n)}" y="${Y(n) - 21}" text-anchor="middle" font-size="10" fill="var(--warn)" class="mono">Z</text>`;
+    });
+    return s + '</svg>';
+  }
+  function render(el, variants) {
+    let vi = 0, si = 0;
+    el.innerHTML = `<div class="tr-head"><span class="tr-title">הרצה יבשה</span><span class="tr-vars"></span></div>
+      <div class="tr-body">
+        <div class="tr-vis">
+          <div class="tr-grid"><div class="tr-code"></div><div class="tr-side"><div class="tr-procs"></div><div class="tr-tree"></div></div></div>
+          <div class="tr-outwrap"><div class="tr-label">פלט על המסך</div><pre class="tr-out"></pre></div>
+          <div class="tr-ctrl"><button type="button" class="ghost tr-reset">מההתחלה</button><button type="button" class="ghost tr-prev">הקודם</button><span class="tr-count"></span><button type="button" class="tr-next">הבא</button></div>
+        </div>
+        <div class="tr-note" aria-live="polite"></div>
+      </div>`;
+    const q = c => el.querySelector(c);
+    const vars = q('.tr-vars');
+    if (variants.length > 1) variants.forEach((v, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = /[א-ת]/.test(v.label) ? v.label.replace(/([A-Za-z]+)/g, '<bdi dir="ltr">$1</bdi>') : `<bdi dir="ltr">${v.label}</bdi>`;
+      b.onclick = () => { vi = i; si = 0; draw(); }; vars.appendChild(b);
+    });
+    function draw() {
+      const t = variants[vi].t, step = t.steps[si];
+      // remember the first parent of each process for tree shape
+      const firstPar = {}; t.steps.forEach(s => s.procs.forEach(p => { if (!(p.pid in firstPar)) firstPar[p.pid] = p.ppid; }));
+      const all = []; t.steps.forEach(s => s.procs.forEach(p => { if (!all.includes(p.pid)) all.push(p.pid); }));
+      [...vars.children].forEach((b, i) => b.classList.toggle('on', i === vi));
+      // code with markers
+      const live = step.procs.filter(p => p.line != null && p.state !== 'reaped' && p.state !== 'zombie');
+      let ch = '<pre class="tr-pre"><code>';
+      t.code.forEach((line, i) => {
+        const here = live.filter(p => p.line === i + 1);
+        const act = here.some(p => p.pid === step.active);
+        ch += `<span class="tr-ln${act ? ' act' : ''}"><span class="tr-num">${i + 1}</span><span class="tr-src">${hl(line) || ' '}</span><span class="tr-mk">${here.map(p => `<span class="tr-pid${p.pid === step.active ? ' on' : ''}" style="--pc:${colorOfPid(p.pid, all)}">${p.pid}</span>`).join('')}</span></span>`;
+      });
+      ch += '</code></pre>';
+      q('.tr-code').innerHTML = ch;
+      // process table
+      const keys = []; step.procs.forEach(p => Object.keys(p.vars).forEach(k => { if (p.vars[k] !== undefined && !keys.includes(k)) keys.push(k); }));
+      const showBuf = t.steps.some(s => s.procs.some(p => p.buf));
+      const showProg = t.steps.some(s => s.procs.some(p => p.prog));
+      let tb = '<div class="tbl"><table class="tr-table"><tr><th>PID</th><th>PPID</th><th>מצב</th>' + (showProg ? '<th>תוכנית</th>' : '') + keys.map(k => `<th class="num">${k}</th>`).join('') + (showBuf ? '<th>באפר</th>' : '') + '</tr>';
+      step.procs.forEach(p => {
+        tb += `<tr class="st-${p.state}${p.pid === step.active ? ' act' : ''}"><td class="num"><span class="tr-dot" style="--pc:${colorOfPid(p.pid, all)}"></span>${p.pid}</td><td class="num">${p.ppid}</td><td><span class="tr-st">${ST[p.state]}</span></td>` +
+          (showProg ? `<td class="num">${p.prog || ''}</td>` : '') +
+          keys.map(k => `<td class="num">${p.vars[k] === undefined ? '—' : esc(String(p.vars[k]))}</td>`).join('') +
+          (showBuf ? `<td class="num tr-buf">${p.buf ? esc(p.buf.replace(/\n/g, '\\n')) : '∅'}</td>` : '') + '</tr>';
+      });
+      q('.tr-procs').innerHTML = tb + '</table></div>';
+      // tree
+      const tp = step.procs.map(p => Object.assign({}, p, { origPpid: firstPar[p.pid] }));
+      q('.tr-tree').innerHTML = treeSvg(tp, all);
+      // output
+      const o = q('.tr-out');
+      o.innerHTML = step.out.length ? step.out.map((x, i) => `<span class="tr-o${i === step.out.length - 1 && si > 0 && t.steps[si - 1].out.length < step.out.length ? ' new' : ''}" style="--pc:${colorOfPid(x.pid, all)}" title="PID ${x.pid}">${esc(x.text)}</span>`).join('') : '<span class="tr-empty">(עדיין ריק)</span>';
+      q('.tr-note').innerHTML = step.note;
+      q('.tr-count').textContent = `שלב ${si + 1} מתוך ${t.steps.length}`;
+      q('.tr-prev').disabled = si === 0; q('.tr-next').disabled = si === t.steps.length - 1;
+    }
+    q('.tr-next').onclick = () => { if (si < variants[vi].t.steps.length - 1) { si++; draw(); } };
+    q('.tr-prev').onclick = () => { if (si > 0) { si--; draw(); } };
+    q('.tr-reset').onclick = () => { si = 0; draw(); };
+    el.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') q('.tr-next').click(); if (e.key === 'ArrowRight') q('.tr-prev').click(); });
+    draw();
+    /* lock sizes: measure every step of every variant, keep the max, so nothing moves between steps */
+    const PARTS = ['.tr-note', '.tr-code', '.tr-procs', '.tr-tree', '.tr-out'];
+    function lock() {
+      if (!el.offsetParent) return;                    // hidden (closed <details>): lock when shown
+      const box = PARTS.map(c => q(c));
+      box.forEach(b => { b.style.minHeight = ''; });
+      const max = box.map(() => 0), keepV = vi, keepS = si;
+      variants.forEach((v, i) => v.t.steps.forEach((_, j) => {
+        vi = i; si = j; draw();
+        box.forEach((b, k) => { max[k] = Math.max(max[k], b.getBoundingClientRect().height); });
+      }));
+      vi = keepV; si = keepS; draw();
+      box.forEach((b, k) => { b.style.minHeight = Math.ceil(max[k]) + 'px'; });
+    }
+    el._lock = lock;
+    lock();
+  }
+  window.__traces = traces;
+  document.querySelectorAll('.trace[data-trace]').forEach(el => {
+    const f = traces[el.dataset.trace]; if (!f) return;
+    el.tabIndex = 0; el.setAttribute('role', 'group'); el.setAttribute('aria-label', 'הרצה יבשה');
+    try { render(el, f()); } catch (e) { el.textContent = 'שגיאה בטעינת ההרצה היבשה'; console.error(e); }
+  });
+  const relock = () => document.querySelectorAll('.trace').forEach(t => t._lock && t._lock());
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => { if (d.open) d.querySelectorAll('.trace').forEach(t => t._lock && t._lock()); }));
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relock, 150); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(relock);
+})();
+
+/* fork trees */
+document.querySelectorAll('.tree').forEach(el => {
+  let spec; try { spec = JSON.parse(el.dataset.tree); } catch (e) { return; }
+  const nodes = []; let leaf = 0;
+  (function lay(n, d) { n.d = d; if (n.c) { n.c.forEach(k => lay(k, d + 1)); n.x = (n.c[0].x + n.c[n.c.length - 1].x) / 2; } else n.x = leaf++; nodes.push(n); })(spec, 0);
+  const depth = Math.max(...nodes.map(n => n.d)), dx = 110, dy = 64, W = Math.max(leaf, 1) * dx, H = (depth + 1) * dy;
+  const X = n => n.x * dx + dx / 2, Y = n => n.d * dy + 26;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="עץ תהליכים">`;
+  nodes.forEach(n => (n.c || []).forEach((k, i) => s += `<line x1="${X(n)}" y1="${Y(n)}" x2="${X(k)}" y2="${Y(k)}" stroke="${i === 0 ? 'var(--theory)' : 'var(--example)'}" stroke-width="1.6"/>`));
+  nodes.forEach(n => { s += `<rect x="${X(n) - 46}" y="${Y(n) - 14}" width="92" height="28" rx="14" fill="${n.c ? 'var(--surface)' : 'var(--sunk)'}" stroke="var(--line)"/><text x="${X(n)}" y="${Y(n) + 5}" text-anchor="middle" font-size="13" class="mono" fill="var(--fg)">${n.n}</text>`; });
+  s += '</svg>';
+  el.innerHTML = `<figure>${s}<figcaption>כחול = ענף ההורה (fork החזיר <bdi dir="ltr">&gt; 0</bdi>) · ירוק = ענף הילד (0)</figcaption></figure>`;
+});
+
+
+/* active section in sidebar (current page only) */
+(function () {
+  const links = [...document.querySelectorAll('nav.side a[data-id]')];
+  const map = new Map(links.map(a => [a.dataset.id, a]));
+  const targets = [...map.keys()].map(id => document.getElementById(id)).filter(Boolean);
+  if (!targets.length) return;
+  function upd() {
+    let cur = targets[0];
+    for (const t of targets) if (t.getBoundingClientRect().top < 120) cur = t;
+    links.forEach(a => a.classList.remove('active'));
+    const a = map.get(cur.id); if (a) a.classList.add('active');
+  }
+  addEventListener('scroll', upd, { passive: true }); upd();
+})();
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

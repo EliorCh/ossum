@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>מדריך מערכות הפעלה</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: right-side sticky chapter rail (like a man-page index) + one reading column; boxes are color-coded by role. */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --sunk:#eceff3; --fg:#1b2430; --muted:#5b6676; --line:#d6dbe2;
+  --ink:#1d5f8f;           /* course blue, from the slides */
+  --amber:#b86a00;         /* highlight / keypoint */
+  --theory:#1d5f8f; --theory-bg:#e8f1f8;
+  --formula:#6b3fa0; --formula-bg:#f1ebf8;
+  --example:#1f7a4d; --example-bg:#e7f4ed;
+  --warn:#b3261e; --warn-bg:#fbebea;
+  --exercise:#8a5a00; --exercise-bg:#fbf2df;
+  --summary:#3c4757; --summary-bg:#eef0f3;
+  --code-bg:#f2f4f7; --code-fg:#1b2430;
+  --hl-kw:#a4237a; --hl-str:#1f7a4d; --hl-num:#b86a00; --hl-com:#7a8494; --hl-fn:#1d5f8f; --hl-type:#6b3fa0;
+  --f-display:"Secular One","IBM Plex Sans Hebrew",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Hebrew",system-ui,"Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{direction:rtl;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;line-height:1.75;margin:0}
+.wrap{display:flex;gap:32px;max-width:1240px;margin:0 auto;padding-block:24px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav.side{flex:0 0 250px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:flex-start;
+  max-height:calc(100vh - 32px);overflow-y:auto;font-size:14.5px;padding-inline-end:8px}
+nav.side .brand{font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px}
+nav.side .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+nav.side a{display:block;color:var(--fg);text-decoration:none;padding:3px 10px;border-inline-start:2px solid transparent}
+nav.side a:hover{color:var(--ink)}
+nav.side a.ch{font-weight:700;margin-top:14px}
+nav.side a.sec{color:var(--muted);font-size:13.5px}
+nav.side a.active{border-inline-start-color:var(--ink);color:var(--ink)}
+main{flex:1;min-width:0;max-width:820px}
+main p, main li, .box-body p, .box-body li{direction:rtl;unicode-bidi:isolate;text-align:right}
+main strong, .box-body strong{margin-inline-end:.15em}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;line-height:1.3}
+.chapter{margin-top:56px;padding-top:8px}
+.chapter:first-of-type{margin-top:8px}
+.ch-head{border-bottom:2px solid var(--line);padding-bottom:14px;margin-bottom:8px}
+.ch-num{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+h1{font-size:34px;margin:4px 0 6px;color:var(--fg)}
+.hook{color:var(--muted);margin:0}
+h2{font-size:24px;margin:40px 0 10px;color:var(--ink)}
+h3{font-size:19px;margin:26px 0 6px}
+.t,.ltr{direction:ltr;unicode-bidi:isolate}
+code{direction:ltr;unicode-bidi:isolate}
+main :not(pre) > code{white-space:nowrap}
+svg{direction:ltr}
+code,.t{font-family:var(--f-mono);font-size:.9em}
+p code, li code, td code, .box-body code{background:var(--sunk);padding:1px 5px;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{direction:ltr;text-align:left;background:var(--code-bg);color:var(--code-fg);border:1px solid var(--line);
+  border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;margin:12px 0}
+main pre code, .box-body pre code{background:none;padding:0;font-size:inherit;border-radius:0}
+.hljs-keyword,.hljs-built_in{color:var(--hl-kw)} .hljs-string{color:var(--hl-str)} .hljs-number,.hljs-literal{color:var(--hl-num)}
+.hljs-comment{color:var(--hl-com);font-style:italic} .hljs-title,.hljs-function .hljs-title{color:var(--hl-fn)} .hljs-type,.hljs-meta{color:var(--hl-type)}
+.hljs-variable,.hljs-params{color:inherit}
+
+/* boxes */
+.box{border:1px solid var(--line);border-inline-start:4px solid var(--c);background:var(--cb);border-radius:6px;padding:12px 16px;margin:16px 0}
+.box-title{font-weight:700;color:var(--c);font-size:14px;letter-spacing:.02em;margin-bottom:4px}
+.box-body > :first-child{margin-top:0} .box-body > :last-child{margin-bottom:0}
+.theory{--c:var(--theory);--cb:var(--theory-bg)} .formula{--c:var(--formula);--cb:var(--formula-bg)}
+.example{--c:var(--example);--cb:var(--example-bg)} .warn{--c:var(--warn);--cb:var(--warn-bg)}
+.exercise{--c:var(--exercise);--cb:var(--exercise-bg)} .summary{--c:var(--summary);--cb:var(--summary-bg)}
+.keypoint{background:linear-gradient(transparent 60%, color-mix(in srgb,var(--amber) 28%, transparent) 60%);font-weight:500}
+.fline{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:15px;margin:8px 0;padding:6px;background:var(--surface);border-radius:4px}
+
+/* function cards */
+.fn{border:1px solid var(--line);background:var(--surface);border-radius:8px;margin:14px 0;overflow:hidden}
+.fn-sig{direction:ltr;text-align:left;font-family:var(--f-mono);font-size:14.5px;background:var(--sunk);padding:8px 14px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.fn-body{padding:10px 14px}
+.fn-body dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.fn-body dt{color:var(--muted);font-size:14px;font-weight:700}
+.fn-body dd{margin:0;min-width:0}
+
+/* tables */
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:right;vertical-align:top}
+th{background:var(--sunk);font-weight:700}
+td.mono,td.num{direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums}
+
+/* figures */
+figure{margin:18px 0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto}
+figure svg{display:block;margin:0 auto;max-width:100%}
+figcaption{color:var(--muted);font-size:14px;text-align:center;margin-top:6px}
+svg text{font-family:var(--f-body)}
+svg .mono{font-family:var(--f-mono)}
+
+/* reveal */
+details.sol{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+details.sol summary{cursor:pointer;color:var(--exercise);font-weight:700;list-style:none}
+details.sol summary::before{content:"◂ ";display:inline-block;transition:transform .15s}
+details.sol[open] summary::before{transform:rotate(-90deg)}
+details.sol summary:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;margin:18px 0}
+.sim-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.sim label{font-size:14px;color:var(--muted)}
+.sim select,.sim input,.sim button{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.sim input[type=number]{width:64px;direction:ltr}
+.sim button{cursor:pointer;background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.sim button.ghost{background:transparent;color:var(--ink)}
+.jobs{display:flex;flex-wrap:wrap;gap:8px}
+.job{display:flex;gap:6px;align-items:center;background:var(--sunk);padding:4px 8px;border-radius:6px;font-family:var(--f-mono);font-size:13px}
+.gantt{overflow-x:auto}
+.legend{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sim .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer}
+
+
+/* dry-run tracer */
+.trace{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:18px 0;overflow:hidden}
+.trace:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tr-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.tr-title{font-family:var(--f-display);color:var(--ink);font-size:17px}
+.tr-vars{display:flex;flex-wrap:wrap;gap:6px}
+.trace .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body)}
+.trace .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tr-body{display:flex;flex-direction:column}
+.tr-vis{min-width:0}
+.tr-note{padding:12px 14px;background:var(--theory-bg);border-top:1px solid var(--line);direction:rtl;unicode-bidi:isolate;text-align:right;line-height:1.7}
+.tr-grid{display:flex;flex-wrap:wrap;gap:14px;padding:12px 14px}
+.tr-code{flex:1 1 330px;min-width:0}
+.tr-side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tr-pre{margin:0;padding:8px 0;font-size:13.5px;overflow-x:auto}
+.tr-pre > code{display:block;min-width:max-content}
+.tr-ln{display:flex;gap:10px;align-items:center;padding:1px 10px;min-height:1.7em}
+.tr-ln.act{background:color-mix(in srgb,var(--amber) 18%,transparent)}
+.tr-num{color:var(--muted);min-width:1.6em;text-align:right;user-select:none}
+.tr-src{flex:1;white-space:pre}
+.tr-mk{display:flex;gap:4px}
+.tr-pid{font-size:11px;font-weight:600;border:1.5px solid var(--pc);color:var(--pc);border-radius:999px;padding:0 6px;line-height:1.5;background:var(--surface)}
+.tr-pid.on{background:var(--pc);color:var(--surface)}
+.tr-table{font-size:13.5px}
+.tr-table th,.tr-table td{padding:4px 8px}
+.tr-table tr.act td{background:color-mix(in srgb,var(--amber) 14%,var(--surface))}
+.tr-table tr.st-reaped td{color:var(--muted);text-decoration:line-through}
+.tr-table tr.st-zombie .tr-st{color:var(--warn);font-weight:700}
+.tr-table tr.st-blocked .tr-st{color:var(--exercise);font-weight:700}
+.tr-table tr.st-running .tr-st,.tr-table tr.st-kernel .tr-st{color:var(--example);font-weight:700}
+.tr-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pc);margin-inline-end:6px;vertical-align:middle}
+.tr-buf{white-space:pre-wrap;font-size:12.5px;min-width:11em}
+.tr-table td.num{white-space:nowrap}
+.tr-tree{overflow-x:auto}
+.tr-tree svg{display:block;margin:0 auto}
+.tr-outwrap{padding:0 14px 10px}
+.tr-label{font-size:13px;color:var(--muted);margin-bottom:4px}
+.tr-out{margin:0;min-height:2.4em;white-space:pre-wrap}
+.tr-o{color:var(--pc);font-weight:600}
+.tr-o.new{background:color-mix(in srgb,var(--pc) 16%,transparent)}
+.tr-empty{color:var(--muted);font-family:var(--f-body);direction:rtl;unicode-bidi:isolate}
+.tr-ctrl{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);background:var(--sunk)}
+.tr-ctrl button{font:inherit;font-size:14px;padding:6px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
+.tr-ctrl button.ghost{background:transparent;color:var(--ink)}
+.tr-ctrl button:disabled{opacity:.4;cursor:default}
+.tr-count{font-size:13px;color:var(--muted);margin-inline:auto}
+
+@media (max-width:860px){
+  .wrap{flex-direction:column;gap:8px}
+  nav.side{position:static;max-height:none;flex:none;border-bottom:1px solid var(--line);padding-bottom:12px}
+  nav.side a.sec{display:none}
+  h1{font-size:28px}
+}
+
+/* ---- wide screens: the page widens, prose keeps its reading width, dry runs sit side by side ---- */
+@media (min-width:1400px){
+  .wrap{max-width:1700px}
+  main{max-width:none}
+  main > section > *, main .box, main details > *{max-width:820px}
+  main > section > .trace, main .box:has(.trace), main details:has(.trace) > *, main .box .trace, main > section > .sim{max-width:none}
+  main .box:has(.trace) > .box-body > :not(details):not(.trace){max-width:788px}
+  .tr-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);grid-template-areas:"vis note";align-items:stretch}
+  .tr-vis{grid-area:vis}
+  .tr-note{grid-area:note;border-top:none;border-inline-start:1px solid var(--line);font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+nav.side a.brand{display:block;font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px;padding:0;border:0;text-decoration:none}
+nav.side a.ch.here{color:var(--ink);border-inline-start-color:var(--ink)}
+.pager{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin-top:56px;padding-top:18px;border-top:2px solid var(--line)}
+.pager a{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 16px}
+.pager a:hover{border-color:var(--ink)}
+.pager a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pager .dir{font-size:13px;color:var(--muted)}
+.pager .nm{font-family:var(--f-display);font-size:19px;color:var(--ink)}
+.pager a.next{text-align:left}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:24px 0}
+@media (min-width:1100px){.cards{grid-template-columns:repeat(12,minmax(0,1fr))}.card{grid-column:span 3}.card:nth-child(n+5){grid-column:span 4}}
+main bdi, .tr-note bdi{white-space:nowrap}
+.card{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card:hover{border-color:var(--ink)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.card .num{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.card h2{margin:0;font-size:22px;color:var(--ink)}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.card ul{margin:4px 0 0;padding-inline-start:18px;font-size:14px;color:var(--fg)}
+.card .tag{font-size:12.5px;color:var(--exercise);font-weight:700;margin-top:auto;padding-top:6px}
+.hero{padding:8px 0 4px;border-bottom:2px solid var(--line)}
+.hero h1{font-size:38px;margin:4px 0 8px}
+</style>
+
+
+<div class="wrap" dir="rtl" lang="he">
+<nav class="side" aria-label="תוכן העניינים">
+  <a class="brand" href="index.html">מערכות הפעלה</a>
+  <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
+  <a class="ch" href="intro.html">1 · מבוא</a>
+  <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
+  <a class="ch" href="processes.html">3 · תהליכים</a>
+  <a class="ch" href="scheduling.html">4 · תזמון</a>
+  <a class="ch" href="signals.html">5 · זומבים וסיגנלים</a>
+  <a class="ch" href="redir.html">6 · הפניות וצינורות</a>
+  <a class="ch" href="vmem.html">7 · זיכרון וירטואלי</a>
+</nav>
+<main>
+<div class="hero">
+  <div class="ch-num">Operating Systems · Study Guide</div>
+  <h1>מערכות הפעלה</h1>
+  <p class="hook">סיכום הרצאות 1–5 ותרגולים 1–5: מבוא, סביבת עבודה, תהליכים, תזמון, זומבים וסיגנלים, הפניות וצינורות, וזיכרון וירטואלי. כל נושא בעמוד משלו – בחרו נושא מהכרטיסים או מהתפריט.</p>
+</div>
+<div class="cards">
+<a class="card" href="intro.html"><span class="num">פרק 1</span><h2>מבוא</h2><p>הפרק שמסדר את כל המפה: שלושת הנושאים של הקורס, ומה הקרנל בעצם עושה. כמעט כל שאלה במבחן נשענת על המושגים כאן.</p><ul><li>מהי מערכת הפעלה</li><li>שלושת החלקים</li><li>וירטואליזציה של <bdi dir="ltr">CPU</bdi> וזיכרון</li><li>מקביליות</li><li>אחסון</li><li>קרנל, אירועים וקריאות מערכת</li><li>היסטוריה</li></ul></a>
+<a class="card" href="workenv.html"><span class="num">פרק 2</span><h2>סביבת העבודה</h2><p>כל תרגילי הבית נכתבים ב-<bdi dir="ltr">C</bdi> על <bdi dir="ltr">Linux</bdi> ונבדקים אוטומטית. הפרק הזה הוא ארגז הכלים: <bdi dir="ltr">VM</bdi>, טרמינל, פקודות, הפניות והרשאות.</p><ul><li>מבנה הקורס</li><li>VM, VirtualBox, Vagrant</li><li>טרמינל ו-<bdi dir="ltr">shell</bdi></li><li>פקודות והרצה</li><li>הפניות ושרשור</li><li>הרשאות</li><li>תרגיל סקריפט</li></ul><span class="tag">כולל פתרון לתרגיל הסקריפט</span></a>
+<a class="card" href="processes.html"><span class="num">פרק 3</span><h2>תהליכים</h2><p>איך מעבד אחד מריץ "הכל בבת אחת" בלי לאבד שליטה, ואיך יוצרים תהליכים בפועל. השאלות על <bdi dir="ltr">fork</bdi> הן מהשכיחות במבחן.</p><ul><li>מהו תהליך</li><li>Limited Direct Execution</li><li>Context Switch</li><li>מצבי תהליך</li><li>fork / wait / exec</li></ul><span class="tag">3 הרצות יבשות אינטראקטיביות</span></a>
+<a class="card" href="scheduling.html"><span class="num">פרק 4</span><h2>תזמון</h2><p>המנגנון <bdi dir="ltr">(context switch)</bdi> אומר <em>איך</em> מחליפים; המדיניות <bdi dir="ltr">(scheduler)</bdi> אומרת <em>את מי</em> מריצים עכשיו. בגוגל זה כ-<bdi dir="ltr">5%</bdi> מזמן המעבד גם אחרי אופטימיזציה כבדה.</p><ul><li>מדדים</li><li>FCFS, SJF, SRTF</li><li>Round Robin</li><li>MLFQ</li><li>סימולטור תזמון</li></ul><span class="tag">סימולטור תזמון אינטראקטיבי</span></a>
+<a class="card" href="signals.html"><span class="num">פרק 5</span><h2>זומבים וסיגנלים</h2><p>התרגול השני: שאלות <bdi dir="ltr">fork</bdi> בסגנון מבחן, למה <bdi dir="ltr">printf</bdi> מודפס פעמיים, מה זה זומבי ואיך סיגנלים עוזרים להיפטר ממנו.</p><ul><li>ספירת תהליכים</li><li>שאלות מבחינות</li><li>באפר ו-<bdi dir="ltr">setbuf</bdi></li><li>יתומים וזומבים</li><li>סיגנלים</li><li>ניהול שגיאות</li><li>תרגיל סיגנלים</li></ul><span class="tag">5 הרצות יבשות ושאלות מבחינות</span></a>
+<a class="card" href="redir.html"><span class="num">פרק 6</span><h2>הפניות וצינורות</h2><p>איך ה-shell מממש את <bdi dir="ltr">></bdi> ו-<bdi dir="ltr">|</bdi>: קבצים, <bdi dir="ltr">file descriptors</bdi>, <bdi dir="ltr">dup2</bdi> ו-<bdi dir="ltr">pipe</bdi>, ושאלות <bdi dir="ltr">exec</bdi> מבחינות.</p><ul><li>exec – מה נשמר</li><li>פעולות על קבצים</li><li>הפניות ו-dup2</li><li>FIFO ו-pipe</li><li>תרגיל הפניה ושרשור</li></ul><span class="tag">טבלת FD אינטראקטיבית ו-3 הרצות יבשות</span></a>
+<a class="card" href="vmem.html"><span class="num">פרק 7</span><h2>זיכרון וירטואלי</h2><p>איך עשרה תהליכים, שכל אחד "חושב" שיש לו <bdi dir="ltr">4GB</bdi>, רצים על מחשב עם הרבה פחות זיכרון: תרגום כתובות, <bdi dir="ltr">TLB</bdi>, טבלאות רב-שלביות ומדיניות החלפה.</p><ul><li>למה צריך וירטואליזציה</li><li>Base and Bounds</li><li>Segmentation</li><li>ניהול מקום פנוי</li><li>Paging</li><li>תרגום כתובת</li><li>טבלת דפים ו-<bdi dir="ltr">TLB</bdi></li><li>טבלה רב-שלבית</li><li><bdi dir="ltr">Swapping</bdi> ו-<bdi dir="ltr">Page Fault</bdi></li><li>מדיניות החלפת דפים</li></ul><span class="tag">מחשבוני תרגום, רשימה חופשית וסימולטור החלפה</span></a>
+</div>
+<div class="box theory"><div class="box-title">איך להשתמש באתר</div><div class="box-body">
+<ul>
+<li><strong>הרצות יבשות:</strong> לוחצים "הבא" (או חץ שמאלה) ורואים צעד אחר צעד איפה כל תהליך נמצא בקוד, את טבלת התהליכים, את העץ ואת הפלט.</li>
+<li><strong>פתרונות:</strong> בכל תרגיל הפתרון מוסתר עד שפותחים "פתרון".</li>
+<li><strong>סימולטור התזמון:</strong> מכניסים עבודות משלכם ומקבלים <bdi dir="ltr">Gantt</bdi> ומדדים.</li>
+<li><strong>מחשבונים:</strong> בפרק הזיכרון הווירטואלי אפשר לתרגם כתובות, לפרק כתובת לטבלה רב-שלבית ולהריץ מדיניות החלפת דפים על רצף משלכם.</li>
+<li>כל הפלטים בדוגמאות נבדקו בהרצה אמיתית של הקוד.</li>
+</ul>
+</div></div>
+</main>
+</div>
+
+</body>
+</html>

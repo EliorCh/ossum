@@ -1,0 +1,1916 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>זיכרון וירטואלי · מערכות הפעלה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: right-side sticky chapter rail (like a man-page index) + one reading column; boxes are color-coded by role. */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --sunk:#eceff3; --fg:#1b2430; --muted:#5b6676; --line:#d6dbe2;
+  --ink:#1d5f8f;           /* course blue, from the slides */
+  --amber:#b86a00;         /* highlight / keypoint */
+  --theory:#1d5f8f; --theory-bg:#e8f1f8;
+  --formula:#6b3fa0; --formula-bg:#f1ebf8;
+  --example:#1f7a4d; --example-bg:#e7f4ed;
+  --warn:#b3261e; --warn-bg:#fbebea;
+  --exercise:#8a5a00; --exercise-bg:#fbf2df;
+  --summary:#3c4757; --summary-bg:#eef0f3;
+  --code-bg:#f2f4f7; --code-fg:#1b2430;
+  --hl-kw:#a4237a; --hl-str:#1f7a4d; --hl-num:#b86a00; --hl-com:#7a8494; --hl-fn:#1d5f8f; --hl-type:#6b3fa0;
+  --f-display:"Secular One","IBM Plex Sans Hebrew",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Hebrew",system-ui,"Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{direction:rtl;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;line-height:1.75;margin:0}
+.wrap{display:flex;gap:32px;max-width:1240px;margin:0 auto;padding-block:24px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav.side{flex:0 0 250px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:flex-start;
+  max-height:calc(100vh - 32px);overflow-y:auto;font-size:14.5px;padding-inline-end:8px}
+nav.side .brand{font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px}
+nav.side .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+nav.side a{display:block;color:var(--fg);text-decoration:none;padding:3px 10px;border-inline-start:2px solid transparent}
+nav.side a:hover{color:var(--ink)}
+nav.side a.ch{font-weight:700;margin-top:14px}
+nav.side a.sec{color:var(--muted);font-size:13.5px}
+nav.side a.active{border-inline-start-color:var(--ink);color:var(--ink)}
+main{flex:1;min-width:0;max-width:820px}
+main p, main li, .box-body p, .box-body li{direction:rtl;unicode-bidi:isolate;text-align:right}
+main strong, .box-body strong{margin-inline-end:.15em}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;line-height:1.3}
+.chapter{margin-top:56px;padding-top:8px}
+.chapter:first-of-type{margin-top:8px}
+.ch-head{border-bottom:2px solid var(--line);padding-bottom:14px;margin-bottom:8px}
+.ch-num{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+h1{font-size:34px;margin:4px 0 6px;color:var(--fg)}
+.hook{color:var(--muted);margin:0}
+h2{font-size:24px;margin:40px 0 10px;color:var(--ink)}
+h3{font-size:19px;margin:26px 0 6px}
+.t,.ltr{direction:ltr;unicode-bidi:isolate}
+code{direction:ltr;unicode-bidi:isolate}
+main :not(pre) > code{white-space:nowrap}
+svg{direction:ltr}
+code,.t{font-family:var(--f-mono);font-size:.9em}
+p code, li code, td code, .box-body code{background:var(--sunk);padding:1px 5px;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{direction:ltr;text-align:left;background:var(--code-bg);color:var(--code-fg);border:1px solid var(--line);
+  border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;margin:12px 0}
+main pre code, .box-body pre code{background:none;padding:0;font-size:inherit;border-radius:0}
+.hljs-keyword,.hljs-built_in{color:var(--hl-kw)} .hljs-string{color:var(--hl-str)} .hljs-number,.hljs-literal{color:var(--hl-num)}
+.hljs-comment{color:var(--hl-com);font-style:italic} .hljs-title,.hljs-function .hljs-title{color:var(--hl-fn)} .hljs-type,.hljs-meta{color:var(--hl-type)}
+.hljs-variable,.hljs-params{color:inherit}
+
+/* boxes */
+.box{border:1px solid var(--line);border-inline-start:4px solid var(--c);background:var(--cb);border-radius:6px;padding:12px 16px;margin:16px 0}
+.box-title{font-weight:700;color:var(--c);font-size:14px;letter-spacing:.02em;margin-bottom:4px}
+.box-body > :first-child{margin-top:0} .box-body > :last-child{margin-bottom:0}
+.theory{--c:var(--theory);--cb:var(--theory-bg)} .formula{--c:var(--formula);--cb:var(--formula-bg)}
+.example{--c:var(--example);--cb:var(--example-bg)} .warn{--c:var(--warn);--cb:var(--warn-bg)}
+.exercise{--c:var(--exercise);--cb:var(--exercise-bg)} .summary{--c:var(--summary);--cb:var(--summary-bg)}
+.keypoint{background:linear-gradient(transparent 60%, color-mix(in srgb,var(--amber) 28%, transparent) 60%);font-weight:500}
+.fline{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:15px;margin:8px 0;padding:6px;background:var(--surface);border-radius:4px}
+
+/* function cards */
+.fn{border:1px solid var(--line);background:var(--surface);border-radius:8px;margin:14px 0;overflow:hidden}
+.fn-sig{direction:ltr;text-align:left;font-family:var(--f-mono);font-size:14.5px;background:var(--sunk);padding:8px 14px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.fn-body{padding:10px 14px}
+.fn-body dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.fn-body dt{color:var(--muted);font-size:14px;font-weight:700}
+.fn-body dd{margin:0;min-width:0}
+
+/* tables */
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:right;vertical-align:top}
+th{background:var(--sunk);font-weight:700}
+td.mono,td.num{direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums}
+
+/* figures */
+figure{margin:18px 0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto}
+figure svg{display:block;margin:0 auto;max-width:100%}
+figcaption{color:var(--muted);font-size:14px;text-align:center;margin-top:6px}
+svg text{font-family:var(--f-body)}
+svg .mono{font-family:var(--f-mono)}
+
+/* reveal */
+details.sol{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+details.sol summary{cursor:pointer;color:var(--exercise);font-weight:700;list-style:none}
+details.sol summary::before{content:"◂ ";display:inline-block;transition:transform .15s}
+details.sol[open] summary::before{transform:rotate(-90deg)}
+details.sol summary:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;margin:18px 0}
+.sim-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.sim label{font-size:14px;color:var(--muted)}
+.sim select,.sim input,.sim button{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.sim input[type=number]{width:64px;direction:ltr}
+.sim button{cursor:pointer;background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.sim button.ghost{background:transparent;color:var(--ink)}
+.jobs{display:flex;flex-wrap:wrap;gap:8px}
+.job{display:flex;gap:6px;align-items:center;background:var(--sunk);padding:4px 8px;border-radius:6px;font-family:var(--f-mono);font-size:13px}
+.gantt{overflow-x:auto}
+.legend{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sim .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer}
+
+
+/* dry-run tracer */
+.trace{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:18px 0;overflow:hidden}
+.trace:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tr-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.tr-title{font-family:var(--f-display);color:var(--ink);font-size:17px}
+.tr-vars{display:flex;flex-wrap:wrap;gap:6px}
+.trace .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body)}
+.trace .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tr-body{display:flex;flex-direction:column}
+.tr-vis{min-width:0}
+.tr-note{padding:12px 14px;background:var(--theory-bg);border-top:1px solid var(--line);direction:rtl;unicode-bidi:isolate;text-align:right;line-height:1.7}
+.tr-grid{display:flex;flex-wrap:wrap;gap:14px;padding:12px 14px}
+.tr-code{flex:1 1 330px;min-width:0}
+.tr-side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tr-pre{margin:0;padding:8px 0;font-size:13.5px;overflow-x:auto}
+.tr-pre > code{display:block;min-width:max-content}
+.tr-ln{display:flex;gap:10px;align-items:center;padding:1px 10px;min-height:1.7em}
+.tr-ln.act{background:color-mix(in srgb,var(--amber) 18%,transparent)}
+.tr-num{color:var(--muted);min-width:1.6em;text-align:right;user-select:none}
+.tr-src{flex:1;white-space:pre}
+.tr-mk{display:flex;gap:4px}
+.tr-pid{font-size:11px;font-weight:600;border:1.5px solid var(--pc);color:var(--pc);border-radius:999px;padding:0 6px;line-height:1.5;background:var(--surface)}
+.tr-pid.on{background:var(--pc);color:var(--surface)}
+.tr-table{font-size:13.5px}
+.tr-table th,.tr-table td{padding:4px 8px}
+.tr-table tr.act td{background:color-mix(in srgb,var(--amber) 14%,var(--surface))}
+.tr-table tr.st-reaped td{color:var(--muted);text-decoration:line-through}
+.tr-table tr.st-zombie .tr-st{color:var(--warn);font-weight:700}
+.tr-table tr.st-blocked .tr-st{color:var(--exercise);font-weight:700}
+.tr-table tr.st-running .tr-st,.tr-table tr.st-kernel .tr-st{color:var(--example);font-weight:700}
+.tr-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pc);margin-inline-end:6px;vertical-align:middle}
+.tr-buf{white-space:pre-wrap;font-size:12.5px;min-width:11em}
+.tr-table td.num{white-space:nowrap}
+.tr-tree{overflow-x:auto}
+.tr-tree svg{display:block;margin:0 auto}
+.tr-outwrap{padding:0 14px 10px}
+.tr-label{font-size:13px;color:var(--muted);margin-bottom:4px}
+.tr-out{margin:0;min-height:2.4em;white-space:pre-wrap}
+.tr-o{color:var(--pc);font-weight:600}
+.tr-o.new{background:color-mix(in srgb,var(--pc) 16%,transparent)}
+.tr-empty{color:var(--muted);font-family:var(--f-body);direction:rtl;unicode-bidi:isolate}
+.tr-ctrl{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);background:var(--sunk)}
+.tr-ctrl button{font:inherit;font-size:14px;padding:6px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
+.tr-ctrl button.ghost{background:transparent;color:var(--ink)}
+.tr-ctrl button:disabled{opacity:.4;cursor:default}
+.tr-count{font-size:13px;color:var(--muted);margin-inline:auto}
+
+@media (max-width:860px){
+  .wrap{flex-direction:column;gap:8px}
+  nav.side{position:static;max-height:none;flex:none;border-bottom:1px solid var(--line);padding-bottom:12px}
+  nav.side a.sec{display:none}
+  h1{font-size:28px}
+}
+
+/* ---- wide screens: the page widens, prose keeps its reading width, dry runs sit side by side ---- */
+@media (min-width:1400px){
+  .wrap{max-width:1700px}
+  main{max-width:none}
+  main > section > *, main .box, main details > *{max-width:820px}
+  main > section > .trace, main .box:has(.trace), main details:has(.trace) > *, main .box .trace, main > section > .sim{max-width:none}
+  main .box:has(.trace) > .box-body > :not(details):not(.trace){max-width:788px}
+  .tr-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);grid-template-areas:"vis note";align-items:stretch}
+  .tr-vis{grid-area:vis}
+  .tr-note{grid-area:note;border-top:none;border-inline-start:1px solid var(--line);font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+nav.side a.brand{display:block;font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px;padding:0;border:0;text-decoration:none}
+nav.side a.ch.here{color:var(--ink);border-inline-start-color:var(--ink)}
+.pager{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin-top:56px;padding-top:18px;border-top:2px solid var(--line)}
+.pager a{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 16px}
+.pager a:hover{border-color:var(--ink)}
+.pager a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pager .dir{font-size:13px;color:var(--muted)}
+.pager .nm{font-family:var(--f-display);font-size:19px;color:var(--ink)}
+.pager a.next{text-align:left}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:24px 0}
+@media (min-width:1100px){.cards{grid-template-columns:repeat(6,minmax(0,1fr))}.card{grid-column:span 2}.card:nth-child(4){grid-column:2 / span 2}}
+main bdi, .tr-note bdi{white-space:nowrap}
+.card{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card:hover{border-color:var(--ink)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.card .num{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.card h2{margin:0;font-size:22px;color:var(--ink)}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.card ul{margin:4px 0 0;padding-inline-start:18px;font-size:14px;color:var(--fg)}
+.card .tag{font-size:12.5px;color:var(--exercise);font-weight:700;margin-top:auto;padding-top:6px}
+.hero{padding:8px 0 4px;border-bottom:2px solid var(--line)}
+.hero h1{font-size:38px;margin:4px 0 8px}
+/* ---- virtual-memory widgets ---- */
+:root{--c-opt:#8a5a00;--c-lru:#1d5f8f;--c-fifo:#1f7a4d;--c-rand:#6b3fa0;--c-clock:#b3261e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-opt:#b97f1c;--c-lru:#4a9bd4;--c-fifo:#35a873;--c-rand:#a479d8;--c-clock:#e0625a}}
+:root[data-theme="dark"]{--c-opt:#b97f1c;--c-lru:#4a9bd4;--c-fifo:#35a873;--c-rand:#a479d8;--c-clock:#e0625a}
+.vmw{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:18px 0;overflow:hidden}
+.vmw.charts{padding:12px 14px}
+.w-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.w-title{font-family:var(--f-display);color:var(--ink);font-size:17px}
+.vmw .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.vmw .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body)}
+.vmw .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.vmw .chip:focus-visible,.vmw button:focus-visible,.vmw input:focus-visible,.vmw select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.w-form{display:flex;flex-wrap:wrap;gap:10px 14px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.w-form label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);flex:1 1 120px;min-width:0}
+.w-form label.wide{flex:3 1 260px}
+.w-form input,.w-form select{font:inherit;font-family:var(--f-mono);font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);direction:ltr;text-align:left;width:100%;min-width:0}
+.w-out{padding:12px 14px}
+.w-err{color:var(--warn);font-weight:700}
+.w-note{color:var(--muted);font-size:14px;margin:6px 0}
+.w-steps{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:12px}
+.w-steps li.trap{color:var(--warn)}
+.w-sum{display:flex;flex-wrap:wrap;gap:8px 20px;margin:10px 0 4px;font-size:15px}
+.bits-wrap{overflow-x:auto;margin:8px 0;padding-bottom:2px}
+.bits{display:flex;gap:6px;direction:ltr;width:max-content}
+.bgrp{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bcells{display:flex;border:1.5px solid var(--gc);border-radius:5px;overflow:hidden}
+.bit{font-family:var(--f-mono);font-size:13px;min-width:21px;height:26px;display:flex;align-items:center;justify-content:center;background:var(--gb);color:var(--fg);border-inline-end:1px solid color-mix(in srgb,var(--gc) 35%,transparent)}
+.bit:last-child{border-inline-end:none}
+.blab{font-family:var(--f-mono);font-size:12px;color:var(--gc);white-space:nowrap}
+.bval{font-family:var(--f-mono);font-size:14px;font-weight:700;color:var(--gc)}
+.bcap{font-family:var(--f-mono);font-size:12px;color:var(--muted);direction:ltr;text-align:left;margin-top:4px}
+.g-vpn{--gc:var(--theory);--gb:var(--theory-bg)}.g-off{--gc:var(--exercise);--gb:var(--exercise-bg)}.g-pfn{--gc:var(--example);--gb:var(--example-bg)}.g-pd{--gc:var(--formula);--gb:var(--formula-bg)}
+.pt-row{display:flex;flex-wrap:wrap;gap:4px;direction:ltr;margin-top:6px}
+.pte{display:flex;flex-direction:column;align-items:center;min-width:36px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;font-family:var(--f-mono);font-size:14px;background:var(--bg)}
+.pte small{font-size:10px;color:var(--muted)}
+.pte.inv{color:var(--muted)}
+.pte.hit{border:2px solid var(--ink);background:var(--theory-bg);font-weight:700}
+.pte.hit.inv{border-color:var(--warn);background:var(--warn-bg);color:var(--warn)}
+.tlb-grid{display:flex;flex-direction:column;gap:6px;direction:ltr}
+.tlb-row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tlb-pg{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:64px}
+.tlb-c{display:flex;flex-direction:column;align-items:center;min-width:52px;padding:3px 6px;border-radius:5px;font-family:var(--f-mono);font-size:12px;border:1.5px solid}
+.tlb-c.m{border-color:var(--warn);background:var(--warn-bg)}
+.tlb-c.h{border-color:var(--example);background:var(--example-bg)}
+.tlb-c small{font-size:10px;color:var(--muted)}
+.fl-body{display:flex;flex-wrap:wrap;gap:16px;padding:12px 14px}
+.fl-mem{flex:0 0 220px;display:flex;flex-direction:column;gap:3px}
+.fl-lab{font-weight:700;text-align:center;font-size:14px}
+.fl-cell{position:relative;display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:5px;background:var(--theory-bg);border:1px solid var(--theory);font-size:13px}
+.fl-cell.used{background:var(--sunk);border-color:var(--line);color:var(--muted)}
+.fl-cell.fresh{outline:2.5px solid var(--amber);outline-offset:1px}
+.fl-i{font-family:var(--f-mono);font-weight:700;min-width:1.2em}
+.fl-v{font-family:var(--f-mono);direction:ltr;unicode-bidi:isolate}
+.fl-cell.used .fl-v{font-family:var(--f-body)}
+.fl-head{position:absolute;inset-inline-end:-6px;font-family:var(--f-mono);font-size:11px;background:var(--amber);color:var(--surface);border-radius:4px;padding:0 5px}
+.fl-side{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.fl-chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;direction:ltr;font-family:var(--f-mono)}
+.fl-h{font-size:12px;background:var(--amber);color:var(--surface);border-radius:4px;padding:2px 6px}
+.fl-n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--example);color:var(--surface);font-weight:700}
+.fl-ar{color:var(--muted)}
+.fl-empty{color:var(--muted);font-family:var(--f-body)}
+.fl-ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fl-fl{display:flex;gap:6px;align-items:center;font-size:14px}
+.fl-ctrl select{font:inherit;font-size:14px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.vmw .btn{font:inherit;font-size:14px;padding:6px 12px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
+.vmw .btn.ghost{background:transparent;color:var(--ink)}
+.vmw .btn:disabled{opacity:.4;cursor:default}
+.fl-log{margin:0;padding-inline-start:20px;font-size:14px;color:var(--fg);min-height:9em}
+table.rp td{padding:4px 8px}
+table.rp tr.is-hit .rp-res{color:var(--example);font-weight:700}
+table.rp tr.is-miss .rp-res{color:var(--warn);font-weight:700}
+.frs{display:inline-flex;gap:4px}
+.fr{display:inline-block;min-width:24px;padding:1px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.fr.cur{background:var(--theory-bg);border-color:var(--theory)}
+.fr.hand{outline:2px solid var(--amber)}
+.fr sup{font-size:10px;color:var(--muted);margin-inline-start:1px}
+.rp-note{font-size:12px;color:var(--muted)}
+.ch-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;direction:ltr;justify-content:center;margin-bottom:6px}
+.ch-legend span{display:inline-flex;align-items:center;gap:6px}
+.ch-legend i,.ch-tip i{display:inline-block;width:14px;height:3px;border-radius:2px}
+.ch-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.ch-row{grid-template-columns:minmax(0,1fr)}}
+figure.ch{min-width:0;margin:0;position:relative;border:none;padding:0;background:none;overflow:visible}
+figure.ch figcaption{margin:0 0 4px;font-weight:700;color:var(--fg)}
+figure.ch svg{width:100%;height:auto;display:block;touch-action:none}
+.ch-tip{position:absolute;top:28px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px;box-shadow:0 2px 8px color-mix(in srgb,var(--fg) 16%,transparent);pointer-events:none;direction:ltr;text-align:left;min-width:130px;z-index:3}
+.ch-tip div{display:flex;align-items:center;gap:6px}
+.ch-tip b{margin-inline-start:auto;font-variant-numeric:tabular-nums}
+.ch-tip .tt-h{font-weight:700;margin-bottom:2px;direction:rtl}
+details.ch-table{margin-top:10px}
+details.ch-table summary{cursor:pointer;color:var(--ink);font-size:14px}
+</style>
+
+
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="he">
+<nav class="side" aria-label="תוכן העניינים">
+  <a class="brand" href="index.html">מערכות הפעלה</a>
+  <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
+  <a class="ch" href="intro.html">1 · מבוא</a>
+  <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
+  <a class="ch" href="processes.html">3 · תהליכים</a>
+  <a class="ch" href="scheduling.html">4 · תזמון</a>
+  <a class="ch" href="signals.html">5 · זומבים וסיגנלים</a>
+  <a class="ch" href="redir.html">6 · הפניות וצינורות</a>
+  <a class="ch here" href="vmem.html" aria-current="page">7 · זיכרון וירטואלי</a>
+  <a class="sec" href="#vm-why" data-id="vm-why">למה צריך וירטואליזציה</a>
+  <a class="sec" href="#vm-bb" data-id="vm-bb">Base and Bounds</a>
+  <a class="sec" href="#vm-seg" data-id="vm-seg">Segmentation</a>
+  <a class="sec" href="#vm-free" data-id="vm-free">ניהול מקום פנוי</a>
+  <a class="sec" href="#vm-paging" data-id="vm-paging">Paging</a>
+  <a class="sec" href="#vm-trans" data-id="vm-trans">תרגום כתובת</a>
+  <a class="sec" href="#vm-tlb" data-id="vm-tlb">טבלת דפים ו-TLB</a>
+  <a class="sec" href="#vm-ml" data-id="vm-ml">טבלה רב-שלבית</a>
+  <a class="sec" href="#vm-size" data-id="vm-size">חישובי גדלים</a>
+  <a class="sec" href="#vm-swap" data-id="vm-swap">Swapping ו-Page Fault</a>
+  <a class="sec" href="#vm-repl" data-id="vm-repl">מדיניות החלפת דפים</a>
+</nav>
+<main>
+<section class="chapter" id="ch7" style="margin-top:8px">
+<div class="ch-head">
+  <div class="ch-num">Chapter 7 · Virtual Memory</div>
+  <h1>זיכרון וירטואלי</h1>
+  <p class="hook">איך עשרה תהליכים, שכל אחד "חושב" שיש לו <bdi dir="ltr">4GB</bdi>, רצים על מחשב עם הרבה פחות זיכרון. רוב שאלות החישוב במבחן באות מכאן: תרגום כתובת, גודל טבלת דפים, ומדיניות החלפה.</p>
+</div>
+
+<h2 id="vm-why">למה צריך וירטואליזציה של הזיכרון</h2>
+<div class="box exercise"><div class="box-title">חימום (שקף 2) · איפה נמצא כל דבר?</div><div class="box-body">
+<pre><code class="language-c">int x;
+int main(int argc, char *argv[]) {
+    int y;
+    int *z = malloc(sizeof(int));
+}</code></pre>
+<p>לאיזה אזור במרחב הכתובות שייך כל אחד: <code>x</code>, <code>main</code>, <code>y</code>, <code>z</code>, <code>*z</code>?</p>
+<details class="sol"><summary>פתרון</summary>
+<div class="tbl"><table>
+<tr><th>מה</th><th>אזור</th><th>למה</th></tr>
+<tr><td class="mono">x</td><td><strong>Data</strong></td><td>משתנה גלובלי</td></tr>
+<tr><td class="mono">main</td><td><strong>Text</strong></td><td>קוד התוכנית</td></tr>
+<tr><td class="mono">y</td><td><strong>Stack</strong></td><td>משתנה מקומי</td></tr>
+<tr><td class="mono">z</td><td><strong>Stack</strong></td><td>המצביע עצמו הוא משתנה מקומי</td></tr>
+<tr><td class="mono">*z</td><td><strong>Heap</strong></td><td>הזיכרון ש-<code>malloc</code> הקצה</td></tr>
+</table></div>
+<p>המלכודת היא <code>z</code> מול <code>*z</code>: המצביע יושב על המחסנית, ומה שהוא מצביע עליו יושב בערימה.</p>
+</details></div></div>
+
+
+<h3>מהקוד לתהליך: קומפילציה וטעינה</h3>
+<p>לפני שיש בכלל מרחב כתובות, יש קובץ על הדיסק. התהליך נוצר בשני שלבים:</p>
+<div class="tbl"><table>
+<tr><th>שלב</th><th>מי עושה</th><th>מה יוצא</th></tr>
+<tr><td>1. קומפילציה</td><td>הקומפיילר</td><td>מקוד מקור לקובץ בינארי (<bdi dir="ltr">executable</bdi>) על הדיסק</td></tr>
+<tr><td>2. טעינה</td><td>ה-<bdi dir="ltr">loader</bdi> של מערכת ההפעלה</td><td>מהקובץ הבינארי למרחב כתובות וירטואלי של תהליך</td></tr>
+</table></div>
+<div class="box theory"><div class="box-title">מה יש בקובץ הבינארי, ומה רק בזיכרון</div><div class="box-body">
+<p>בקובץ הבינארי יש שלושה חלקים: <strong>Header</strong> (מידע על הקובץ – איפה כל חלק ולאן לטעון אותו), <strong>Code</strong> (פקודות המכונה) ו-<strong>Data</strong> (המשתנים הגלובליים).</p>
+<p>ה-<bdi dir="ltr">loader</bdi> קורא את הקובץ <strong>וממפה</strong> את הקוד והנתונים לאזורים <bdi dir="ltr">Text</bdi> ו-<bdi dir="ltr">Data</bdi> במרחב הכתובות. את ה-<bdi dir="ltr">Heap</bdi> וה-<bdi dir="ltr">Stack</bdi> אין בקובץ בכלל – הם נוצרים בזמן ריצה.</p>
+<ul>
+<li>כתובות הזיכרון הווירטואלי <strong>לא שמורות מראש על הדיסק</strong>. מרחב הכתובות נוצר בזמן אמת, כשהתהליך נטען.</li>
+<li>לכן הזיכרון הווירטואלי מכיל <strong>הרבה יותר</strong> מהקובץ הבינארי עצמו.</li>
+</ul>
+</div></div>
+<div class="box example"><div class="box-title">איך זה מתחבר למבחנים</div><div class="box-body">
+<p>זה בדיוק מה ש-<code>exec</code> עושה: מחליף את מרחב הכתובות של התהליך בקובץ בינארי חדש, וה-<bdi dir="ltr">Heap</bdi> וה-<bdi dir="ltr">Stack</bdi> מתחילים מחדש. ובשאלות שסופרות מסגרות אחרי <code>exec</code> (למשל 24SA שאלה 6.2): הקוד של התוכנית החדשה צריך מסגרת (ואם התוכנית כבר רצה בתהליך אחר – היא משותפת), ולכל תהליך מסגרת משלו למחסנית.</p>
+</div></div>
+
+<p>הזיכרון מחולק לשני סוגים: <strong>Kernel space</strong> – הקוד ומבני הנתונים של מערכת ההפעלה – ו-<strong>User space</strong>, שבו לכל תהליך מרחב כתובות משלו. במערכת של 32 ביט מרחב הכתובות של כל תהליך הוא <bdi dir="ltr">4GB</bdi>.</p>
+<span class="fline">10 processes × 4GB = 40GB</span>
+<p>אין מחשב עם כל כך הרבה <bdi dir="ltr">RAM</bdi>, ולכן הכתובות שהתהליך רואה הן <strong>וירטואליות</strong>, וצריך לתרגם אותן לכתובות פיזיות.</p>
+
+<div class="tbl"><table>
+<tr><th>תקופה</th><th>מה היה</th><th>הבעיה</th></tr>
+<tr><td>מערכות מוקדמות</td><td>תהליך אחד בזיכרון בכל פעם</td><td>אין צורך בווירטואליזציה</td></tr>
+<tr><td>Multiprocessing</td><td>תהליכים לא פעילים על הדיסק – לא יעיל, ולכן טוענים כמה תהליכים לזיכרון</td><td><strong>הגנה:</strong> תהליך לא אמור לגשת לזיכרון של הקרנל או של תהליך אחר</td></tr>
+</table></div>
+
+<div class="box theory"><div class="box-title">שלוש המטרות</div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>מטרה</th><th>משמעות</th></tr>
+<tr><td><strong>Transparency</strong></td><td>התוכנית לא יודעת על הווירטואליזציה. היא "חושבת" שיש לה מרחב כתובות רציף משלה.</td></tr>
+<tr><td><strong>Efficiency</strong></td><td>תקורה מינימלית בזמן ובזיכרון.</td></tr>
+<tr><td><strong>Protection</strong></td><td>בידוד: תהליכים מוגנים זה מזה, ומערכת ההפעלה מוגנת מהתהליכים.</td></tr>
+</table></div>
+</div></div>
+
+<h3>ה-<bdi dir="ltr">MMU</bdi> ותרגום כתובות</h3>
+<p>כל כתובת בתהליך היא וירטואלית. ה-<strong>MMU</strong> (<bdi dir="ltr">Memory Management Unit</bdi>) הוא רכיב חומרה שמתרגם <strong>בכל גישה לזיכרון</strong> כתובת וירטואלית לכתובת פיזית. מערכת ההפעלה מנהלת את המיפוי: איזה זיכרון פנוי ואיזה תפוס.</p>
+<figure>
+<svg viewBox="0 0 560 130" width="560" role="img" aria-label="CPU שולח כתובת וירטואלית ל-MMU שמתרגם לכתובת פיזית ב-RAM">
+  <defs><marker id="vma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <g font-size="14" text-anchor="middle">
+    <rect x="10" y="40" width="110" height="50" rx="6" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="65" y="62" fill="var(--fg)" font-weight="700">CPU</text><text x="65" y="80" fill="var(--muted)" font-size="12">P1: Load 0x1000</text>
+    <rect x="225" y="40" width="110" height="50" rx="6" fill="var(--exercise-bg)" stroke="var(--exercise)"/><text x="280" y="70" fill="var(--fg)" font-weight="700">MMU</text>
+    <rect x="440" y="20" width="110" height="90" rx="6" fill="var(--example-bg)" stroke="var(--example)"/><text x="495" y="70" fill="var(--fg)" font-weight="700">RAM</text>
+  </g>
+  <g stroke="var(--muted)" stroke-width="1.6" fill="none" marker-end="url(#vma)"><path d="M120 65 H223"/><path d="M335 65 H438"/></g>
+  <g font-size="12" fill="var(--muted)" text-anchor="middle"><text x="172" y="56">virtual</text><text x="387" y="56">physical</text></g>
+</svg>
+<figcaption>מיפוי כל בית בנפרד אינו מעשי – לכן ממפים יחידות גדולות יותר</figcaption>
+</figure>
+
+<h2 id="vm-bb">Base and Bounds</h2>
+<p>הרעיון הפשוט ביותר: מנקודת המבט של התהליך, מרחב הכתובות מתחיל ב-0. ב-<bdi dir="ltr">MMU</bdi> יש שני אוגרים לכל תהליך רץ – <strong>base</strong> ו-<strong>bounds</strong> – ובכל <bdi dir="ltr">context switch</bdi> מערכת ההפעלה טוענת את הערכים של התהליך הבא.</p>
+<div class="box formula"><div class="box-title">התרגום</div><div class="box-body">
+<span class="fline">physical address = virtual address + base</span>
+<p>ובתנאי:</p>
+<span class="fline">virtual address &lt; bounds</span>
+<p>אחרת – <bdi dir="ltr">trap</bdi> למערכת ההפעלה.</p>
+</div></div>
+<div class="box warn"><div class="box-title">הבעיה: מקום מבוזבז</div><div class="box-body">
+<p>כל מרחב הכתובות נטען כבלוק רציף אחד, כולל הרווח הגדול שבין ה-<bdi dir="ltr">Heap</bdi> ל-<bdi dir="ltr">Stack</bdi>. הרווח הזה לא בשימוש, אבל תופס <bdi dir="ltr">RAM</bdi>.</p>
+</div></div>
+
+<h2 id="vm-seg">Segmentation</h2>
+<p>במקום זוג אחד של <bdi dir="ltr">base/bounds</bdi> – זוג לכל <strong>סגמנט</strong> – קוד, ערימה ומחסנית. כל סגמנט יושב בנפרד ב-<bdi dir="ltr">RAM</bdi>, ולכן הרווח שבין הערימה למחסנית לא תופס זיכרון.</p>
+<div class="tbl"><table>
+<tr><th>Segment</th><th class="num">Base</th><th class="num">Size</th><th class="num">Grows Positive</th><th>Protection</th></tr>
+<tr><td>Code</td><td class="num">30K</td><td class="num">2K</td><td class="num">1</td><td>Read-Execute</td></tr>
+<tr><td>Heap</td><td class="num">40K</td><td class="num">3K</td><td class="num">1</td><td>Read-Write</td></tr>
+<tr><td>Stack</td><td class="num">28K</td><td class="num">2K</td><td class="num">0</td><td>Read-Write</td></tr>
+</table></div>
+<div class="box formula"><div class="box-title">התרגום בסגמנט</div><div class="box-body">
+<span class="fline">physical address = offset + base</span>
+<p>ובתנאי:</p>
+<span class="fline">offset &lt; size</span>
+<p>עמודת <bdi dir="ltr">Grows Positive</bdi> אומרת לחומרה לאיזה כיוון הסגמנט גדל. המחסנית גדלה כלפי מטה (0), ולכן ה-<bdi dir="ltr">offset</bdi> שלה מחושב מהקצה העליון.</p>
+</div></div>
+<div class="box example"><div class="box-title">שיתוף סגמנטים</div><div class="box-body">
+<p>שני תהליכים של אותה תוכנית יכולים לשתף את סגמנט הקוד: בטבלה של שניהם <bdi dir="ltr">Code</bdi> מצביע ל-<bdi dir="ltr">base 30K</bdi>, והקוד נטען פעם אחת. ההגנה <bdi dir="ltr">Read-Execute</bdi> מבטיחה ששום תהליך לא ישנה אותו, ולכן הבידוד נשמר. ה-<bdi dir="ltr">Heap</bdi> וה-<bdi dir="ltr">Stack</bdi> נפרדים (בשקף <bdi dir="ltr">15</bdi>: <bdi dir="ltr">40K</bdi> מול <bdi dir="ltr">50K</bdi>, ו-<bdi dir="ltr">28K</bdi> מול <bdi dir="ltr">60K</bdi>).</p>
+</div></div>
+<div class="box warn"><div class="box-title">הבעיה: <bdi dir="ltr">External fragmentation</bdi></div><div class="box-body">
+<p>הסגמנטים בגדלים משתנים, ונוצרים, משתחררים ומשנים גודל. עם הזמן ה-<bdi dir="ltr">RAM</bdi> מתמלא ב"חורים" קטנים בין סגמנטים. ייתכן שיש מספיק זיכרון פנוי בסך הכל, אבל אין חור אחד רציף מספיק גדול.</p>
+<p><strong>הפתרון:</strong> חתיכות בגודל <strong>קבוע</strong>. קל הרבה יותר לנהל אותן, ואפשר להשתמש ב<strong>רשימה חופשית</strong>.</p>
+</div></div>
+
+<h2 id="vm-free">ניהול מקום פנוי: <bdi dir="ltr">Free List</bdi></h2>
+<p>כשכל החתיכות (<bdi dir="ltr">chunks</bdi>) באותו גודל, כל חתיכה פנויה טובה לכל בקשה. מספיק להחזיק רשימה מקושרת של החתיכות הפנויות.</p>
+<div class="box theory"><div class="box-title">איפה שומרים את הרשימה?</div><div class="box-body">
+<p>אין זיכרון נוסף לרשימה – הרי אנחנו מנהלים את הזיכרון עצמו. הפתרון: <strong>הרשימה מוטמעת בתוך החתיכות הפנויות</strong>. כל חתיכה פנויה מכילה בתחילתה את המספר של החתיכה הפנויה הבאה (<code>next</code>), ומשתנה אחד, <code>head</code>, מצביע לראשונה.</p>
+<ul>
+<li><strong>הקצאה:</strong> לוקחים את החתיכה שב-<code>head</code>, ו-<code>head</code> עובר ל-<code>next</code> שלה.</li>
+<li><strong>שחרור:</strong> כותבים בחתיכה המשוחררת <code>next = head</code>, והיא נעשית ה-<code>head</code> החדש.</li>
+</ul>
+<p>שתי הפעולות לוקחות זמן קבוע. הרשימה לא חייבת להיות ממוינת – בשקף 18 הסדר הוא <bdi dir="ltr">5, 2, 0, 6, 7</bdi>.</p>
+</div></div>
+<p>נסו בעצמכם: הקצו ושחררו חתיכות, או לחצו על "התרחיש של שקף 18" כדי לראות איך מגיעים מהמצב של שקף 17 (כל החתיכות פנויות, <bdi dir="ltr">0 → 1 → … → 7</bdi>) למצב של שקף 18.</p>
+<div class="vmw" data-vm="freelist"></div>
+<p>בדפדוף (הפרק הבא) המסגרות הן בדיוק חתיכות כאלה – כולן בגודל קבוע – ולכן מערכת ההפעלה יכולה לנהל את המסגרות הפנויות עם <bdi dir="ltr">free list</bdi>: כל מסגרת פנויה מצביעה למסגרת הפנויה הבאה. הקצאה ושחרור של מסגרת פשוטים ומהירים.</p>
+
+<h2 id="vm-paging">Paging</h2>
+<p>מחלקים את מרחב הכתובות הווירטואלי ל<strong>דפים</strong> (<bdi dir="ltr">pages</bdi>) בגודל קבוע, ואת ה-<bdi dir="ltr">RAM</bdi> ל<strong>מסגרות</strong> (<bdi dir="ltr">frames</bdi>) באותו גודל בדיוק. כל דף וירטואלי יכול לשבת בכל מסגרת פנויה, ולא כל הדפים חייבים להיות ממופים.</p>
+<div class="box example"><div class="box-title">הדוגמה של שקף 20</div><div class="box-body">
+<p>מרחב כתובות <bdi dir="ltr">64KB</bdi>, דף ומסגרת <bdi dir="ltr">16KB</bdi>, ו-<bdi dir="ltr">128KB</bdi> של <bdi dir="ltr">RAM</bdi>:</p>
+<span class="fline">64KB / 16KB = 4 pages</span>
+<span class="fline">128KB / 16KB = 8 frames</span>
+</div></div>
+<figure>
+<svg viewBox="0 0 560 300" width="560" role="img" aria-label="מיפוי דפים של P1 ו-P2 למסגרות ב-RAM">
+  <g font-size="13" text-anchor="middle">
+    <text x="70" y="18" fill="var(--fg)" font-weight="700">P1</text>
+    <rect x="20" y="26" width="100" height="26" fill="var(--theory)"/><text x="70" y="44" fill="var(--surface)">Page 0</text>
+    <rect x="20" y="52" width="100" height="26" fill="var(--theory)"/><text x="70" y="70" fill="var(--surface)">Page 1</text>
+    <rect x="20" y="78" width="100" height="26" fill="var(--theory)"/><text x="70" y="96" fill="var(--surface)">Page 2</text>
+    <rect x="20" y="104" width="100" height="26" fill="var(--theory)"/><text x="70" y="122" fill="var(--surface)">Page 3</text>
+    <text x="70" y="168" fill="var(--fg)" font-weight="700">P2</text>
+    <rect x="20" y="176" width="100" height="26" fill="var(--sunk)" stroke="var(--line)"/><text x="70" y="194" fill="var(--muted)">Page 0 ✗</text>
+    <rect x="20" y="202" width="100" height="26" fill="var(--example)"/><text x="70" y="220" fill="var(--surface)">Page 1</text>
+    <rect x="20" y="228" width="100" height="26" fill="var(--sunk)" stroke="var(--line)"/><text x="70" y="246" fill="var(--muted)">Page 2 ✗</text>
+    <rect x="20" y="254" width="100" height="26" fill="var(--example)"/><text x="70" y="272" fill="var(--surface)">Page 3</text>
+    <text x="440" y="18" fill="var(--fg)" font-weight="700">RAM</text>
+  </g>
+  <g font-size="12" text-anchor="middle">
+    <rect x="380" y="26" width="120" height="30" fill="var(--warn)"/><text x="440" y="46" fill="var(--surface)">Kernel</text>
+    <rect x="380" y="56" width="120" height="30" fill="var(--example)"/><text x="440" y="76" fill="var(--surface)">P2 Page 3</text>
+    <rect x="380" y="86" width="120" height="30" fill="var(--theory)"/><text x="440" y="106" fill="var(--surface)">P1 Page 3</text>
+    <rect x="380" y="116" width="120" height="30" fill="var(--theory)"/><text x="440" y="136" fill="var(--surface)">P1 Page 0</text>
+    <rect x="380" y="146" width="120" height="30" fill="var(--example)"/><text x="440" y="166" fill="var(--surface)">P2 Page 1</text>
+    <rect x="380" y="176" width="120" height="30" fill="var(--theory)"/><text x="440" y="196" fill="var(--surface)">P1 Page 2</text>
+    <rect x="380" y="206" width="120" height="30" fill="var(--sunk)" stroke="var(--line)"/><text x="440" y="226" fill="var(--muted)">(free)</text>
+    <rect x="380" y="236" width="120" height="30" fill="var(--theory)"/><text x="440" y="256" fill="var(--surface)">P1 Page 1</text>
+  </g>
+  <g font-size="11" fill="var(--muted)" class="mono">
+    <text x="506" y="45">frame 0</text><text x="506" y="75">frame 1</text><text x="506" y="105">frame 2</text><text x="506" y="135">frame 3</text>
+    <text x="506" y="165">frame 4</text><text x="506" y="195">frame 5</text><text x="506" y="225">frame 6</text><text x="506" y="255">frame 7</text>
+  </g>
+  <g stroke-width="1.5" fill="none">
+    <path d="M120 39 C250 39 250 131 378 131" stroke="var(--theory)"/><path d="M120 65 C250 65 250 251 378 251" stroke="var(--theory)"/>
+    <path d="M120 91 C250 91 250 191 378 191" stroke="var(--theory)"/><path d="M120 117 C250 117 250 101 378 101" stroke="var(--theory)"/>
+    <path d="M120 215 C250 215 250 161 378 161" stroke="var(--example)"/><path d="M120 267 C250 267 250 71 378 71" stroke="var(--example)"/>
+  </g>
+</svg>
+<figcaption>טבלת הדפים של <bdi dir="ltr">P1</bdi>: 3, 7, 5, 2. של <bdi dir="ltr">P2</bdi>: ✗, 4, ✗, 1</figcaption>
+</figure>
+
+<div class="box theory"><div class="box-title"><bdi dir="ltr">Copy-on-Write</bdi> – מה שמאחורי <bdi dir="ltr">fork</bdi></div><div class="box-body">
+<p>אחרי <code>fork()</code> לילד יש עותק של כל מרחב הכתובות. בפועל לא מעתיקים כלום: הטבלה של הילד מצביעה <strong>לאותן מסגרות</strong> של ההורה, והדפים מסומנים לקריאה בלבד. רק כשאחד מהם <strong>כותב</strong> לדף, מעתיקים את הדף הזה בלבד למסגרת חדשה. זה ה-<bdi dir="ltr">copy-on-write</bdi> שהזכרנו בפרק התהליכים.</p>
+</div></div>
+
+<h3>טבלת הדפים</h3>
+<p>את המיפוי צריך לשמור איפשהו. <strong>טבלת הדפים</strong> (<bdi dir="ltr">page table</bdi>) רושמת לכל דף וירטואלי באיזו מסגרת פיזית הוא נמצא. יש טבלה <strong>לכל תהליך</strong>, והיא נשמרת בזיכרון.</p>
+<div class="tbl"><table>
+<tr><th>תהליך</th><th class="num">דף 0</th><th class="num">דף 1</th><th class="num">דף 2</th><th class="num">דף 3</th></tr>
+<tr><td>P1</td><td class="num">3</td><td class="num">7</td><td class="num">5</td><td class="num">2</td></tr>
+<tr><td>P2</td><td class="num">✗</td><td class="num">4</td><td class="num">✗</td><td class="num">1</td></tr>
+<tr><td>P3</td><td class="num">8</td><td class="num">✗</td><td class="num">9</td><td class="num">11</td></tr>
+</table></div>
+<p>לדוגמה: דף 2 של <bdi dir="ltr">P1</bdi> נמצא במסגרת 5, ודף 0 של <bdi dir="ltr">P3</bdi> נמצא במסגרת 8.</p>
+
+<h2 id="vm-trans">תרגום כתובת</h2>
+<div class="box theory"><div class="box-title">השיטה – תמיד אותם ארבעה צעדים</div><div class="box-body">
+<ol>
+<li><strong>כמה ביטים בכתובת הווירטואלית?</strong> לוג בבסיס 2 של גודל מרחב הכתובות.</li>
+<li><strong>כמה ביטים ל-<bdi dir="ltr">offset</bdi>?</strong> לוג בבסיס 2 של גודל הדף. השאר הם ה-<bdi dir="ltr">VPN</bdi> (<bdi dir="ltr">virtual page number</bdi>).</li>
+<li><strong>מחפשים את ה-<bdi dir="ltr">VPN</bdi> בטבלת הדפים</strong> ומקבלים <bdi dir="ltr">PFN</bdi> (<bdi dir="ltr">physical frame number</bdi>).</li>
+<li><strong>מרכיבים:</strong> ה-<bdi dir="ltr">PFN</bdi> בביטים הגבוהים, וה-<bdi dir="ltr">offset</bdi> <strong>מועתק כמו שהוא</strong> לביטים הנמוכים.</li>
+</ol>
+</div></div>
+<div class="box formula"><div class="box-title">בנוסחאות</div><div class="box-body">
+<span class="fline">VPN = VA / page size</span>
+<span class="fline">offset = VA mod page size</span>
+<span class="fline">PA = PFN × page size + offset</span>
+</div></div>
+
+<div class="box example"><div class="box-title">דוגמה מלאה (שקפים 27–28)</div><div class="box-body">
+<p>מרחב כתובות <bdi dir="ltr">64KB</bdi>, דף <bdi dir="ltr">16KB</bdi>, <bdi dir="ltr">RAM</bdi> של <bdi dir="ltr">128KB</bdi>, טבלת הדפים של <bdi dir="ltr">P1</bdi> היא 3, 7, 5, 2. <bdi dir="ltr">P1</bdi> ניגש לכתובת <bdi dir="ltr">33K</bdi>.</p>
+<div class="tbl"><table>
+<tr><th>שלב</th><th>חישוב</th><th>תוצאה</th></tr>
+<tr><td>ביטים בכתובת</td><td class="mono">64KB = 2^16</td><td class="num">16</td></tr>
+<tr><td>ביטים ל-<bdi dir="ltr">offset</bdi></td><td class="mono">16KB = 2^14</td><td class="num">14</td></tr>
+<tr><td>ביטים ל-<bdi dir="ltr">VPN</bdi></td><td class="mono">16 − 14</td><td class="num">2 (4 דפים)</td></tr>
+<tr><td>הכתובת</td><td class="mono">33K = 33792</td><td class="mono">10|00010000000000</td></tr>
+<tr><td>VPN, offset</td><td class="mono">33792 = 2 × 16384 + 1024</td><td class="num">2, 1024</td></tr>
+<tr><td>PFN</td><td class="mono">PT[2]</td><td class="num">5</td></tr>
+<tr><td>ביטים לכתובת פיזית</td><td class="mono">128KB = 2^17</td><td class="num">17</td></tr>
+<tr><td>הכתובת הפיזית</td><td class="mono">5 × 16384 + 1024</td><td class="mono">82944 = 81K</td></tr>
+</table></div>
+<p>בביטים: <bdi dir="ltr">PFN</bdi> של 3 ביטים (101) ואחריו אותו <bdi dir="ltr">offset</bdi> בדיוק.</p>
+<span class="fline">101|00010000000000</span>
+</div></div>
+<p>במחשבון אפשר להריץ את כל הדוגמאות מהשקפים, או להכניס נתונים משלכם. הוא בודק גם מקרים שגויים: כתובת מחוץ לטווח, טבלה באורך לא נכון, או דף לא ממופה.</p>
+<div class="vmw" data-vm="translator"></div>
+<div class="box warn"><div class="box-title">שימו לב בשקף 29</div><div class="box-body">
+<p>ה-<bdi dir="ltr">RAM</bdi> הוא <bdi dir="ltr">192KB</bdi>, שזה לא חזקה של 2: יש 24 מסגרות. כדי לכתוב מספר עד 23 צריך 5 ביטים, ולכן הכתובת הפיזית היא בת 18 ביטים.</p>
+<span class="fline">⌈log₂ 24⌉ = 5</span>
+<span class="fline">5 + 13 = 18</span>
+</div></div>
+
+<div class="box exercise"><div class="box-title">תרגול (שקף 30) · השלימו את הטבלה</div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>גודל דף</th><th class="num">ביטים בכתובת</th><th class="num">offset</th><th class="num">VPN</th><th class="num">מספר דפים</th></tr>
+<tr><td class="num">16 bytes</td><td class="num">10</td><td class="num">?</td><td class="num">?</td><td class="num">?</td></tr>
+<tr><td class="num">1KB</td><td class="num">20</td><td class="num">?</td><td class="num">?</td><td class="num">?</td></tr>
+<tr><td class="num">1MB</td><td class="num">32</td><td class="num">?</td><td class="num">?</td><td class="num">?</td></tr>
+<tr><td class="num">512 bytes</td><td class="num">14</td><td class="num">?</td><td class="num">?</td><td class="num">?</td></tr>
+<tr><td class="num">4KB</td><td class="num">32</td><td class="num">?</td><td class="num">?</td><td class="num">?</td></tr>
+</table></div>
+<details class="sol"><summary>פתרון</summary>
+<p><bdi dir="ltr">offset</bdi> = לוג של גודל הדף. <bdi dir="ltr">VPN</bdi> = מה שנשאר. מספר הדפים = 2 בחזקת ה-<bdi dir="ltr">VPN</bdi>.</p>
+<div class="tbl"><table>
+<tr><th>גודל דף</th><th class="num">ביטים בכתובת</th><th class="num">offset</th><th class="num">VPN</th><th class="num">מספר דפים</th></tr>
+<tr><td class="num">16 bytes</td><td class="num">10</td><td class="num">4</td><td class="num">6</td><td class="num">64</td></tr>
+<tr><td class="num">1KB</td><td class="num">20</td><td class="num">10</td><td class="num">10</td><td class="num">1K</td></tr>
+<tr><td class="num">1MB</td><td class="num">32</td><td class="num">20</td><td class="num">12</td><td class="num">4K</td></tr>
+<tr><td class="num">512 bytes</td><td class="num">14</td><td class="num">9</td><td class="num">5</td><td class="num">32</td></tr>
+<tr><td class="num">4KB</td><td class="num">32</td><td class="num">12</td><td class="num">20</td><td class="num">1M</td></tr>
+</table></div>
+</details></div></div>
+
+<h3>מה יש ב-<bdi dir="ltr">PTE</bdi></h3>
+<p>כל שורה בטבלה היא <bdi dir="ltr">PTE</bdi> (<bdi dir="ltr">page table entry</bdi>). בטבלה <strong>לינארית</strong> – הצורה הפשוטה – ה-<bdi dir="ltr">VPN</bdi> הוא פשוט האינדקס בטבלה. מעבר ל-<bdi dir="ltr">PFN</bdi>, ב-<bdi dir="ltr">PTE</bdi> יש ביטים:</p>
+<div class="tbl"><table>
+<tr><th>ביט</th><th>משמעות</th></tr>
+<tr><td><strong>Valid (V)</strong></td><td>האם התרגום חוקי. מקום שלא בשימוש מסומן לא חוקי, וגישה אליו גורמת ל-<bdi dir="ltr">trap</bdi>.</td></tr>
+<tr><td><strong>Protection (R/W)</strong></td><td>קריאה / כתיבה / הרצה</td></tr>
+<tr><td><strong>Present (P)</strong></td><td>האם הדף ב-<bdi dir="ltr">RAM</bdi> או בדיסק (ראו <a href="#vm-swap">Swapping</a>)</td></tr>
+<tr><td><strong>Dirty (D)</strong></td><td>האם הדף שונה מאז שנטען</td></tr>
+<tr><td><strong>Reference (A)</strong></td><td>האם ניגשו לדף לאחרונה</td></tr>
+</table></div>
+
+<h2 id="vm-tlb">הבעיות של טבלת דפים, ו-<bdi dir="ltr">TLB</bdi></h2>
+<div class="box warn"><div class="box-title">בעיה 1: גדול מדי</div><div class="box-body">
+<p>32 ביט עם דפים של <bdi dir="ltr">4KB</bdi>: <bdi dir="ltr">VPN</bdi> של 20 ביט ו-<bdi dir="ltr">offset</bdi> של 12, ו-4 בתים לכל <bdi dir="ltr">PTE</bdi>.</p>
+<span class="fline">2^20 × 4B = 4MB</span>
+<p>לכל תהליך. ועם 100 תהליכים:</p>
+<span class="fline">100 × 4MB = 400MB</span>
+<p><bdi dir="ltr">400MB</bdi> רק בשביל תרגומים – ובנוסף הטבלה צריכה להיות רציפה בזיכרון.</p>
+</div></div>
+<div class="box warn"><div class="box-title">בעיה 2: איטי מדי</div><div class="box-body">
+<p>הטבלה גדולה מכדי לשבת ב-<bdi dir="ltr">MMU</bdi>, אז היא בזיכרון. כדי למצוא <bdi dir="ltr">PTE</bdi> צריך את כתובת התחלת הטבלה, וכל גישה לזיכרון דורשת <strong>גישה נוספת</strong> – לטבלה. כלומר פי 2 גישות.</p>
+</div></div>
+
+<h3>TLB</h3>
+<p>ה-<strong>TLB</strong> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) הוא מטמון חומרה קטן בתוך ה-<bdi dir="ltr">MMU</bdi> של תרגומים פופולריים. המפתח: הדף הווירטואלי. הערך: ה-<bdi dir="ltr">PTE</bdi>.</p>
+<div class="tbl"><table>
+<tr><th>מקרה</th><th>מה קורה</th></tr>
+<tr><td><strong>TLB hit</strong></td><td>התרגום נמצא – מוציאים את ה-<bdi dir="ltr">PFN</bdi> בחומרה, מהר.</td></tr>
+<tr><td><strong>TLB miss</strong></td><td>מחפשים בטבלת הדפים, מעדכנים את ה-<bdi dir="ltr">TLB</bdi>, ומריצים שוב את הפקודה. בדרך כלל החומרה מטפלת בזה. אפשר גם בתוכנה: ה-<bdi dir="ltr">miss</bdi> גורם ל-<bdi dir="ltr">exception</bdi>, וה-<bdi dir="ltr">trap handler</bdi> של מערכת ההפעלה מוצא את התרגום ומעדכן.</td></tr>
+</table></div>
+<p>הדוגמה של שקף 38: לולאה שכותבת <code>a[i] = i</code> על 10 איברים, שמתפרסים על 3 דפים. בכל דף רק הגישה הראשונה היא <bdi dir="ltr">miss</bdi>. שנו את הפרמטרים כדי לראות איך גודל הדף ומיקום המערך משפיעים:</p>
+<div class="vmw" data-vm="tlb"></div>
+<div class="box theory"><div class="box-title">למה זה עובד: לוקליות</div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>סוג</th><th>משמעות</th><th>בדוגמה</th></tr>
+<tr><td><strong>Spatial</strong> (מרחבית)</td><td>אם ניגשנו לכתובת <bdi dir="ltr">x</bdi>, כנראה ניגש בקרוב לכתובות ליד <bdi dir="ltr">x</bdi></td><td><code>a[1]</code>, <code>a[2]</code> באותו דף של <code>a[0]</code></td></tr>
+<tr><td><strong>Temporal</strong> (זמנית)</td><td>מה שניגשנו אליו לאחרונה, כנראה ניגש אליו שוב בקרוב</td><td>גישה שנייה למערך אחרי הלולאה – כל התרגומים כבר ב-<bdi dir="ltr">TLB</bdi></td></tr>
+</table></div>
+</div></div>
+<div class="box example"><div class="box-title"><bdi dir="ltr">ASID: TLB</bdi> ו-<bdi dir="ltr">context switch</bdi></div><div class="box-body">
+<p>דף 2 של <bdi dir="ltr">P1</bdi> ודף 2 של <bdi dir="ltr">P2</bdi> הם אותו <bdi dir="ltr">VPN</bdi> אבל מסגרות שונות. אחרי <bdi dir="ltr">context switch</bdi>, <bdi dir="ltr">P2</bdi> עלול לקבל את התרגום של <bdi dir="ltr">P1</bdi>. לכן כל שורה ב-<bdi dir="ltr">TLB</bdi> מסומנת ב-<strong>ASID</strong> (<bdi dir="ltr">Address Space ID</bdi>) של התהליך, וההתאמה היא רק אם גם ה-<bdi dir="ltr">ASID</bdi> מתאים.</p>
+<div class="tbl"><table>
+<tr><th class="num">VPN</th><th class="num">PFN</th><th class="num">ASID</th></tr>
+<tr><td class="num">1</td><td class="num">6</td><td class="num">1</td></tr>
+<tr><td class="num">3</td><td class="num">6</td><td class="num">2</td></tr>
+</table></div>
+<p>שתי השורות מצביעות למסגרת 6: דף 1 של <bdi dir="ltr">P1</bdi> ודף 3 של <bdi dir="ltr">P2</bdi> <strong>משתפים</strong> דף. כך משתפים קוד – בקריאה בלבד, ולכן הבידוד נשמר.</p>
+</div></div>
+
+<h2 id="vm-ml">דפים גדולים יותר וטבלה רב-שלבית</h2>
+<h3>פתרון 1: דפים גדולים יותר</h3>
+<p>אותו מרחב של 32 ביט עם דפים של <bdi dir="ltr">16KB</bdi>: <bdi dir="ltr">VPN</bdi> של 18 ביט ו-<bdi dir="ltr">offset</bdi> של 14.</p>
+<span class="fline">2^18 × 4B = 1MB</span>
+<p>ל-100 תהליכים <bdi dir="ltr">100MB</bdi> במקום <bdi dir="ltr">400MB</bdi>. אבל יש מחיר: <strong>Internal fragmentation</strong> – תהליך שצריך קצת זיכרון מקבל דף שלם של <bdi dir="ltr">16KB</bdi>, ורוב הדף מבוזבז <em>בתוך</em> הדף.</p>
+<div class="box theory"><div class="box-title">שני סוגי הפרגמנטציה</div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>סוג</th><th>איפה המקום המבוזבז</th><th>מתי</th></tr>
+<tr><td><strong>External</strong></td><td>בין יחידות – חורים קטנים שאי אפשר לנצל</td><td>יחידות בגודל משתנה (סגמנטציה)</td></tr>
+<tr><td><strong>Internal</strong></td><td>בתוך יחידה – הוקצה יותר ממה שצריך</td><td>יחידות בגודל קבוע (דפים גדולים)</td></tr>
+</table></div>
+</div></div>
+
+<h3>פתרון <bdi dir="ltr">2</bdi>: <bdi dir="ltr">Multi-Level Page Table</bdi></h3>
+<p>רוב טבלת הדפים לא בשימוש: רוב מרחב הכתובות הוא הרווח בין הערימה למחסנית. הרעיון: הופכים את הטבלה ל<strong>עץ</strong>.</p>
+<ol>
+<li>מחלקים את טבלת הדפים לחלקים בגודל של <strong>דף אחד</strong>.</li>
+<li><strong>Page Directory</strong> שומר כניסה אחת (<bdi dir="ltr">PDE</bdi>) לכל חלק.</li>
+<li>חלק שכל הכניסות שלו לא חוקיות – <strong>לא מקצים אותו בכלל</strong>.</li>
+</ol>
+<div class="tbl"><table>
+<tr><th>יתרונות</th><th>חסרונות</th></tr>
+<tr><td>מקצה מקום רק לפי השימוש בפועל</td><td>עוד רמה של הפניה: עוד גישה לזיכרון בכל <bdi dir="ltr">TLB miss</bdi> (<bdi dir="ltr">time-space trade-off</bdi>)</td></tr>
+<tr><td>כל חלק נכנס בדף – קל לנהל, לא צריך רצף גדול</td><td>מורכבות</td></tr>
+</table></div>
+
+<div class="box example"><div class="box-title">דוגמה (שקפים 46–47)</div><div class="box-body">
+<p>מרחב כתובות <bdi dir="ltr">16KB</bdi>, דף <bdi dir="ltr">32B</bdi>, <bdi dir="ltr">PTE</bdi> של <bdi dir="ltr">2B</bdi>, ו-<bdi dir="ltr">RAM</bdi> של <bdi dir="ltr">64KB</bdi>. מתרגמים את 6362.</p>
+<div class="tbl"><table>
+<tr><th>שלב</th><th>חישוב</th><th>תוצאה</th></tr>
+<tr><td>ביטים בכתובת</td><td class="mono">16KB = 2^14</td><td class="num">14</td></tr>
+<tr><td>offset</td><td class="mono">32B = 2^5</td><td class="num">5</td></tr>
+<tr><td>VPN</td><td class="mono">14 − 5</td><td class="num">9 (512 דפים)</td></tr>
+<tr><td>VPN, offset</td><td class="mono">6362 = 198 × 32 + 26</td><td class="num">198, 26</td></tr>
+<tr><td>כניסות בדף</td><td class="mono">32B / 2B = 16 = 2^4</td><td class="num"><bdi dir="ltr">PT index: 4</bdi> ביטים</td></tr>
+<tr><td>Page Directory</td><td class="mono">9 − 4</td><td class="num"><bdi dir="ltr">PD index: 5</bdi> ביטים</td></tr>
+<tr><td>האינדקסים</td><td class="mono">198 = 12 × 16 + 6</td><td class="num">PD 12, PT 6</td></tr>
+<tr><td>PFN</td><td class="mono">Part 12 [6]</td><td class="num">182</td></tr>
+<tr><td>כתובת פיזית</td><td class="mono">182 × 32 + 26</td><td class="num">5850</td></tr>
+</table></div>
+<span class="fline">01100|0110|11010  →  00010110110|11010</span>
+<p>כמו קודם, ה-<bdi dir="ltr">offset</bdi> (11010) מועתק כמו שהוא. <bdi dir="ltr">RAM</bdi> של <bdi dir="ltr">64KB</bdi> הוא 2048 מסגרות, ולכן <bdi dir="ltr">PFN</bdi> של 11 ביטים.</p>
+</div></div>
+
+<div class="box warn"><div class="box-title">ומה אם ה-<bdi dir="ltr">Page Directory</bdi> עצמו גדול מדף? (שקפים 49–50)</div><div class="box-body">
+<p>מרחב <bdi dir="ltr">1GB</bdi>, דף <bdi dir="ltr">512B</bdi>, <bdi dir="ltr">PTE</bdi> של <bdi dir="ltr">4B</bdi>:</p>
+<span class="fline">2^30 / 2^9 = 2^21 pages</span>
+<span class="fline">512B / 4B = 128 = 2^7 PTEs per page</span>
+<span class="fline">2^21 / 2^7 = 2^14 = 16384 PD entries</span>
+<p>16384 כניסות לא נכנסות בדף אחד – הן מתפרסות על 128 דפים. הפתרון: <strong>מוסיפים <bdi dir="ltr">Directory</bdi> ל-<bdi dir="ltr">Directory</bdi></strong>. הכתובת מתחלקת ל-7 + 7 + 7 ביטים של אינדקסים ועוד 9 של <bdi dir="ltr">offset</bdi>.</p>
+</div></div>
+<p>המחשבון מחשב לכל גודל כמה רמות צריך ואיך הכתובת מתחלקת:</p>
+<div class="vmw" data-vm="splitter"></div>
+
+<div class="box exercise"><div class="box-title"><bdi dir="ltr">Peculiar</bdi> (שקפים 51–52) · למה זה מאט פי 5?</div><div class="box-body">
+<pre><code class="language-c">mytype *arr = (mytype*) malloc(sizeof(mytype) * len);
+for (int t = 0; t &lt; 1000; ++t)
+    for (int i = 0; i &lt; len; ++i)
+        arr[i].data += 1;</code></pre>
+<div class="tbl"><table>
+<tr><th class="num">len</th><th class="num">mytype = int</th><th class="num">mytype = int[100]</th></tr>
+<tr><td class="num">1,000</td><td class="num">2</td><td class="num">2</td></tr>
+<tr><td class="num">10,000</td><td class="num">18</td><td class="num">18</td></tr>
+<tr><td class="num">100,000</td><td class="num">172</td><td class="num">686</td></tr>
+<tr><td class="num">1,000,000</td><td class="num">1732</td><td class="num">9449</td></tr>
+</table></div>
+<p>בשתי הגרסאות מספר הפעולות זהה, והסיבוכיות אומרת שפי 10 איברים ייתן פי 10 זמן. למה הגרסה השנייה קופצת?</p>
+<details class="sol"><summary>הסבר</summary>
+<p>ההבדל הוא <strong>כמה זיכרון הלולאה סורקת</strong>, לא כמה פעולות יש. עם <code>int</code> כל איבר הוא 4 בתים, ועם <code>int[100]</code> הוא 400 בתים – אבל הלולאה נוגעת רק ב-<code>data</code> של כל איבר.</p>
+<div class="tbl"><table>
+<tr><th class="num">len</th><th class="num"><bdi dir="ltr">int</bdi>: בתים</th><th class="num"><bdi dir="ltr">int</bdi>: דפים</th><th class="num"><bdi dir="ltr">int</bdi>[100]: בתים</th><th class="num"><bdi dir="ltr">int</bdi>[100]: דפים</th></tr>
+<tr><td class="num">10,000</td><td class="num">40,000</td><td class="num">10</td><td class="num">4,000,000</td><td class="num">977</td></tr>
+<tr><td class="num">100,000</td><td class="num">400,000</td><td class="num">98</td><td class="num">40,000,000</td><td class="num">9,766</td></tr>
+<tr><td class="num">1,000,000</td><td class="num">4,000,000</td><td class="num">977</td><td class="num">400,000,000</td><td class="num">97,657</td></tr>
+</table></div>
+<p>עם <code>int</code> יש 1024 איברים בכל דף, אז כל תרגום ב-<bdi dir="ltr">TLB</bdi> משמש להרבה גישות (לוקליות מרחבית). עם <code>int[100]</code> יש רק כ-10 איברים בדף, כך שהלולאה עוברת לדף חדש כל 10 גישות. כשמספר הדפים שהלולאה נוגעת בהם גדול בהרבה ממה שה-<bdi dir="ltr">TLB</bdi> (ומטמוני המעבד) מחזיקים, כמעט כל מעבר דף הוא <bdi dir="ltr">miss</bdi> ודורש הליכה בטבלת הדפים. לכן הזמן גדל הרבה יותר מפי 10.</p>
+<p>המספרים בטבלה חושבו לפי דף של <bdi dir="ltr">4KB</bdi>, שהוא הגודל הנפוץ. ה-<bdi dir="ltr">TLB</bdi> המדויק תלוי במעבד.</p>
+</details></div></div>
+
+
+<h2 id="vm-size">חישובי גדלים: טבלה לינארית והיררכית</h2>
+<p>כמעט בכל מבחן יש שאלה שבה צריך לחשב גדלים: כמה ביטים יש לכל חלק בכתובת, מה גודל טבלת הדפים, כמה רמות צריך, וכמה כניסות <bdi dir="ltr">valid</bdi> יש. כל השאלות האלה נפתרות עם אותם כמה קשרים. כל הדוגמאות כאן הן שאלות ממבחנים, עם הנתונים המלאים והפתרון (שנבדק בחישוב).</p>
+
+<h3>טבלה לינארית</h3>
+<div class="box formula"><div class="box-title">הקשרים</div><div class="box-body">
+<span class="fline">VA bits = log₂(virtual memory size)</span>
+<span class="fline">offset bits = log₂(page size)</span>
+<span class="fline">VPN bits = VA bits − offset bits</span>
+<span class="fline">PFN bits = PA bits − offset bits</span>
+<span class="fline">PTE ≥ PFN bits + status bits</span>
+<span class="fline">table size = 2^VPN × PTE size</span>
+</div></div>
+<div class="box theory"><div class="box-title">איך לקרוא את הקשרים</div><div class="box-body">
+<ul>
+<li>גודל מסגרת = גודל דף, ולכן ה-<bdi dir="ltr">offset</bdi> זהה בכתובת הווירטואלית ובפיזית.</li>
+<li>בטבלה לינארית יש <strong>רשומה לכל דף</strong> במרחב הכתובות – גם לדפים שהתהליך לא משתמש בהם. ה-<bdi dir="ltr">VPN</bdi> הוא האינדקס בטבלה.</li>
+<li>אפשר ללכת בכל כיוון: אם נתון גודל הטבלה ומספר הרשומות, מקבלים את גודל ה-<bdi dir="ltr">PTE</bdi>, ממנו את ה-<bdi dir="ltr">PFN</bdi>, וממנו את גודל הזיכרון הפיזי.</li>
+<li>הגודל של טבלה לינארית תלוי רק במבנה הכתובת, ולכן הוא <strong>זהה לכל התהליכים</strong> במערכת (25BB שאלה 5). בטבלה היררכית זה לא נכון (25BC שאלה 2).</li>
+</ul>
+</div></div>
+<div class="box warn"><div class="box-title">גודל ה-<bdi dir="ltr">PTE</bdi></div><div class="box-body">
+<p>ברירת המחדל: מספר הביטים הדרוש (<bdi dir="ltr">PFN</bdi> וביטי סטטוס) <strong>מרופד לחזקה של 2</strong> בבתים – בית, 2 בתים, 4 בתים. בשקף של התרגול: "<bdi dir="ltr">PTE</bdi> תמיד חזקה של 2".</p>
+<p>אבל כשהשאלה אומרת במפורש "בלי ריפוד" או נותנת את הגודל – משתמשים בנתון. ב-22AA שאלה 6.1 ה-<bdi dir="ltr">PTE</bdi> יוצא 3 בתים, וב-23SA שאלה 6 נתון 3 בתים "ואף ביט לא משמש לריפוד".</p>
+</div></div>
+
+<div class="box exercise"><div class="box-title">20SA שאלה 9 · גדלים בסיסיים</div><div class="box-body">
+<p>נתונה מערכת עם זיכרון וירטואלי של <bdi dir="ltr">1MB</bdi>, דף של <bdi dir="ltr">2KB</bdi> וזיכרון פיזי של <bdi dir="ltr">4MB</bdi>. מה הגדלים של ה-<bdi dir="ltr">VPN</bdi> וה-<bdi dir="ltr">PFN</bdi>, וכמה זיכרון תתפוס טבלת דפים לינארית של תהליך, במינימום (אין ביטי סטטוס)?</p>
+<details class="sol"><summary>פתרון</summary>
+<div class="tbl"><table>
+<tr><th>מה</th><th>חישוב</th><th>תוצאה</th></tr>
+<tr><td>כתובת וירטואלית</td><td class="mono">1MB = 2^20</td><td class="num">20 ביטים</td></tr>
+<tr><td>היסט</td><td class="mono">2KB = 2^11</td><td class="num">11 ביטים</td></tr>
+<tr><td><bdi dir="ltr">VPN</bdi></td><td class="mono">20 − 11</td><td class="num">9 ביטים</td></tr>
+<tr><td>כתובת פיזית</td><td class="mono">4MB = 2^22</td><td class="num">22 ביטים</td></tr>
+<tr><td><bdi dir="ltr">PFN</bdi></td><td class="mono">22 − 11</td><td class="num">11 ביטים</td></tr>
+<tr><td><bdi dir="ltr">PTE</bdi></td><td>11 ביטים, מרופד לחזקה של 2</td><td class="num">2 בתים</td></tr>
+<tr><td>גודל הטבלה</td><td class="mono">2^9 × 2B</td><td class="mono">1KB</td></tr>
+</table></div>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">22AA שאלה 6.1 · מגודל הטבלה לזיכרון הפיזי</div><div class="box-body">
+<p>זיכרון וירטואלי של <bdi dir="ltr">32GB</bdi> ודף של <bdi dir="ltr">4KB</bdi>. טבלת דפים לינארית תופסת <bdi dir="ltr">24MB</bdi>, וכל <bdi dir="ltr">PTE</bdi> מכיל מספר מסגרת ועוד 3 ביטים בלבד (בלי ריפוד). מה גודל הזיכרון הפיזי המקסימלי?</p>
+<details class="sol"><summary>פתרון</summary>
+<p>מספר הדפים, כלומר מספר הרשומות:</p>
+<span class="fline">32GB / 4KB = 2^35 / 2^12 = 2^23 = 8M</span>
+<p>גודל רשומה:</p>
+<span class="fline">24MB / 8M = 3B = 24 bits</span>
+<p>מספר מסגרת:</p>
+<span class="fline">PFN = 24 − 3 = 21 bits</span>
+<p>זיכרון פיזי מקסימלי:</p>
+<span class="fline">2^21 × 4KB = 2^33 = 8GB</span>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">22AC שאלה 8.1 · טבלה בדף אחד</div><div class="box-body">
+<p>זיכרון פיזי של <bdi dir="ltr">64KB</bdi> ודף של <bdi dir="ltr">512B</bdi>. כל <bdi dir="ltr">PTE</bdi> מכיל מספר מסגרת, ריפוד ועוד 3 ביטים (<bdi dir="ltr">valid, access, dirty</bdi>). כל טבלת דפים תופסת דף יחיד, והתרגום ברמה אחת. מה גודל הזיכרון הווירטואלי של תהליך?</p>
+<details class="sol"><summary>פתרון</summary>
+<div class="tbl"><table>
+<tr><th>מה</th><th>חישוב</th><th>תוצאה</th></tr>
+<tr><td>כתובת פיזית</td><td class="mono">64KB = 2^16</td><td class="num">16 ביטים</td></tr>
+<tr><td>היסט</td><td class="mono">512B = 2^9</td><td class="num">9 ביטים</td></tr>
+<tr><td><bdi dir="ltr">PFN</bdi></td><td class="mono">16 − 9</td><td class="num">7 ביטים</td></tr>
+<tr><td><bdi dir="ltr">PTE</bdi></td><td class="mono">7 + 3 = 10 → 16 bits</td><td class="num">2 בתים</td></tr>
+<tr><td>רשומות בטבלה</td><td class="mono">512B / 2B</td><td class="num">256</td></tr>
+<tr><td>זיכרון וירטואלי</td><td class="mono">256 × 512B</td><td class="mono">128KB</td></tr>
+</table></div>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">24AB שאלה 6.1 · גודל מול כניסות <bdi dir="ltr">valid</bdi></div><div class="box-body">
+<p>כתובת וירטואלית של 32 ביטים, כתובת פיזית של 40 ביטים, דף של <bdi dir="ltr">4KB</bdi>, וכל <bdi dir="ltr">PTE</bdi> בגודל 4 בתים. תהליך משתמש ב-<bdi dir="ltr">128KB</bdi> של נתונים החל מכתובת 0. מה גודל הטבלה הלינארית, וכמה כניסות בה <bdi dir="ltr">valid</bdi>?</p>
+<details class="sol"><summary>פתרון</summary>
+<span class="fline">VPN = 32 − 12 = 20 bits</span>
+<span class="fline">2^20 × 4B = 4MB</span>
+<p>הטבלה בגודל <bdi dir="ltr">4MB</bdi> – בלי קשר לכמה התהליך משתמש. כניסות <bdi dir="ltr">valid</bdi> יש רק לדפים שבשימוש:</p>
+<span class="fline">128KB / 4KB = 32</span>
+</details></div></div>
+
+<h3>טבלה היררכית</h3>
+<div class="box theory"><div class="box-title">השיטה</div><div class="box-body">
+<ol>
+<li><strong>כמה רשומות בטבלה אחת?</strong> כל חלק של הטבלה תופס דף, ולכן: <bdi dir="ltr">k = page size / PTE size</bdi>. כל רמה מקבלת <bdi dir="ltr">log₂ k</bdi> ביטים מה-<bdi dir="ltr">VPN</bdi>.</li>
+<li><strong>כמה רמות?</strong> מחלקים את ביטי ה-<bdi dir="ltr">VPN</bdi> לקבוצות של <bdi dir="ltr">log₂ k</bdi>, מעוגל למעלה. אם החלוקה לא מדויקת, <strong>הרמה העליונה</strong> מקבלת את השארית, ויש בה פחות רשומות.</li>
+<li><strong>תהליך שמשתמש בכל הדפים:</strong> ברמה העליונה תמיד טבלה אחת, ובכל רמה מתחתיה – טבלה לכל רשומה שמעליה: <bdi dir="ltr">1 + k + k² + …</bdi>. אפשר גם הפוך: מהמספר הזה לקרוא את <bdi dir="ltr">k</bdi> ומספר הרמות.</li>
+<li><strong>מינימום:</strong> כל הדפים שבשימוש באותה טבלה ברמה התחתונה – טבלה אחת בכל רמה.</li>
+<li><strong>מקסימום:</strong> כל קבוצת דפים בטבלה אחרת ברמה התחתונה, וכל אחת מהן תחת טבלה אחרת ברמה שמעליה. רצף של דפים יכול להתפרס על 2 טבלאות (סוף של אחת ותחילת הבאה), וסגמנט שלא מתחיל בתחילת דף תופס דף נוסף.</li>
+<li><strong>כניסות <bdi dir="ltr">valid</bdi>:</strong> ברמה התחתונה – אחת לכל דף בשימוש. בכל רמה מעליה – אחת לכל טבלה שהיא מצביעה עליה.</li>
+</ol>
+</div></div>
+<div class="box formula"><div class="box-title">בנוסחאות</div><div class="box-body">
+<span class="fline">k = page size / PTE size</span>
+<span class="fline">levels = ⌈ VPN bits / log₂ k ⌉</span>
+<span class="fline">full table = 1 + k + k² + …</span>
+</div></div>
+
+<div class="box exercise"><div class="box-title">22AA שאלה 6.2 · כמה רמות</div><div class="box-body">
+<p>זיכרון וירטואלי של <bdi dir="ltr">32GB</bdi>, דף של <bdi dir="ltr">4KB</bdi>, וכל <bdi dir="ltr">PTE</bdi> (בכל רמה) הוא 32 ביטים. כל טבלה בדף אחד בדיוק. כמה רמות צריך כדי למפות את מרחב הכתובות?</p>
+<details class="sol"><summary>פתרון</summary>
+<span class="fline">k = 4KB / 4B = 1024 = 2^10</span>
+<span class="fline">VPN = 35 − 12 = 23 bits</span>
+<span class="fline">23 = 3 + 10 + 10</span>
+<p><strong>3 רמות:</strong> 10 ביטים לכל אחת משתי הרמות התחתונות, ו-3 ביטים לרמה העליונה (שבה רק 8 רשומות בשימוש).</p>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">22BA שאלה 6 · מספר המסגרות של טבלה מלאה</div><div class="box-body">
+<p>דף של <bdi dir="ltr">4KB</bdi>. כל <bdi dir="ltr">PTE</bdi> מכיל מספר מסגרת ועוד ביט <bdi dir="ltr">present</bdi> בלבד, ל-<bdi dir="ltr">PTE</bdi> ול-<bdi dir="ltr">PDE</bdi> אותו גודל, וכל טבלה בדף אחד בדיוק.</p>
+<p>(א) לתהליך שמשתמש בכל הדפים שלו, טבלה ב-3 רמות תופסת <bdi dir="ltr">1 + 2048 + 2048²</bdi> מסגרות. מה מרחב הכתובות, ומה הזיכרון הפיזי המקסימלי?</p>
+<p>(ב) ואם טבלה ב-2 רמות תופסת <bdi dir="ltr">1 + 1024</bdi> מסגרות?</p>
+<details class="sol"><summary>פתרון</summary>
+<div class="tbl"><table>
+<tr><th></th><th>(א)</th><th>(ב)</th></tr>
+<tr><td>רשומות בטבלה</td><td class="mono">k = 2048 = 2^11</td><td class="mono">k = 1024 = 2^10</td></tr>
+<tr><td>גודל רשומה</td><td class="mono">4KB / 2048 = 16 bits</td><td class="mono">4KB / 1024 = 32 bits</td></tr>
+<tr><td><bdi dir="ltr">PFN</bdi> (בלי ביט <bdi dir="ltr">present</bdi>)</td><td class="num">15 ביטים</td><td class="num">31 ביטים</td></tr>
+<tr><td>זיכרון פיזי</td><td class="mono">2^15 × 2^12 = 128MB</td><td class="mono">2^31 × 2^12 = 8TB</td></tr>
+<tr><td><bdi dir="ltr">VPN</bdi></td><td class="mono">3 × 11 = 33 bits</td><td class="mono">2 × 10 = 20 bits</td></tr>
+<tr><td>מרחב כתובות</td><td class="mono">2^33 × 2^12 = 32TB</td><td class="mono">2^20 × 2^12 = 4GB</td></tr>
+</table></div>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">24AB שאלה 6.2–6.3 · מינימום ומקסימום עם סגמנטים</div><div class="box-body">
+<p>כתובת וירטואלית של 32 ביטים, דף של <bdi dir="ltr">4KB</bdi>, <bdi dir="ltr">PTE</bdi> של 4 בתים, וטבלה היררכית שבה כל חלק בגודל דף.</p>
+<p>(א) תהליך משתמש ב-<bdi dir="ltr">128KB</bdi> החל מכתובת 0. כמה רמות, כמה זיכרון תופסות כל הטבלאות, וכמה כניסות <bdi dir="ltr">valid</bdi>?</p>
+<p>(ב) תהליך אחר משתמש בסגמנט קוד של <bdi dir="ltr">48KB</bdi> מכתובת <bdi dir="ltr">0x1000000</bdi>, סגמנט נתונים של <bdi dir="ltr">600KB</bdi> מכתובת <bdi dir="ltr">0x8000000</bdi>, ומחסנית של <bdi dir="ltr">64KB</bdi> מכתובת <bdi dir="ltr">0xF0000000</bdi>. כמה זיכרון תופסות הטבלאות, וכמה כניסות <bdi dir="ltr">valid</bdi>?</p>
+<details class="sol"><summary>פתרון</summary>
+<span class="fline">k = 4KB / 4B = 1024 → 10 bits per level</span>
+<span class="fline">VPN = 20 bits = 10 + 10 → 2 levels</span>
+<p>(א) 32 הדפים (0 עד 31) כולם בטבלה הראשונה של הרמה התחתונה: טבלה אחת בכל רמה, כלומר <bdi dir="ltr">8KB</bdi>. כניסות <bdi dir="ltr">valid</bdi>: 32 ברמה התחתונה ועוד אחת ברמה העליונה – <strong>33</strong>.</p>
+<p>(ב) כל טבלה ברמה התחתונה מכסה <bdi dir="ltr">4MB</bdi> (10 הביטים העליונים של הכתובת). כל אחד מהסגמנטים נכנס כולו בטבלה אחת, ושלושתם בטבלאות שונות:</p>
+<div class="tbl"><table>
+<tr><th>סגמנט</th><th>טבלה ברמה התחתונה</th><th class="num">כניסות <bdi dir="ltr">valid</bdi></th></tr>
+<tr><td>קוד</td><td class="mono">0x1000000 / 4MB = 4</td><td class="num">48K / 4K = 12</td></tr>
+<tr><td>נתונים</td><td class="mono">0x8000000 / 4MB = 32</td><td class="num">600K / 4K = 150</td></tr>
+<tr><td>מחסנית</td><td class="mono">0xF0000000 / 4MB = 960</td><td class="num">64K / 4K = 16</td></tr>
+</table></div>
+<p>טבלה עליונה ועוד 3 תחתונות: 4 דפים, כלומר <bdi dir="ltr">16KB</bdi>. כניסות <bdi dir="ltr">valid</bdi>: 3 ברמה העליונה ועוד <bdi dir="ltr">12 + 150 + 16</bdi> – בסך הכל <strong>181</strong>.</p>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">24BB שאלה 6 · מטבלה נתונה לכל הגדלים</div><div class="box-body">
+<p>טבלה היררכית ב-3 רמות, כל טבלה בדף אחד בדיוק, וכל <bdi dir="ltr">PTE</bdi> בגודל 16 ביטים. החלק הראשון ברמה התחתונה (<bdi dir="ltr">PT0</bdi>, המיפויים לדפים 0 עד 15) הוא:</p>
+<div class="tbl"><table>
+<tr><th class="num">דף</th><th>PFN</th><th class="num">V</th><th class="num">P</th><th class="num">A</th><th class="num">D</th></tr>
+<tr><td class="num">0</td><td class="mono">00000000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">1</td><td class="mono">00100010</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">2</td><td class="mono">00011101</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="num">3</td><td class="mono">00000000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">4</td><td class="mono">00000010</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="num">5</td><td class="mono">00000000</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">6</td><td class="mono">00001011</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="num">7</td><td class="mono">00000000</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">8</td><td class="mono">00011111</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">9</td><td class="mono">00000000</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">10</td><td class="mono">11010110</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">11</td><td class="mono">01100110</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="num">12</td><td class="mono">01111111</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="num">13</td><td class="mono">11100000</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="num">14</td><td class="mono">00000000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="num">15</td><td class="mono">00001111</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">0</td></tr>
+</table></div>
+<p>בכל רשומה יש גם 4 ביטים של ריפוד (0000). (א) מה גודל הזיכרון הפיזי המקסימלי? (ב) מה גודל הזיכרון הווירטואלי של תהליך? (ג) התהליך משתמש בעוד 15 דפים, ו-3 מהם רצופים (לכולם <bdi dir="ltr">P = 0</bdi>). כמה זיכרון תתפוס כל טבלת הדפים, וכמה כניסות <bdi dir="ltr">valid</bdi> יהיו, במינימום ובמקסימום?</p>
+<details class="sol"><summary>פתרון</summary>
+<p>(א) בטבלה 16 רשומות של 2 בתים, והיא בגודל דף – הדף הוא <bdi dir="ltr">32B</bdi>. ה-<bdi dir="ltr">PFN</bdi> הוא 8 ביטים:</p>
+<span class="fline">2^8 × 32B = 8KB</span>
+<p>(ב) 16 רשומות בכל טבלה, 3 רמות:</p>
+<span class="fline">16³ × 32B = 4096 × 32B = 128KB</span>
+<p>(ג) ב-<bdi dir="ltr">PT0</bdi> יש 13 כניסות <bdi dir="ltr">valid</bdi> (כל השורות חוץ מ-0, 3, 14).</p>
+<div class="tbl"><table>
+<tr><th></th><th>מינימום</th><th>מקסימום</th></tr>
+<tr><td>הסידור</td><td>15 הדפים באותה טבלה תחתונה (לא <bdi dir="ltr">PT0</bdi>, שבה רק 3 מקומות פנויים), באותה טבלה אמצעית</td><td>15 הדפים ב-14 טבלאות תחתונות (3 הרצופים יכולים להתפרס רק על 2), כל אחת תחת טבלה אמצעית אחרת</td></tr>
+<tr><td>טבלאות</td><td class="mono">1 + 1 + 2 = 4</td><td class="mono">1 + 15 + 15 = 31</td></tr>
+<tr><td>זיכרון</td><td class="mono">4 × 32B = 128B</td><td class="mono">31 × 32B = 992B</td></tr>
+<tr><td>כניסות <bdi dir="ltr">valid</bdi></td><td class="mono">1 + 2 + 13 + 15 = 31</td><td class="mono">15 + 15 + 13 + 15 = 58</td></tr>
+</table></div>
+</details></div></div>
+
+<h3><bdi dir="ltr">TLB</bdi> במבחנים</h3>
+<div class="box exercise"><div class="box-title">25AC שאלה 2 · הגדלת ה-<bdi dir="ltr">TLB</bdi></div><div class="box-body">
+<p>אם נגדיל את ה-<bdi dir="ltr">TLB</bdi>:</p>
+<ol>
+<li>בהכרח נגדיל את ה-<bdi dir="ltr">hit ratio</bdi>.</li>
+<li>לא ייתכן שנקטין את ה-<bdi dir="ltr">hit ratio</bdi>.</li>
+<li>נתפוס יותר מקום בזיכרון הפיזי עבור הרשומות הנוספות.</li>
+<li>נתפוס פחות מקום בזיכרון הפיזי, כי הרשומות יעברו ל-<bdi dir="ltr">TLB</bdi>.</li>
+<li>כל התשובות האחרות אינן נכונות.</li>
+</ol>
+<details class="sol"><summary>פתרון</summary>
+<p><strong>כל התשובות האחרות אינן נכונות.</strong> ה-<bdi dir="ltr">TLB</bdi> הוא מטמון בחומרה, בתוך המעבד. הוא לא מחזיק את טבלת הדפים ולא מחליף אותה, ולכן אין קשר בין הגודל שלו לבין המקום ב-<bdi dir="ltr">RAM</bdi> – הוא רק חוסך גישות לטבלה. והגדלה יכולה גם להקטין את ה-<bdi dir="ltr">hit ratio</bdi> (למשל עם מדיניות פינוי כמו <bdi dir="ltr">FIFO</bdi> – אנומליית <bdi dir="ltr">Belady</bdi>).</p>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title">23SA שאלה 6 · מה אפשר להסיק מתוכן ה-<bdi dir="ltr">TLB</bdi></div><div class="box-body">
+<p>כתובת וירטואלית של 32 ביט וזיכרון פיזי של <bdi dir="ltr">1GB</bdi>. כל <bdi dir="ltr">PTE</bdi> הוא 3 בתים: 6 ביטים לסטטוס, ואף ביט לא משמש לריפוד. תהליך הריץ את הקוד הבא (<bdi dir="ltr">M</bdi> ו-<bdi dir="ltr">N</bdi> קבועים):</p>
+<pre><code class="language-c">int arr[N];
+int step = M;
+for (int i = 0; i &lt; N; i += step)
+    arr[i] = arr[i] + 1;</code></pre>
+<p>הרשומות שנוספו ל-<bdi dir="ltr">TLB</bdi> בעקבות הגישות למערך (לפני כן לא היה שם אף מיפוי של המערך), בבסיס 16:</p>
+<div class="tbl"><table>
+<tr><th>דף</th><th>מסגרת</th><th>סטטוס</th></tr>
+<tr><td class="mono">2</td><td class="mono">11B</td><td>……</td></tr>
+<tr><td class="mono">3</td><td class="mono">2</td><td>……</td></tr>
+</table></div>
+<p>(א) מה גודל הדף? (ב) בגישה הראשונה (<bdi dir="ltr">i = 0</bdi>) התהליך פנה לכתובת <bdi dir="ltr">0x2008</bdi>. מה הכתובת הפיזית שבה מתחיל המערך? (ג) מה הגודל המינימלי והמקסימלי של <bdi dir="ltr">N</bdi>, אם <bdi dir="ltr">int</bdi> הוא 4 בתים?</p>
+<details class="sol"><summary>פתרון</summary>
+<p>(א) ה-<bdi dir="ltr">PFN</bdi> הוא <bdi dir="ltr">24 − 6 = 18</bdi> ביטים, והכתובת הפיזית 30 ביטים:</p>
+<span class="fline">offset = 30 − 18 = 12 bits → 4KB</span>
+<p>(ב) ההיסט הוא 3 הספרות האחרונות בבסיס 16: דף 2, היסט <bdi dir="ltr">008</bdi>. דף 2 במסגרת <bdi dir="ltr">11B</bdi>:</p>
+<span class="fline">0x2008 → 0x11B008</span>
+<p>(ג) איבר <bdi dir="ltr">i</bdi> נמצא בכתובת <bdi dir="ltr">0x2008 + 4i</bdi>. בדף 2 נמצאים האיברים 0 עד 1021, ובדף 3 האיברים 1022 עד 2045.</p>
+<ul>
+<li><strong>מינימום 1023:</strong> כדי לגעת בדף 3 צריך גישה לאיבר 1022 לפחות.</li>
+<li><strong>מקסימום 4090:</strong> עם <bdi dir="ltr">M = 2045</bdi> ניגשים רק לאיברים 0 ו-2045. הגישה הבאה, לאיבר 4090, לא קרתה – ולכן <bdi dir="ltr">N ≤ 4090</bdi>.</li>
+</ul>
+<p>בפתרון הרשמי כתוב מינימום 2 ומקסימום 4093: הוא מניח שהמערך מתחיל בסוף דף (למינימום) ובתחילת דף (למקסימום), בלי להתחשב בכתובת <bdi dir="ltr">0x2008</bdi> שנתונה בסעיף (ב). התוצאות כאן נבדקו בסקריפט על כל ערכי <bdi dir="ltr">N</bdi> ו-<bdi dir="ltr">M</bdi>.</p>
+</details></div></div>
+
+<h2 id="vm-swap"><bdi dir="ltr">Swapping</bdi> ו-<bdi dir="ltr">Page Fault</bdi></h2>
+<p>תהליך יכול לבקש עד <bdi dir="ltr">4GB</bdi>, ועשרה תהליכים <bdi dir="ltr">40GB</bdi> – ובפועל הרבה יותר. כדי לתמוך במרחבי כתובות גדולים מוסיפים <strong>רמה נוספת בהיררכיית הזיכרון</strong>, ובה נשמרים דפים שלא בשימוש כרגע – הדיסק.</p>
+<figure>
+<svg viewBox="0 0 520 200" width="520" role="img" aria-label="היררכיית זיכרון: רגיסטרים, מטמון, זיכרון ראשי, אחסון">
+  <g text-anchor="middle" font-size="14">
+    <polygon points="260,10 300,52 220,52" fill="var(--warn-bg)" stroke="var(--warn)"/><text x="260" y="45" fill="var(--fg)" font-size="11">Registers</text>
+    <polygon points="220,56 300,56 340,98 180,98" fill="var(--exercise-bg)" stroke="var(--exercise)"/><text x="260" y="82" fill="var(--fg)">Cache</text>
+    <polygon points="180,102 340,102 380,144 140,144" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="260" y="128" fill="var(--fg)">Main Memory (RAM)</text>
+    <polygon points="140,148 380,148 420,190 100,190" fill="var(--example-bg)" stroke="var(--example)"/><text x="260" y="174" fill="var(--fg)">Mass Storage (Swap)</text>
+  </g>
+  <g font-size="12" fill="var(--muted)">
+    <text x="440" y="40" direction="rtl">מהיר ויקר</text><text x="440" y="186" direction="rtl">גדול וזול</text>
+    <line x1="470" y1="50" x2="470" y2="170" stroke="var(--muted)" stroke-dasharray="3 3"/>
+  </g>
+</svg>
+</figure>
+<p><strong>Swap space</strong> הוא מקום שמור בדיסק לדפים. מוציאים אליו דפים מהזיכרון (<bdi dir="ltr">page out</bdi>) ומחזירים ממנו (<bdi dir="ltr">page in</bdi>). ביט ה-<strong>Present</strong> ב-<bdi dir="ltr">PTE</bdi> אומר אם הדף ב-<bdi dir="ltr">RAM</bdi> (1) או בדיסק (0).</p>
+
+<div class="box theory"><div class="box-title">מה קורה בכל גישה לזיכרון</div><div class="box-body">
+<ol>
+<li><strong>TLB hit</strong> ← מחשבים כתובת פיזית וקוראים מהזיכרון. סוף.</li>
+<li><strong>TLB miss</strong> ← מוצאים את ה-<bdi dir="ltr">PTE</bdi> בטבלת הדפים שבזיכרון:
+  <ul>
+  <li><strong>Present = 1</strong> ← מכניסים את התרגום ל-<bdi dir="ltr">TLB</bdi> ומריצים שוב את הפקודה.</li>
+  <li><strong>Present = 0</strong> ← <strong>Page fault</strong>, ומופעל ה-<bdi dir="ltr">page-fault handler</bdi> של מערכת ההפעלה.</li>
+  </ul></li>
+</ol>
+</div></div>
+<figure>
+<svg viewBox="0 0 600 270" width="600" role="img" aria-label="זרימת page fault">
+  <defs><marker id="pfa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--warn)"/></marker><marker id="pfb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <g font-size="13" text-anchor="middle">
+    <rect x="20" y="14" width="120" height="40" rx="6" fill="var(--theory)"/><text x="80" y="39" fill="var(--surface)">Process P1</text>
+    <rect x="20" y="104" width="120" height="40" rx="6" fill="var(--theory-bg)" stroke="var(--theory)"/><text x="80" y="129" fill="var(--fg)">MMU</text>
+    <rect x="20" y="204" width="120" height="44" rx="6" fill="var(--example-bg)" stroke="var(--example)"/><text x="80" y="231" fill="var(--fg)">TLB</text>
+    <rect x="250" y="104" width="120" height="40" rx="6" fill="var(--formula-bg)" stroke="var(--formula)"/><text x="310" y="129" fill="var(--fg)">OS</text>
+    <rect x="250" y="204" width="120" height="44" rx="6" fill="var(--exercise-bg)" stroke="var(--exercise)"/><text x="310" y="225" fill="var(--fg)">P1</text><text x="310" y="241" fill="var(--fg)" font-size="11">Page Table</text>
+    <rect x="460" y="40" width="120" height="40" rx="6" fill="var(--sunk)" stroke="var(--line)"/><text x="520" y="65" fill="var(--fg)">RAM</text>
+    <rect x="460" y="190" width="120" height="44" rx="6" fill="var(--warn-bg)" stroke="var(--warn)"/><text x="520" y="217" fill="var(--fg)">Disk (Swap)</text>
+  </g>
+  <g stroke-width="1.6" fill="none">
+    <path d="M80 54 V102" stroke="var(--muted)" marker-end="url(#pfb)"/>
+    <path d="M60 144 V202" stroke="var(--muted)" marker-end="url(#pfb)"/>
+    <path d="M140 124 C190 124 200 210 248 220" stroke="var(--muted)" marker-end="url(#pfb)"/>
+    <path d="M140 116 H248" stroke="var(--warn)" marker-end="url(#pfa)"/>
+    <path d="M370 112 C420 100 430 210 458 212" stroke="var(--warn)" marker-end="url(#pfa)"/>
+    <path d="M370 116 C410 90 430 70 458 62" stroke="var(--warn)" marker-end="url(#pfa)"/>
+    <path d="M310 144 V202" stroke="var(--warn)" marker-end="url(#pfa)"/>
+    <path d="M260 104 C220 60 170 40 142 36" stroke="var(--warn)" marker-end="url(#pfa)"/>
+  </g>
+  <g font-size="12" text-anchor="middle" font-weight="700" fill="var(--surface)">
+    <circle cx="96" cy="78" r="10" fill="var(--ink)"/><text x="96" y="82">1</text>
+    <circle cx="44" cy="174" r="10" fill="var(--ink)"/><text x="44" y="178">2</text>
+    <circle cx="200" cy="176" r="10" fill="var(--ink)"/><text x="200" y="180">3</text>
+    <circle cx="194" cy="104" r="10" fill="var(--warn)"/><text x="194" y="108">4</text>
+    <circle cx="420" cy="78" r="10" fill="var(--warn)"/><text x="420" y="82">5</text>
+    <circle cx="436" cy="160" r="10" fill="var(--warn)"/><text x="436" y="164">6</text>
+    <circle cx="326" cy="174" r="10" fill="var(--warn)"/><text x="326" y="178">7</text>
+    <circle cx="200" cy="44" r="10" fill="var(--warn)"/><text x="200" y="48">8</text>
+  </g>
+</svg>
+<figcaption>החצים האדומים הם הטיפול ב-<bdi dir="ltr">page fault</bdi></figcaption>
+</figure>
+<div class="tbl"><table>
+<tr><th class="num">#</th><th>שלב</th></tr>
+<tr><td class="num">1</td><td>התהליך ניגש לכתובת (<bdi dir="ltr">Load address</bdi>).</td></tr>
+<tr><td class="num">2</td><td>ה-<bdi dir="ltr">MMU</bdi> מחפש ב-<bdi dir="ltr">TLB</bdi> ← <bdi dir="ltr">miss</bdi>.</td></tr>
+<tr><td class="num">3</td><td>ה-<bdi dir="ltr">MMU</bdi> מוצא את ה-<bdi dir="ltr">PTE</bdi> בטבלת הדפים: <bdi dir="ltr">Present = 0</bdi>.</td></tr>
+<tr><td class="num">4</td><td><bdi dir="ltr">Page fault</bdi> ← <bdi dir="ltr">trap</bdi> למערכת ההפעלה.</td></tr>
+<tr><td class="num">5</td><td>אם הזיכרון מלא – מערכת ההפעלה מפנה דף (<bdi dir="ltr">evict</bdi>), לפי מדיניות ההחלפה.</td></tr>
+<tr><td class="num">6</td><td>מערכת ההפעלה מביאה את הדף מה-<bdi dir="ltr">swap</bdi> למסגרת פנויה. בזמן הקריאה מהדיסק התהליך <strong>חסום</strong>, ותהליך אחר רץ.</td></tr>
+<tr><td class="num">7</td><td>מערכת ההפעלה מעדכנת את טבלת הדפים: <bdi dir="ltr">PFN</bdi> חדש, <bdi dir="ltr">Present = 1</bdi>.</td></tr>
+<tr><td class="num">8</td><td>התהליך מריץ שוב את הפקודה (<bdi dir="ltr">Retry</bdi>). עכשיו יהיה <bdi dir="ltr">TLB miss</bdi> אחד נוסף, ואחריו הכל עובד.</td></tr>
+</table></div>
+<div class="box theory"><div class="box-title">מתי באמת מפנים: <bdi dir="ltr">Swap daemon</bdi></div><div class="box-body">
+<p>מערכת ההפעלה לא מחכה שהזיכרון יתמלא. תהליך רקע – <bdi dir="ltr">swap daemon</bdi> (או <bdi dir="ltr">page daemon</bdi>) – מתעורר כשיש פחות מ-<strong>LW</strong> (<bdi dir="ltr">low watermark</bdi>) דפים פנויים, ומפנה דפים עד שיש <strong>HW</strong> (<bdi dir="ltr">high watermark</bdi>) דפים פנויים.</p>
+</div></div>
+
+<h2 id="vm-repl">מדיניות החלפת דפים</h2>
+<p>כשהזיכרון מלא וצריך להביא דף, צריך לבחור <strong>איזה דף לפנות</strong>. ה-<bdi dir="ltr">RAM</bdi> משמש כאן כמטמון של הדיסק, והמטרה היא כמה שפחות <bdi dir="ltr">miss</bdi>.</p>
+<div class="tbl"><table>
+<tr><th>מדיניות</th><th>מפנה את</th><th>הערות</th></tr>
+<tr><td><strong>OPT</strong> (Optimal)</td><td>הדף שהגישה הבאה אליו <strong>הכי רחוקה בעתיד</strong></td><td>הכי מעט <bdi dir="ltr">miss</bdi> שאפשר. אי אפשר לממש – לא יודעים את העתיד. משמש רק כנקודת השוואה.</td></tr>
+<tr><td><strong>FIFO</strong></td><td>הדף שנכנס <strong>הכי מוקדם</strong></td><td>פשוט. לא מתחשב בכלל בשימוש. סובל מ-<bdi dir="ltr">Belady’s anomaly</bdi>.</td></tr>
+<tr><td><strong>LRU</strong></td><td>הדף שהשתמשו בו <strong>הכי מזמן</strong></td><td>מנצל לוקליות זמנית. יקר לממש במדויק.</td></tr>
+<tr><td><strong>Clock</strong></td><td>הדף הראשון עם <bdi dir="ltr">use bit = 0</bdi> שהמחוג מגיע אליו</td><td>קירוב זול ל-<bdi dir="ltr">LRU</bdi>.</td></tr>
+</table></div>
+
+<div class="box formula"><div class="box-title">שיעור פגיעה</div><div class="box-body">
+<span class="fline">hit rate = hits / accesses</span>
+<p><strong>בלי <bdi dir="ltr">cold-start</bdi>:</strong> לא סופרים את ה-<bdi dir="ltr">miss</bdi> הראשון של כל דף, כי אותו אף מדיניות לא יכולה למנוע.</p>
+<span class="fline">hit rate (no cold start) = hits / (accesses − distinct pages)</span>
+<p>בשקפים 61–63: 11 גישות ל-4 דפים שונים, ולכן המכנה הוא 7.</p>
+<span class="fline">OPT: 6 / 11 = <bdi dir="ltr">54.5%</bdi>,   6 / 7 = <bdi dir="ltr">85.7%</bdi></span>
+<span class="fline">FIFO: 4 / 11 = <bdi dir="ltr">36.4%</bdi>,   4 / 7 = <bdi dir="ltr">57.1%</bdi></span>
+<span class="fline">LRU: 6 / 11 = <bdi dir="ltr">54.5%</bdi>  (optimal here)</span>
+</div></div>
+<p>הסימולטור מייצר טבלה בדיוק כמו בשקפים – גישה, <bdi dir="ltr">Hit/Miss</bdi>, מה פונה ומה במטמון. כל הדוגמאות מהשקפים נמצאות בכפתורים, ואפשר להכניס רצף משלכם:</p>
+<div class="vmw" data-vm="replace"></div>
+<div class="box warn"><div class="box-title">שתי הערות על השקפים</div><div class="box-body">
+<ul>
+<li><strong><bdi dir="ltr">OPT</bdi>, שקף 61, הגישה האחרונה ל-2:</strong> במטמון 0, 1, 3, ואף אחד מ-0 ו-3 לא ישמש שוב. השקף מפנה את 3, אבל לפנות את 0 נכון באותה מידה – שיעור הפגיעה לא משתנה. הסימולטור בוחר כמו השקף.</li>
+<li><strong>שקף 65 (<bdi dir="ltr">FIFO</bdi> עם 3 מסגרות):</strong> בשתי השורות האחרונות כתוב מטמון <bdi dir="ltr">5,2,3</bdi>. אחרי שמפנים את 2 המטמון הוא <bdi dir="ltr">5,3,4</bdi>. שיעור הפגיעה (<bdi dir="ltr">25%</bdi>) נכון.</li>
+</ul>
+</div></div>
+
+<h3>Belady’s Anomaly</h3>
+<p>מצפים שמטמון גדול יותר ייתן שיעור פגיעה טוב יותר. עם <bdi dir="ltr">FIFO</bdi> זה יכול להיות הפוך: על הרצף <bdi dir="ltr">1 2 3 4 1 2 5 1 2 3 4 5</bdi>:</p>
+<div class="tbl"><table>
+<tr><th>מסגרות</th><th class="num">FIFO</th><th class="num">LRU</th></tr>
+<tr><td>3</td><td class="num">3 / 12 = <bdi dir="ltr">25%</bdi></td><td class="num">2 / 12</td></tr>
+<tr><td>4</td><td class="num">2 / 12 = <bdi dir="ltr">16.7%</bdi></td><td class="num">4 / 12</td></tr>
+</table></div>
+<p>עם 4 מסגרות <bdi dir="ltr">FIFO</bdi> <strong>גרוע יותר</strong> מאשר עם 3. ל-<bdi dir="ltr">LRU</bdi> (ול-<bdi dir="ltr">OPT</bdi>) יש <strong>stack property</strong>, כלומר התוכן של מטמון בגודל <bdi dir="ltr">N+1</bdi> תמיד מכיל את התוכן של מטמון בגודל <bdi dir="ltr">N</bdi>, ולכן הגדלה לא יכולה להזיק. בטבלה רואים את זה: <bdi dir="ltr">LRU</bdi> עולה מ-2 ל-4.</p>
+
+<h3 id="vm-work">איך זה נראה על עומסים אמיתיים</h3>
+<p>השקפים 67–69 ו-73 מראים גרפים מהספר. כאן הם חושבו מחדש בסימולציה: 10,000 גישות לכל עומס, ושיעור הפגיעה לכל גודל מטמון. העבירו את העכבר על גרף כדי לראות ערכים.</p>
+<div class="tbl"><table>
+<tr><th>עומס</th><th>מה הוא</th><th>מה רואים</th></tr>
+<tr><td><strong>No-locality</strong></td><td>גישות אקראיות ל-100 דפים</td><td>כל המדיניות המעשיות שוות – שיעור הפגיעה פשוט גודל המטמון חלקי 100. אין לוקליות לנצל.</td></tr>
+<tr><td><strong>80-20</strong></td><td><bdi dir="ltr">80%</bdi> מהגישות ל-<bdi dir="ltr">20%</bdi> מהדפים</td><td><bdi dir="ltr">LRU</bdi> ו-<bdi dir="ltr">Clock</bdi> טובים מ-<bdi dir="ltr">FIFO</bdi> ו-<bdi dir="ltr">RAND</bdi>, כי הם שומרים את הדפים ה"חמים".</td></tr>
+<tr><td><strong>Looping</strong></td><td>מעבר על 50 דפים בלולאה</td><td>המקרה הגרוע של <bdi dir="ltr">LRU</bdi> ו-<bdi dir="ltr">FIFO</bdi>: עד מטמון של 50 שיעור הפגיעה הוא 0, כי תמיד מפנים בדיוק את הדף שיידרש הבא. <bdi dir="ltr">RAND</bdi> דווקא טוב יותר כאן.</td></tr>
+</table></div>
+<div class="vmw charts" data-vm="charts"></div>
+
+<h3><bdi dir="ltr">Clock</bdi>: קירוב ל-<bdi dir="ltr">LRU</bdi></h3>
+<p>כדי לממש <bdi dir="ltr">LRU</bdi> מדויק צריך לעדכן חותמת זמן בכל גישה לזיכרון, ולמצוא את הדף הישן ביותר מבין מיליון דפים – יקר מדי. ולא באמת צריך את <em>הכי</em> ישן; מספיק "ישן".</p>
+<div class="box theory"><div class="box-title">האלגוריתם</div><div class="box-body">
+<ul>
+<li>לכל דף יש <strong>use bit</strong> (נקרא גם <bdi dir="ltr">reference bit</bdi>). החומרה מדליקה אותו (1) בכל גישה לדף.</li>
+<li>הדפים מסודרים ברשימה מעגלית, כמו שעון, ו<strong>מחוג</strong> מצביע על אחד מהם.</li>
+<li>כשצריך לפנות: אם ה-<bdi dir="ltr">use bit</bdi> של הדף שתחת המחוג הוא 1 – מאפסים אותו ל-0 ומתקדמים. ממשיכים עד שמגיעים לדף עם 0, ואותו מפנים.</li>
+</ul>
+<p>דף שנגעו בו מקבל "הזדמנות שנייה": המחוג צריך לעבור עליו פעמיים לפני שהוא יפונה.</p>
+</div></div>
+<p>בסימולטור למעלה בחרו את הכפתור <bdi dir="ltr">Clock</bdi>. הרצף <bdi dir="ltr">A B C D A D E C A F</bdi> עם 4 מסגרות מראה את אותו רעיון כמו שקף 72: דפים שקיבלו גישה נשמרים, והמחוג מאפס ביטים בדרכו.</p>
+<div class="box theory"><div class="box-title">שיפורים נוספים</div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>שיפור</th><th>הרעיון</th></tr>
+<tr><td><strong>Dirty bit</strong></td><td>דף ששונה חייב להיכתב לדיסק לפני שמפנים אותו. דף נקי – הפינוי בחינם. לכן <bdi dir="ltr">Clock</bdi> מחפש קודם דף שגם לא בשימוש וגם נקי.</td></tr>
+<tr><td><strong>Prefetching</strong></td><td>אם הבאנו את דף הקוד <bdi dir="ltr">P</bdi>, כנראה נצטרך בקרוב את <bdi dir="ltr">P+1</bdi> – מביאים אותו מראש.</td></tr>
+<tr><td><strong>Clustering</strong></td><td>מקבצים כמה כתיבות לדיסק יחד, כי כך הדיסק עובד הכי יעיל.</td></tr>
+</table></div>
+</div></div>
+
+<div class="box summary"><div class="box-title">סיכום פרק 7</div><div class="box-body">
+<ul>
+<li>כל כתובת בתהליך וירטואלית; ה-<bdi dir="ltr">MMU</bdi> מתרגם בכל גישה. המטרות: שקיפות, יעילות, הגנה.</li>
+<li><bdi dir="ltr">Base and bounds</bdi> מבזבז את הרווח; סגמנטציה פותרת אותו אבל יוצרת <bdi dir="ltr">external fragmentation</bdi>.</li>
+<li>חתיכות בגודל קבוע מנוהלות ברשימה חופשית שמוטמעת בתוך החתיכות עצמן.</li>
+<li>תרגום: <bdi dir="ltr">VPN</bdi> מהביטים הגבוהים ← טבלת הדפים ← <bdi dir="ltr">PFN</bdi>, וה-<bdi dir="ltr">offset</bdi> מועתק כמו שהוא.</li>
+<li>טבלה לינארית גדולה (<bdi dir="ltr">4MB</bdi> לתהליך) ואיטית (גישה כפולה). <bdi dir="ltr">TLB</bdi> פותר את המהירות; דפים גדולים או טבלה רב-שלבית פותרים את הגודל.</li>
+<li><bdi dir="ltr">Present = 0</bdi> ← <bdi dir="ltr">page fault</bdi> ← מערכת ההפעלה מביאה את הדף מה-<bdi dir="ltr">swap</bdi> ומריצה שוב.</li>
+<li>החלפה: <bdi dir="ltr">OPT</bdi> לא ניתן למימוש, <bdi dir="ltr">FIFO</bdi> סובל מ-<bdi dir="ltr">Belady</bdi>, <bdi dir="ltr">LRU</bdi> טוב אבל יקר, <bdi dir="ltr">Clock</bdi> מקרב אותו בזול.</li>
+</ul>
+</div></div>
+</section>
+
+<nav class="pager" aria-label="מעבר בין נושאים">
+<a class="prev" href="redir.html"><span class="dir">הנושא הקודם</span><span class="nm">פרק 6 · הפניות וצינורות</span></a>
+<a class="next" href="index.html"><span class="dir">סיימת</span><span class="nm">דף הבית</span></a>
+</nav>
+
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script>
+try { hljs.highlightAll(); } catch (e) {}
+
+/* ---------- scheduler core ---------- */
+function simulate(jobs, alg, q) {
+  jobs = jobs.map((j, i) => ({ name: j.name, arr: +j.arr, burst: +j.burst, idx: i, rem: +j.burst, first: null, done: null }));
+  const seg = []; let t = 0;
+  const push = (name, s, e) => { if (e <= s) return; const l = seg[seg.length - 1]; if (l && l.name === name && l.e === s) l.e = e; else seg.push({ name, s, e }); };
+  const byArr = (a, b) => a.arr - b.arr || a.idx - b.idx;
+  const left = () => jobs.some(j => j.rem > 0);
+  if (alg === 'FCFS' || alg === 'SJF') {
+    while (left()) {
+      const ready = jobs.filter(j => j.rem > 0 && j.arr <= t);
+      if (!ready.length) { const nx = Math.min(...jobs.filter(j => j.rem > 0).map(j => j.arr)); push('idle', t, nx); t = nx; continue; }
+      ready.sort(alg === 'SJF' ? (a, b) => a.burst - b.burst || byArr(a, b) : byArr);
+      const j = ready[0]; j.first = t; push(j.name, t, t + j.rem); t += j.rem; j.rem = 0; j.done = t;
+    }
+  } else if (alg === 'SRTF') {
+    while (left()) {
+      const ready = jobs.filter(j => j.rem > 0 && j.arr <= t);
+      if (!ready.length) { const nx = Math.min(...jobs.filter(j => j.rem > 0).map(j => j.arr)); push('idle', t, nx); t = nx; continue; }
+      ready.sort((a, b) => a.rem - b.rem || byArr(a, b));
+      const j = ready[0]; if (j.first === null) j.first = t;
+      const nextArr = Math.min(Infinity, ...jobs.filter(x => x.rem > 0 && x.arr > t).map(x => x.arr));
+      const run = Math.min(j.rem, nextArr - t);
+      push(j.name, t, t + run); t += run; j.rem -= run; if (!j.rem) j.done = t;
+    }
+  } else { // RR
+    q = Math.max(1, +q || 1);
+    const pending = jobs.slice().sort(byArr); const queue = [];
+    const admit = (upto) => { while (pending.length && pending[0].arr <= upto) queue.push(pending.shift()); };
+    admit(t);
+    while (queue.length || pending.length) {
+      if (!queue.length) { const nx = pending[0].arr; push('idle', t, nx); t = nx; admit(t); continue; }
+      const j = queue.shift(); if (j.first === null) j.first = t;
+      const run = Math.min(q, j.rem); push(j.name, t, t + run); t += run; j.rem -= run;
+      admit(t);
+      if (j.rem > 0) queue.push(j); else j.done = t;
+    }
+  }
+  const rows = jobs.map(j => ({ name: j.name, arr: j.arr, burst: j.burst, tat: j.done - j.arr, resp: j.first - j.arr }));
+  const avg = k => rows.reduce((s, r) => s + r[k], 0) / rows.length;
+  return { seg, rows, avgTat: avg('tat'), avgResp: avg('resp'), end: t };
+}
+
+/* ---------- rendering ---------- */
+const palette = ['var(--example)', 'var(--theory)', 'var(--exercise)', 'var(--formula)', 'var(--warn)', 'var(--summary)'];
+function colorOf(name, names) { return name === 'idle' ? 'var(--sunk)' : palette[names.indexOf(name) % palette.length]; }
+function fmt(x) { return Number.isInteger(x) ? String(x) : x.toFixed(2); }
+function gantt(res, names, title) {
+  const W = 560, L = 10, H = 34, scale = (W - 2 * L) / Math.max(1, res.end);
+  const step = res.end <= 20 ? 1 : res.end <= 40 ? 5 : res.end <= 100 ? 10 : Math.ceil(res.end / 10);
+  let s = `<svg viewBox="0 0 ${W} ${H + 40}" width="${W}" role="img" aria-label="Gantt">`;
+  res.seg.forEach(g => {
+    const x = L + g.s * scale, w = (g.e - g.s) * scale;
+    s += `<rect x="${x}" y="8" width="${w}" height="${H}" fill="${colorOf(g.name, names)}" stroke="var(--surface)" stroke-width="1"/>`;
+    if (w > 14 && g.name !== 'idle') s += `<text x="${x + w / 2}" y="${8 + H / 2 + 5}" text-anchor="middle" font-size="13" class="mono" fill="var(--surface)">${g.name}</text>`;
+  });
+  for (let v = 0; v <= res.end; v += step) {
+    const x = L + v * scale;
+    s += `<line x1="${x}" y1="${H + 8}" x2="${x}" y2="${H + 14}" stroke="var(--muted)"/><text x="${x}" y="${H + 28}" text-anchor="middle" font-size="11" class="mono" fill="var(--muted)">${v}</text>`;
+  }
+  s += '</svg>';
+  let tbl = '<div class="tbl"><table><tr><th>עבודה</th><th>הגעה</th><th>אורך</th><th>Turnaround</th><th>Response</th></tr>';
+  res.rows.forEach(r => tbl += `<tr><td class="mono">${r.name}</td><td class="num">${r.arr}</td><td class="num">${r.burst}</td><td class="num">${r.tat}</td><td class="num">${r.resp}</td></tr>`);
+  tbl += `<tr><th>ממוצע</th><td></td><td></td><td class="num">${fmt(res.avgTat)}</td><td class="num">${fmt(res.avgResp)}</td></tr></table></div>`;
+  return `<figure>${title ? `<figcaption style="margin:0 0 6px">${title}</figcaption>` : ''}${s}${tbl}</figure>`;
+}
+
+const presets = [
+  { label: 'FCFS · 10/10/10', alg: 'FCFS', jobs: [['A', 0, 10], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'FCFS · A=60', alg: 'FCFS', jobs: [['A', 0, 60], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'SJF · A=60', alg: 'SJF', jobs: [['A', 0, 60], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'SJF · B,C at t=10', alg: 'SJF', jobs: [['A', 0, 60], ['B', 10, 10], ['C', 10, 10]] },
+  { label: 'SRTF · B,C at t=10', alg: 'SRTF', jobs: [['A', 0, 60], ['B', 10, 10], ['C', 10, 10]] },
+  { label: 'RR · 5/5/5, q=1', alg: 'RR', q: 1, jobs: [['A', 0, 5], ['B', 0, 5], ['C', 0, 5]] },
+];
+const toJobs = p => p.jobs.map(([name, arr, burst]) => ({ name, arr, burst }));
+
+/* lecture figures */
+(function () {
+  const box = document.getElementById('lec-gantts'); if (!box) return;
+  const L = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const caps = [L('FCFS') + ': שלוש עבודות של 10, ממוצע 20', L('FCFS') + ': עבודה ' + L('A') + ' הארוכה ראשונה, ממוצע 70', L('SJF') + ': אותן עבודות, ממוצע 36.67', L('SJF') + ': ' + L('B') + ' ו-' + L('C') + ' מגיעות בזמן 10, ממוצע 63.33', L('SRTF') + ': אותו מקרה, ממוצע 36.67'];
+  let html = '';
+  presets.slice(0, 5).forEach((p, i) => { const j = toJobs(p); html += gantt(simulate(j, p.alg, p.q), j.map(x => x.name), caps[i]); });
+  box.innerHTML = html;
+  const rr = presets[5], rj = toJobs(rr);
+  document.getElementById('rr-gantt').innerHTML = gantt(simulate(rj, 'RR', 1), rj.map(x => x.name));
+})();
+
+/* interactive simulator */
+(function () {
+  const jobsEl = document.getElementById('jobs'), out = document.getElementById('out');
+  if (!jobsEl) return;
+  const alg = document.getElementById('alg'), q = document.getElementById('q');
+  let jobs = toJobs(presets[4]), uid = 0;
+  function renderJobs() {
+    jobsEl.innerHTML = '';
+    jobs.forEach((j, i) => {
+      const d = document.createElement('div'); d.className = 'job'; const id = 'j' + (uid++);
+      d.innerHTML = `<strong>${j.name}</strong><label for="${id}a">הגעה</label><input id="${id}a" type="number" min="0" value="${j.arr}"><label for="${id}b">אורך</label><input id="${id}b" type="number" min="1" value="${j.burst}"><button class="ghost" type="button" aria-label="הסר ${j.name}">×</button>`;
+      d.querySelector(`#${id}a`).oninput = e => { j.arr = Math.max(0, +e.target.value || 0); };
+      d.querySelector(`#${id}b`).oninput = e => { j.burst = Math.max(1, +e.target.value || 1); };
+      d.querySelector('button').onclick = () => { if (jobs.length > 1) { jobs.splice(i, 1); renderJobs(); run(); } };
+      jobsEl.appendChild(d);
+    });
+  }
+  function run() {
+    q.disabled = alg.value !== 'RR';
+    const res = simulate(jobs, alg.value, q.value);
+    out.innerHTML = gantt(res, jobs.map(j => j.name), alg.value + (alg.value === 'RR' ? ` · quantum ${q.value}` : ''));
+  }
+  document.getElementById('add').onclick = () => { if (jobs.length >= 6) return; jobs.push({ name: 'ABCDEF'[jobs.length] || 'X', arr: 0, burst: 5 }); renderJobs(); run(); };
+  document.getElementById('run').onclick = run;
+  alg.onchange = run; q.oninput = run;
+  const pc = document.getElementById('presets');
+  presets.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = p.label;
+    b.onclick = () => { jobs = toJobs(p); alg.value = p.alg; if (p.q) q.value = p.q; renderJobs(); run(); }; pc.appendChild(b); });
+  alg.value = 'SRTF'; renderJobs(); run();
+})();
+
+/* ================= dry-run tracer ================= */
+(function () {
+  const C = x => '<code>' + x + '</code>';
+  const E = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const PCOL = ['var(--example)', 'var(--theory)', 'var(--exercise)', 'var(--formula)', 'var(--warn)', 'var(--summary)'];
+  const ST = { running: 'רץ', ready: 'מוכן', blocked: 'חסום', zombie: 'זומבי', reaped: 'נאסף', kernel: 'בקרנל' };
+
+  /* ---- builder ---- */
+  function B(code) {
+    const t = { code, procs: [], out: [], steps: [] };
+    const P = pid => t.procs.find(p => p.pid === pid);
+    const api = {
+      proc(pid, ppid, line, vars, extra) { t.procs.push(Object.assign({ pid, ppid, line, vars: vars || {}, state: 'running', prog: null, buf: '' }, extra || {})); return api; },
+      fork(par, child) { const p = P(par); t.procs.push({ pid: child, ppid: par, line: p.line, vars: JSON.parse(JSON.stringify(p.vars)), state: 'ready', prog: p.prog, buf: p.buf }); return api; },
+      at(pid, line) { P(pid).line = line; return api; },
+      v(pid, k, val) { P(pid).vars[k] = val; return api; },
+      st(pid, s) { P(pid).state = s; if (s === 'reaped' || s === 'zombie') P(pid).line = null; return api; },
+      ppid(pid, pp) { P(pid).ppid = pp; return api; },
+      prog(pid, name) { P(pid).prog = name; return api; },
+      buf(pid, s) { P(pid).buf = s; return api; },
+      print(pid, text) { t.out.push({ pid, text }); return api; },
+      snap(active, note) {
+        t.steps.push({ procs: JSON.parse(JSON.stringify(t.procs)), out: t.out.slice(), active, note });
+        t.procs.forEach(p => { if (p.state === 'running' && p.pid !== active) p.state = 'ready'; });
+        return api;
+      },
+      run(pid) { t.procs.forEach(p => { if (p.state === 'running') p.state = 'ready'; }); P(pid).state = 'running'; return api; },
+      done() { return t; }
+    };
+    return api;
+  }
+
+  const KF = (par, child) => `<strong>מאחורי הקלעים:</strong> ${C('fork')} היא קריאת מערכת, ולכן ${E(par)} מבצע ${E('trap')} ועובר לקרנל. הקרנל מקצה ${E('PID')} חדש (${child}), יוצר ${E('PCB')} חדש בטבלת התהליכים ומעתיק לתוכו את מרחב הכתובות של ההורה, את האוגרים ואת הקבצים הפתוחים. בפועל ההעתקה עצלה, בשיטת ${E('copy-on-write')}. שני התהליכים נמצאים עכשיו באותה נקודה בקוד.`;
+  const RET = (par, child) => `הקרנל קובע ערך החזרה שונה לכל אחד: ההורה ${E(par)} מקבל ${child} (ה-${E('PID')} של הילד), והילד ${E(child)} מקבל 0. מכאן הם ממשיכים בנפרד, וכל אחד עובד על <strong>העותק שלו</strong> של המשתנים.`;
+
+  const traces = {};
+
+  /* 1. basic fork */
+  traces.basic = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int main() {', '    pid_t pid1 = getpid();', '    pid_t pid2 = fork();', '    printf("%d\\n", getpid());', '    printf("%d\\n", pid1);', '    printf("%d\\n", pid2);', '}']);
+    b.proc(5, 1, 1).snap(5, `יש תהליך אחד, ${E('PID 5')}. הוא מתחיל לרוץ ב-${C('main')}.`);
+    b.at(5, 2).v(5, 'pid1', 5).snap(5, `${C('getpid()')} מחזירה 5, והערך נשמר ב-${C('pid1')}. שימו לב: זה קורה <strong>לפני</strong> ה-${C('fork')}, ולכן העותק של הילד יקבל את אותו ערך.`);
+    b.at(5, 3).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'pid2', 6).v(6, 'pid2', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 4).print(5, '5\n').snap(5, `המתזמן ממשיך להריץ את ההורה. ${C('getpid()')} מחזירה לו 5.`);
+    b.at(5, 5).print(5, '5\n').snap(5, `${C('pid1')} של ההורה הוא 5.`);
+    b.at(5, 6).print(5, '6\n').snap(5, `${C('pid2')} של ההורה הוא 6, ה-${E('PID')} של הילד.`);
+    b.at(5, 7).st(5, 'reaped').run(6).at(6, 4).print(6, '6\n').snap(6, `ההורה סיים. הילד, שהיה במצב "מוכן", מקבל עכשיו את המעבד וממשיך משורה 4 – בדיוק מאיפה ש-${C('fork')} חזר אליו. ${C('getpid()')} מחזירה לו 6.`);
+    b.ppid(6, 1).at(6, 5).print(6, '5\n').snap(6, `${C('pid1')} של הילד הוא 5: הערך הועתק מההורה. וכיוון שההורה כבר מת, הילד נעשה <strong>יתום</strong>, ולכן אומץ ע"י ${C('init')} וה-${E('PPID')} שלו הוא עכשיו 1.`);
+    b.at(6, 6).print(6, '0\n').snap(6, `${C('pid2')} של הילד הוא 0 – הערך ש-${C('fork')} החזיר לו.`);
+    b.at(6, 7).st(6, 'reaped').snap(null, `גם הילד סיים, ו-${C('init')} אוסף אותו. סדר אחר (הילד רץ ראשון, או החלפות באמצע) היה נותן סדר שורות אחר, אבל אותן שש שורות.`);
+    return b.done(); })() }];
+
+  /* 2. fork + wait, private copy */
+  traces.waitx = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int x = 0;', 'int rc = fork();', 'if (rc) {', '    wait(NULL);', '} else {', '    x += 3;', '}', 'printf("%d\\n", x);']);
+    b.proc(5, 1, 1, { x: 0 }).snap(5, `${E('PID 5')} מאתחל ${C('x = 0')}.`);
+    b.at(5, 2).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'rc', 6).v(6, 'rc', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 4).st(5, 'blocked').snap(5, `ההורה: ${C('rc')} הוא 6, כלומר "אמת", ונכנס ל-${C('if')}. ${C('wait')} היא קריאת מערכת: הקרנל בודק אם יש ילד שכבר הסתיים. אין, ולכן ההורה עובר למצב <strong>חסום</strong> ולא מקבל מעבד עד שילד יסתיים.`);
+    b.run(6).at(6, 6).v(6, 'x', 3).snap(6, `המתזמן מריץ את הילד. אצלו ${C('rc')} הוא 0, ולכן הוא ב-${C('else')} ומגדיל את ${C('x')} ל-3. זה משנה <strong>רק את העותק שלו</strong> – ה-${C('x')} של ההורה עדיין 0.`);
+    b.at(6, 8).print(6, '3\n').snap(6, `הילד מדפיס 3.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `הילד מסיים. הקרנל לא מוחק אותו מיד: הוא הופך ל<strong>זומבי</strong> (נשאר בטבלה עם סטטוס היציאה), שולח ${E('SIGCHLD')} להורה ומעיר אותו – ההורה עובר מ"חסום" ל"מוכן".`);
+    b.run(5).st(6, 'reaped').snap(5, `ה-${C('wait')} של ההורה חוזר עם 6 ו<strong>אוסף</strong> את הזומבי – הרשומה שלו נמחקת מטבלת התהליכים.`);
+    b.at(5, 8).print(5, '0\n').snap(5, `ההורה מדפיס את ה-${C('x')} שלו: 0. בזכות ה-${C('wait')} הסדר תמיד 3 ואז 0.`);
+    b.st(5, 'reaped').snap(null, `סוף.`);
+    return b.done(); })() }];
+
+  /* 3. exec */
+  traces.exec = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int rc = fork();', 'if (rc == 0) {', '    char *args[] = { "wc", "-l", "exec.c", NULL };', '    execvp(args[0], args);', '    printf("this shouldn\'t print out\\n");', '} else {', '    int rc_wait = wait(NULL);', '    printf("I am parent of %d (rc_wait:%d)\\n", rc, rc_wait);', '}']);
+    b.proc(5, 1, 1, {}, { prog: 'exec_demo' }).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'rc', 6).v(6, 'rc', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 7).st(5, 'blocked').snap(5, `ההורה נכנס ל-${C('else')} ונחסם ב-${C('wait')} עד שהילד יסתיים.`);
+    b.run(6).at(6, 3).v(6, 'args', '{wc, -l, exec.c}').snap(6, `הילד בונה את מערך הארגומנטים. האיבר הראשון הוא שם התוכנית, והמערך מסתיים ב-${C('NULL')}.`);
+    b.at(6, 4).st(6, 'kernel').snap(6, `${C('execvp')} היא קריאת מערכת. הקרנל טוען את התוכנית ${C('wc')} מהדיסק <strong>לתוך אותו תהליך.</strong> הוא זורק את ה-${E('Text')}, ה-${E('Data')}, ה-${E('Heap')} וה-${E('Stack')} של הילד, וטוען את אלה של ${C('wc')}. ה-${E('PID')}, ה-${E('PPID')} והקבצים הפתוחים לא משתנים.`);
+    b.prog(6, 'wc').at(6, null).st(6, 'running').v(6, 'args', undefined).v(6, 'rc', undefined).snap(6, `עכשיו תהליך 6 מריץ את ה-${C('main')} של ${C('wc')}. הקוד שלנו כבר לא קיים בזיכרון שלו, ולכן אין לו שורה מסומנת – ושורה 5 <strong>לעולם לא תרוץ</strong>, כי ${C('exec')} שהצליח לא חוזר.`);
+    b.print(6, '27 exec.c\n').snap(6, `${C('wc -l')} מדפיס את מספר השורות בקובץ.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `${C('wc')} מסיים, תהליך 6 הופך לזומבי וההורה מתעורר.`);
+    b.run(5).st(6, 'reaped').v(5, 'rc_wait', 6).snap(5, `${C('wait')} מחזיר 6 ואוסף את הזומבי.`);
+    b.at(5, 8).print(5, 'I am parent of 6 (rc_wait:6)\n').snap(5, `ההורה מדפיס. ${C('rc')} ו-${C('rc_wait')} שווים, כי זה אותו ילד.`);
+    b.st(5, 'reaped').snap(null, `כך בדיוק ה-${E('shell')} מריץ כל פקודה: ${C('fork')}, בילד ${C('exec')}, ובהורה ${C('wait')}.`);
+    return b.done(); })() }];
+
+  /* 4. SB20 */
+  traces.sb20 = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int i = 0;', 'if (fork()) {', '    ++i;', '    fork();', '}', 'else if (fork())', '    ++i;', 'printf("%d", i);']);
+    b.proc(5, 1, 1, { i: 0 }).snap(5, `${C('i = 0')}.`);
+    b.at(5, 2).fork(5, 6).snap(5, `${C('fork')} ראשון: נוצר תהליך 6 עם ${C('i = 0')}. להורה הוחזר 6 (אמת), לילד 0 (שקר).`);
+    b.at(5, 3).v(5, 'i', 1).snap(5, `ההורה נכנס ל-${C('if')} ומגדיל את ה-${C('i')} שלו ל-1.`);
+    b.at(5, 4).fork(5, 7).snap(5, `${C('fork')} שני, בתוך הבלוק: נוצר 7 – עותק של 5, ולכן גם אצלו ${C('i = 1')}. ערך ההחזרה לא נשמר, אז שניהם פשוט ממשיכים.`);
+    b.at(5, 8).print(5, '1').snap(5, `5 מדלג על ה-${C('else')} ומדפיס 1.`);
+    b.st(5, 'reaped').run(7).at(7, 8).print(7, '1').snap(7, `7 מדפיס 1.`);
+    b.st(7, 'reaped').run(6).at(6, 6).fork(6, 8).snap(6, `עכשיו 6. אצלו ה-${C('fork')} הראשון החזיר 0, ולכן הוא ב-${C('else if (fork())')} – ומבצע ${C('fork')} נוסף: נוצר 8 עם ${C('i = 0')}.`);
+    b.at(6, 7).v(6, 'i', 1).snap(6, `ל-6 הוחזר 8 (אמת), ולכן הוא מגדיל את ${C('i')} ל-1.`);
+    b.at(6, 8).print(6, '1').snap(6, `6 מדפיס 1.`);
+    b.st(6, 'reaped').run(8).at(8, 8).print(8, '0').snap(8, `ל-8 הוחזר 0, אז הוא לא מגדיל, ומדפיס 0.`);
+    b.st(8, 'reaped').snap(null, `פלט: ${C('1110')}. בסדר הרצה אחר ה-0 יכול להופיע בכל מקום, אבל תמיד יהיו שלושה 1 ואפס אחד.`);
+    return b.done(); })() }];
+
+  /* 5. SA20 with three schedules */
+  function sa20(order) {
+    const b = B(['fork();', 'if (fork() == 0) {', '    printf("B");', '} else {', '    wait(NULL);', '    printf("A");', '}']);
+    b.proc(5, 1, 1).fork(5, 6).snap(5, `${C('fork')} ראשון: יש עכשיו 5 ו-6. ערך ההחזרה לא נשמר, אז שניהם ממשיכים לשורה 2.`);
+    b.at(5, 2).fork(5, 7).snap(5, `5 מבצע את ה-${C('fork')} השני ויוצר את 7. ל-7 הוחזר 0, ולכן הוא ידפיס ${C('B')}.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `5 קיבל ערך חיובי, נכנס ל-${C('else')} ונחסם ב-${C('wait')}. שימו לב: <strong>יש לו שני ילדים</strong> – 6 ו-7 – ו-${C('wait')} יחזור כשאחד מהם, לא משנה איזה, יסתיים.`);
+    b.run(6).at(6, 2).fork(6, 8).snap(6, `6 מגיע לשורה 2 ויוצר את 8, שידפיס ${C('B')}.`);
+    b.at(6, 5).st(6, 'blocked').snap(6, `6 נחסם ב-${C('wait')}. לו יש ילד אחד: 8.`);
+    if (order === 'BBAA') {
+      b.run(7).at(7, 3).print(7, 'B').snap(7, `7 מדפיס ${C('B')}.`);
+      b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים והופך לזומבי. 5 מתעורר.`);
+      b.run(8).at(8, 3).print(8, 'B').snap(8, `לפני ש-5 מספיק לרוץ, המתזמן מריץ את 8, שמדפיס ${C('B')}.`);
+      b.st(8, 'zombie').st(6, 'ready').snap(null, `8 מסיים. 6 מתעורר.`);
+      b.run(5).st(7, 'reaped').at(5, 6).print(5, 'A').snap(5, `5 רץ: ${C('wait')} אסף את 7, ו-5 מדפיס ${C('A')}.`);
+      b.st(5, 'reaped').run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'reaped').snap(null, `פלט: ${C('BBAA')} – הסדר הנפוץ.`);
+    } else if (order === 'BABA') {
+      b.run(7).at(7, 3).print(7, 'B').snap(7, `7 מדפיס ${C('B')}.`);
+      b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים והופך לזומבי. 5 מתעורר.`);
+      b.run(5).st(7, 'reaped').at(5, 6).print(5, 'A').snap(5, `הפעם 5 רץ מיד: ${C('wait')} אוסף את 7, ו-5 מדפיס ${C('A')}.`);
+      b.st(5, 'reaped').ppid(6, 1).run(8).at(8, 3).print(8, 'B').snap(8, `5 מסיים; 6 נעשה יתום ומאומץ ע"י ${C('init')}. עכשיו 8 מדפיס ${C('B')}.`);
+      b.st(8, 'zombie').run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 מתעורר, אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'reaped').snap(null, `פלט: ${C('BABA')}.`);
+    } else {
+      b.run(8).at(8, 3).print(8, 'B').snap(8, `המתזמן מריץ קודם את 8, שמדפיס ${C('B')}. 7 עדיין לא רץ בכלל.`);
+      b.st(8, 'zombie').st(6, 'ready').snap(null, `8 מסיים והופך לזומבי; 6 מתעורר.`);
+      b.run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'zombie').st(5, 'ready').snap(null, `<strong>כאן המלכודת:</strong> 6 מסיים, והוא ילד של 5. הקרנל מעיר את 5 – כי ${C('wait')} מחכה לילד <em>כלשהו</em>, ו-6 הוא ילד שהסתיים.`);
+      b.run(5).st(6, 'reaped').at(5, 6).print(5, 'A').snap(5, `${C('wait')} של 5 חוזר עם 6 (לא עם 7!), ו-5 מדפיס ${C('A')} – בזמן ש-7 עוד לא הדפיס כלום.`);
+      b.st(5, 'reaped').ppid(7, 1).run(7).at(7, 3).print(7, 'B').snap(7, `5 מסיים, 7 נעשה יתום ומאומץ ע"י ${C('init')}. רק עכשיו 7 רץ ומדפיס ${C('B')}.`);
+      b.st(7, 'reaped').snap(null, `פלט: ${C('BAAB')}. נדיר, אבל חוקי לגמרי.`);
+    }
+    return b.done();
+  }
+  traces.sa20 = () => [{ label: 'BBAA', t: sa20('BBAA') }, { label: 'BABA', t: sa20('BABA') }, { label: 'BAAB', t: sa20('BAAB') }];
+
+  /* 6. AA24 */
+  traces.aa24 = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['char *str = "hello";', 'if (fork() && fork()) {', '    wait(NULL);', '    printf("1: %s\\n", str);', '    wait(NULL);', '    printf("1: %s\\n", str);', '} else {', '    wait(NULL);', '    printf("0: %s\\n", str);', '    str = "goodbye";', '    wait(NULL);', '    printf("0: %s\\n", str);', '}']);
+    b.proc(5, 1, 1, { str: '"hello"' }).snap(5, `${C('str')} מצביע ל-${C('"hello"')}.`);
+    b.at(5, 2).fork(5, 6).snap(5, `ה-${C('fork')} השמאלי ב-${C('&&')}: נוצר 6. ל-5 הוחזר 6 (אמת), ל-6 הוחזר 0 (שקר).`);
+    b.fork(5, 7).snap(5, `כי האופרנד הראשון אמת אצל 5, הוא מחשב גם את השני: עוד ${C('fork')}, ונוצר 7. ל-5 הוחזר 7, ל-7 הוחזר 0.`);
+    b.at(5, 3).st(5, 'blocked').snap(5, `אצל 5 שני האופרנדים אמת, אז הוא ב-${C('if')}, ונחסם ב-${C('wait')} הראשון.`);
+    b.run(6).at(6, 8).snap(6, `אצל 6 האופרנד הראשון 0 (שקר), ולכן ה-${C('fork')} השני <strong>לא בוצע בכלל</strong> (קיצור של ${C('&&')}). 6 ב-${C('else')}. ל-6 אין ילדים, אז ${C('wait')} מחזיר מיד ${E('-1')} ולא חוסם.`);
+    b.at(6, 9).print(6, '0: hello\n').snap(6, `6 מדפיס.`);
+    b.at(6, 10).v(6, 'str', '"goodbye"').snap(6, `6 משנה את ה-${C('str')} <strong>שלו</strong>. ל-5 ול-7 יש עותקים משלהם, והם עדיין ${C('"hello"')}.`);
+    b.at(6, 12).print(6, '0: goodbye\n').snap(6, `עוד ${C('wait')} שחוזר מיד, והדפסה.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `6 מסיים, הופך לזומבי ומעיר את 5.`);
+    b.run(5).st(6, 'reaped').at(5, 4).print(5, '1: hello\n').snap(5, `${C('wait')} של 5 אסף את 6. 5 מדפיס את ה-${C('str')} שלו – ${C('hello')}.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `${C('wait')} השני: 7 עדיין חי, אז 5 נחסם שוב.`);
+    b.run(7).at(7, 9).print(7, '0: hello\n').snap(7, `7 (ה-${C('fork')} השני החזיר לו 0) ב-${C('else')}, ה-${C('wait')} שלו חוזר מיד, והוא מדפיס.`);
+    b.at(7, 12).v(7, 'str', '"goodbye"').print(7, '0: goodbye\n').snap(7, `7 משנה את העותק שלו ומדפיס.`);
+    b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים ומעיר את 5.`);
+    b.run(5).st(7, 'reaped').at(5, 6).print(5, '1: hello\n').snap(5, `5 אוסף את 7 ומדפיס שוב ${C('hello')}. השורה הזו תמיד אחרונה: היא באה אחרי ${C('wait')} שני, כלומר אחרי ששני הילדים סיימו.`);
+    b.st(5, 'reaped').snap(null, `סוף. שש שורות.`);
+    return b.done(); })() }];
+
+  /* 7. stdout buffer */
+  function bufTrace(unbuf) {
+    const b = B(['printf("Good afternoon");', 'fork();', 'printf(", good evening");', 'fork();', 'printf(" and good night\\n");']);
+    const W = (pid, s, line, nl) => {
+      b.at(pid, line);
+      if (unbuf) { b.print(pid, s); return; }
+      const cur = b.done().procs.find(p => p.pid === pid).buf + s;
+      if (nl) { b.print(pid, cur); b.buf(pid, ''); } else b.buf(pid, cur);
+    };
+    b.proc(5, 1, 1);
+    W(5, 'Good afternoon', 1, false);
+    b.snap(5, unbuf ? `עם ${C('setbuf(stdout, NULL)')} אין באפר: הטקסט נשלח למסך מיד.` : `${C('printf')} לא כותב למסך. הוא מעתיק את הטקסט ל<strong>באפר</strong> בתוך הזיכרון של התהליך (עמודת "באפר"). בלי ${C('\\n')} הבאפר לא נשלח.`);
+    b.at(5, 2).fork(5, 6).snap(5, unbuf ? `${C('fork')}: נוצר 6. הבאפר ריק, אז אין מה להעתיק.` : `${C('fork')} מעתיק את כל הזיכרון של 5 – <strong>כולל הבאפר</strong>. עכשיו ל-6 יש עותק של "${E('Good afternoon')}" שעוד לא הודפס.`);
+    W(5, ', good evening', 3, false); W(6, ', good evening', 3, false);
+    b.snap(5, `שניהם מוסיפים "${E(', good evening')}".`);
+    b.at(5, 4).at(6, 4).fork(5, 7).fork(6, 8).snap(5, unbuf ? `עוד ${C('fork')} בכל תהליך: 4 תהליכים, כולם עם באפר ריק.` : `עוד ${C('fork')} בכל אחד: 7 מקבל עותק של הבאפר של 5, ו-8 של 6. ארבעה תהליכים, ובכל אחד אותו משפט חלקי.`);
+    [5, 6, 7, 8].forEach(p => W(p, ' and good night\n', 5, true));
+    b.snap(null, unbuf ? `כל תהליך מדפיס את השורה האחרונה. סך הכל: ${E('Good afternoon')} פעם אחת, ${E('good evening')} פעמיים, ${E('and good night')} ארבע פעמים.` : `כל אחד מוסיף את סוף המשפט עם ${C('\\n')} – ושורה חדשה גורמת לבאפר להישלח. כל אחד מארבעת התהליכים מדפיס את <strong>כל</strong> המשפט.`);
+    [5, 6, 7, 8].forEach(p => b.st(p, 'reaped'));
+    b.snap(null, unbuf ? `לכן בקורס תמיד מניחים ${C('setbuf(stdout, NULL)')}.` : `ארבע שורות זהות. זה מה שבלבל בשקף – והסיבה שתמיד משתמשים ב-${C('setbuf')}.`);
+    return b.done();
+  }
+  traces.buf = () => [{ label: 'עם באפר (ברירת מחדל)', t: bufTrace(false) }, { label: 'עם setbuf', t: bufTrace(true) }];
+
+  /* 8. zombie */
+  traces.zombie = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int rc = fork();', 'if (rc == 0) {', '    exit(0);', '}', 'sleep(10);', 'wait(NULL);']);
+    b.proc(5, 1, 1).fork(5, 6).v(5, 'rc', 6).v(6, 'rc', 0).snap(5, `${C('fork')}: נוצר 6.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `ההורה מדלג על ה-${C('if')} ונכנס ל-${C('sleep(10)')} – חסום ל-10 שניות.`);
+    b.run(6).at(6, 3).snap(6, `הילד נכנס ל-${C('if')} וקורא ל-${C('exit(0)')}.`);
+    b.st(6, 'zombie').snap(null, `הילד סיים, אבל <strong>לא נמחק</strong>. הקרנל משחרר את הזיכרון שלו, אבל משאיר את הרשומה בטבלת התהליכים – ה-${E('PID')} וסטטוס היציאה – כי ההורה עלול לבקש אותם ב-${C('wait')}. זה זומבי. ב-${C('ps')} הוא מופיע עם מצב ${E('Z')} או ${E('&lt;defunct&gt;')}. הקרנל גם שולח ${E('SIGCHLD')} להורה, אבל ברירת המחדל היא להתעלם ממנו.`);
+    b.snap(null, `ההורה עדיין ישן. כל עוד הוא לא קורא ל-${C('wait')}, הזומבי תופס רשומה בטבלה. הורה שרץ הרבה זמן ויוצר הרבה ילדים בלי לאסוף אותם ימלא את הטבלה בזומבים.`);
+    b.run(5).at(5, 6).st(6, 'reaped').snap(5, `ההורה מתעורר וקורא ל-${C('wait')}. יש ילד זומבי, אז ${C('wait')} חוזר מיד עם 6 ו<strong>אוסף</strong> אותו: הרשומה נמחקת. פתרון בלי לחכות: handler ל-${E('SIGCHLD')} שקורא ל-${C('waitpid')} (בהמשך הפרק).`);
+    b.st(5, 'reaped').snap(null, `סוף.`);
+    return b.done(); })() }];
+
+  /* ---- renderer ---- */
+  function colorOfPid(pid, all) { return PCOL[all.indexOf(pid) % PCOL.length]; }
+  function hl(line) {
+    try { return hljs.highlight(line, { language: 'c', ignoreIllegals: true }).value; } catch (e) { return esc(line); }
+  }
+  function treeSvg(procs, all) {
+    const nodes = procs.map(p => ({ pid: p.pid, par: p.ppid, state: p.state, c: [] }));
+    const byPid = Object.fromEntries(nodes.map(n => [n.pid, n]));
+    const roots = [];
+    // draw by original parent (first ppid seen) so the tree keeps its shape after adoption
+    nodes.forEach(n => { const op = (procs.find(p => p.pid === n.pid).origPpid) ?? n.par; const pn = byPid[op]; if (pn) pn.c.push(n); else roots.push(n); });
+    let leaf = 0; const all2 = [];
+    (function lay(list, d) { list.forEach(n => { n.d = d; if (n.c.length) { lay(n.c, d + 1); n.x = (n.c[0].x + n.c[n.c.length - 1].x) / 2; } else n.x = leaf++; all2.push(n); }); })(roots, 0);
+    const dx = 62, dy = 56, W = Math.max(leaf, 1) * dx, H = (Math.max(0, ...all2.map(n => n.d)) + 1) * dy;
+    const X = n => n.x * dx + dx / 2, Y = n => n.d * dy + 24;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="עץ תהליכים">`;
+    all2.forEach(n => n.c.forEach(k => s += `<line x1="${X(n)}" y1="${Y(n)}" x2="${X(k)}" y2="${Y(k)}" stroke="var(--line)" stroke-width="1.6"/>`));
+    all2.forEach(n => {
+      const gone = n.state === 'reaped', z = n.state === 'zombie';
+      s += `<circle cx="${X(n)}" cy="${Y(n)}" r="17" fill="${gone ? 'var(--sunk)' : 'var(--surface)'}" stroke="${colorOfPid(n.pid, all)}" stroke-width="${n.state === 'running' ? 3.5 : 2}" ${gone || z ? 'stroke-dasharray="4 3"' : ''}/>`;
+      s += `<text x="${X(n)}" y="${Y(n) + 5}" text-anchor="middle" font-size="14" class="mono" fill="${gone ? 'var(--muted)' : 'var(--fg)'}">${n.pid}</text>`;
+      if (z) s += `<text x="${X(n)}" y="${Y(n) - 21}" text-anchor="middle" font-size="10" fill="var(--warn)" class="mono">Z</text>`;
+    });
+    return s + '</svg>';
+  }
+  function render(el, variants) {
+    let vi = 0, si = 0;
+    el.innerHTML = `<div class="tr-head"><span class="tr-title">הרצה יבשה</span><span class="tr-vars"></span></div>
+      <div class="tr-body">
+        <div class="tr-vis">
+          <div class="tr-grid"><div class="tr-code"></div><div class="tr-side"><div class="tr-procs"></div><div class="tr-tree"></div></div></div>
+          <div class="tr-outwrap"><div class="tr-label">פלט על המסך</div><pre class="tr-out"></pre></div>
+          <div class="tr-ctrl"><button type="button" class="ghost tr-reset">מההתחלה</button><button type="button" class="ghost tr-prev">הקודם</button><span class="tr-count"></span><button type="button" class="tr-next">הבא</button></div>
+        </div>
+        <div class="tr-note" aria-live="polite"></div>
+      </div>`;
+    const q = c => el.querySelector(c);
+    const vars = q('.tr-vars');
+    if (variants.length > 1) variants.forEach((v, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = /[א-ת]/.test(v.label) ? v.label.replace(/([A-Za-z]+)/g, '<bdi dir="ltr">$1</bdi>') : `<bdi dir="ltr">${v.label}</bdi>`;
+      b.onclick = () => { vi = i; si = 0; draw(); }; vars.appendChild(b);
+    });
+    function draw() {
+      const t = variants[vi].t, step = t.steps[si];
+      // remember the first parent of each process for tree shape
+      const firstPar = {}; t.steps.forEach(s => s.procs.forEach(p => { if (!(p.pid in firstPar)) firstPar[p.pid] = p.ppid; }));
+      const all = []; t.steps.forEach(s => s.procs.forEach(p => { if (!all.includes(p.pid)) all.push(p.pid); }));
+      [...vars.children].forEach((b, i) => b.classList.toggle('on', i === vi));
+      // code with markers
+      const live = step.procs.filter(p => p.line != null && p.state !== 'reaped' && p.state !== 'zombie');
+      let ch = '<pre class="tr-pre"><code>';
+      t.code.forEach((line, i) => {
+        const here = live.filter(p => p.line === i + 1);
+        const act = here.some(p => p.pid === step.active);
+        ch += `<span class="tr-ln${act ? ' act' : ''}"><span class="tr-num">${i + 1}</span><span class="tr-src">${hl(line) || ' '}</span><span class="tr-mk">${here.map(p => `<span class="tr-pid${p.pid === step.active ? ' on' : ''}" style="--pc:${colorOfPid(p.pid, all)}">${p.pid}</span>`).join('')}</span></span>`;
+      });
+      ch += '</code></pre>';
+      q('.tr-code').innerHTML = ch;
+      // process table
+      const keys = []; step.procs.forEach(p => Object.keys(p.vars).forEach(k => { if (p.vars[k] !== undefined && !keys.includes(k)) keys.push(k); }));
+      const showBuf = t.steps.some(s => s.procs.some(p => p.buf));
+      const showProg = t.steps.some(s => s.procs.some(p => p.prog));
+      let tb = '<div class="tbl"><table class="tr-table"><tr><th>PID</th><th>PPID</th><th>מצב</th>' + (showProg ? '<th>תוכנית</th>' : '') + keys.map(k => `<th class="num">${k}</th>`).join('') + (showBuf ? '<th>באפר</th>' : '') + '</tr>';
+      step.procs.forEach(p => {
+        tb += `<tr class="st-${p.state}${p.pid === step.active ? ' act' : ''}"><td class="num"><span class="tr-dot" style="--pc:${colorOfPid(p.pid, all)}"></span>${p.pid}</td><td class="num">${p.ppid}</td><td><span class="tr-st">${ST[p.state]}</span></td>` +
+          (showProg ? `<td class="num">${p.prog || ''}</td>` : '') +
+          keys.map(k => `<td class="num">${p.vars[k] === undefined ? '—' : esc(String(p.vars[k]))}</td>`).join('') +
+          (showBuf ? `<td class="num tr-buf">${p.buf ? esc(p.buf.replace(/\n/g, '\\n')) : '∅'}</td>` : '') + '</tr>';
+      });
+      q('.tr-procs').innerHTML = tb + '</table></div>';
+      // tree
+      const tp = step.procs.map(p => Object.assign({}, p, { origPpid: firstPar[p.pid] }));
+      q('.tr-tree').innerHTML = treeSvg(tp, all);
+      // output
+      const o = q('.tr-out');
+      o.innerHTML = step.out.length ? step.out.map((x, i) => `<span class="tr-o${i === step.out.length - 1 && si > 0 && t.steps[si - 1].out.length < step.out.length ? ' new' : ''}" style="--pc:${colorOfPid(x.pid, all)}" title="PID ${x.pid}">${esc(x.text)}</span>`).join('') : '<span class="tr-empty">(עדיין ריק)</span>';
+      q('.tr-note').innerHTML = step.note;
+      q('.tr-count').textContent = `שלב ${si + 1} מתוך ${t.steps.length}`;
+      q('.tr-prev').disabled = si === 0; q('.tr-next').disabled = si === t.steps.length - 1;
+    }
+    q('.tr-next').onclick = () => { if (si < variants[vi].t.steps.length - 1) { si++; draw(); } };
+    q('.tr-prev').onclick = () => { if (si > 0) { si--; draw(); } };
+    q('.tr-reset').onclick = () => { si = 0; draw(); };
+    el.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') q('.tr-next').click(); if (e.key === 'ArrowRight') q('.tr-prev').click(); });
+    draw();
+    /* lock sizes: measure every step of every variant, keep the max, so nothing moves between steps */
+    const PARTS = ['.tr-note', '.tr-code', '.tr-procs', '.tr-tree', '.tr-out'];
+    function lock() {
+      if (!el.offsetParent) return;                    // hidden (closed <details>): lock when shown
+      const box = PARTS.map(c => q(c));
+      box.forEach(b => { b.style.minHeight = ''; });
+      const max = box.map(() => 0), keepV = vi, keepS = si;
+      variants.forEach((v, i) => v.t.steps.forEach((_, j) => {
+        vi = i; si = j; draw();
+        box.forEach((b, k) => { max[k] = Math.max(max[k], b.getBoundingClientRect().height); });
+      }));
+      vi = keepV; si = keepS; draw();
+      box.forEach((b, k) => { b.style.minHeight = Math.ceil(max[k]) + 'px'; });
+    }
+    el._lock = lock;
+    lock();
+  }
+  window.__traces = traces;
+  document.querySelectorAll('.trace[data-trace]').forEach(el => {
+    const f = traces[el.dataset.trace]; if (!f) return;
+    el.tabIndex = 0; el.setAttribute('role', 'group'); el.setAttribute('aria-label', 'הרצה יבשה');
+    try { render(el, f()); } catch (e) { el.textContent = 'שגיאה בטעינת ההרצה היבשה'; console.error(e); }
+  });
+  const relock = () => document.querySelectorAll('.trace').forEach(t => t._lock && t._lock());
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => { if (d.open) d.querySelectorAll('.trace').forEach(t => t._lock && t._lock()); }));
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relock, 150); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(relock);
+})();
+
+/* fork trees */
+document.querySelectorAll('.tree').forEach(el => {
+  let spec; try { spec = JSON.parse(el.dataset.tree); } catch (e) { return; }
+  const nodes = []; let leaf = 0;
+  (function lay(n, d) { n.d = d; if (n.c) { n.c.forEach(k => lay(k, d + 1)); n.x = (n.c[0].x + n.c[n.c.length - 1].x) / 2; } else n.x = leaf++; nodes.push(n); })(spec, 0);
+  const depth = Math.max(...nodes.map(n => n.d)), dx = 110, dy = 64, W = Math.max(leaf, 1) * dx, H = (depth + 1) * dy;
+  const X = n => n.x * dx + dx / 2, Y = n => n.d * dy + 26;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="עץ תהליכים">`;
+  nodes.forEach(n => (n.c || []).forEach((k, i) => s += `<line x1="${X(n)}" y1="${Y(n)}" x2="${X(k)}" y2="${Y(k)}" stroke="${i === 0 ? 'var(--theory)' : 'var(--example)'}" stroke-width="1.6"/>`));
+  nodes.forEach(n => { s += `<rect x="${X(n) - 46}" y="${Y(n) - 14}" width="92" height="28" rx="14" fill="${n.c ? 'var(--surface)' : 'var(--sunk)'}" stroke="var(--line)"/><text x="${X(n)}" y="${Y(n) + 5}" text-anchor="middle" font-size="13" class="mono" fill="var(--fg)">${n.n}</text>`; });
+  s += '</svg>';
+  el.innerHTML = `<figure>${s}<figcaption>כחול = ענף ההורה (fork החזיר <bdi dir="ltr">&gt; 0</bdi>) · ירוק = ענף הילד (0)</figcaption></figure>`;
+});
+
+
+/* active section in sidebar (current page only) */
+(function () {
+  const links = [...document.querySelectorAll('nav.side a[data-id]')];
+  const map = new Map(links.map(a => [a.dataset.id, a]));
+  const targets = [...map.keys()].map(id => document.getElementById(id)).filter(Boolean);
+  if (!targets.length) return;
+  function upd() {
+    let cur = targets[0];
+    for (const t of targets) if (t.getBoundingClientRect().top < 120) cur = t;
+    links.forEach(a => a.classList.remove('active'));
+    const a = map.get(cur.id); if (a) a.classList.add('active');
+  }
+  addEventListener('scroll', upd, { passive: true }); upd();
+})();
+</script>
+
+<script type="application/json" id="work-data">{"rand":{"sizes":[1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"OPT":[0.9,22.3,35.1,44.2,51.6,57.5,62.8,67.4,71.5,75.2,78.5,81.7,84.5,87.0,89.3,91.4,93.3,95.0,96.5,97.9,99.0],"LRU":[0.9,5.0,10.0,15.0,20.0,25.0,29.8,34.5,39.3,44.4,49.6,54.5,59.4,64.3,69.5,74.4,79.0,84.2,89.2,94.1,99.0],"FIFO":[0.9,5.0,10.2,14.7,20.0,24.6,29.5,34.6,39.6,44.5,49.4,54.3,58.9,63.8,69.3,74.9,79.4,84.8,89.1,94.0,99.0],"RAND":[0.9,4.8,9.5,15.0,20.1,24.9,29.2,35.2,39.7,43.9,49.9,54.4,59.8,64.5,69.1,74.4,78.6,84.6,89.5,94.5,99.0],"CLOCK":[0.9,5.0,10.1,14.8,19.6,24.9,29.6,34.3,39.4,44.3,49.5,54.4,59.4,64.2,69.0,74.1,79.2,84.0,89.1,94.2,99.0]},"8020":{"sizes":[1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"OPT":[3.0,40.2,60.3,72.7,80.6,85.3,87.9,89.8,91.4,92.6,93.6,94.5,95.3,96.0,96.6,97.2,97.7,98.1,98.5,98.8,99.0],"LRU":[3.0,15.8,31.3,45.8,58.2,69.8,77.0,81.7,84.5,86.2,87.4,88.7,89.9,91.0,92.1,93.2,94.4,95.7,96.7,97.9,99.0],"FIFO":[3.0,15.4,29.9,42.1,52.6,60.5,66.4,71.2,75.4,78.5,81.3,83.8,86.0,88.0,89.8,91.3,93.0,94.7,96.5,97.5,99.0],"RAND":[3.0,16.0,29.8,43.1,52.8,61.1,66.9,72.3,75.7,78.2,82.1,83.9,85.9,88.0,89.8,91.7,93.5,95.0,96.2,97.5,99.0],"CLOCK":[3.0,15.5,30.5,43.9,56.0,66.3,73.6,79.0,82.5,85.2,87.0,88.5,89.8,91.1,92.1,93.2,94.5,95.5,96.7,97.9,99.0]},"loop":{"sizes":[1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"OPT":[0.0,8.2,18.3,28.4,38.6,48.8,58.9,69.0,79.2,89.3,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5],"LRU":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5],"FIFO":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5],"RAND":[0.0,0.0,0.7,3.7,10.3,19.5,32.0,46.4,62.8,80.1,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5],"CLOCK":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5,99.5]}}</script>
+<script>
+/* ================= virtual-memory widgets ================= */
+(function () {
+  const $ = (s, r) => (r || document).querySelector(s);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const B = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const C = x => '<code>' + x + '</code>';
+  const log2 = n => Math.log2(n);
+  const isPow2 = n => n > 0 && Number.isInteger(log2(n));
+  function parseSize(s) {
+    const m = String(s).trim().replace(/,/g, '').match(/^(\d+(?:\.\d+)?)\s*([kKmMgG]?)[bB]?$/);
+    if (!m) return NaN;
+    const mul = { '': 1, k: 1024, m: 1024 ** 2, g: 1024 ** 3 }[m[2].toLowerCase()];
+    return Math.round(parseFloat(m[1]) * mul);
+  }
+  function fmtSize(n) {
+    if (n >= 1024 ** 3 && n % 1024 ** 3 === 0) return n / 1024 ** 3 + 'GB';
+    if (n >= 1024 ** 2 && n % 1024 ** 2 === 0) return n / 1024 ** 2 + 'MB';
+    if (n >= 1024 && n % 1024 === 0) return n / 1024 + 'KB';
+    return n + 'B';
+  }
+  const bin = (n, w) => n.toString(2).padStart(w, '0');
+  /* bit strip: groups = [{len, cls, label, val}] left to right */
+  function strip(bits, groups, caption) {
+    let i = 0, h = '<div class="bits-wrap"><div class="bits">';
+    groups.forEach(g => {
+      if (!g.len) return;
+      h += `<div class="bgrp ${g.cls}"><div class="bcells">`;
+      for (let k = 0; k < g.len; k++) h += `<span class="bit">${bits[i++]}</span>`;
+      h += `</div><div class="blab">${g.label}</div>${g.val !== undefined ? `<div class="bval">${g.val}</div>` : ''}</div>`;
+    });
+    h += '</div>';
+    if (caption) h += `<div class="bcap">${caption}</div>`;
+    return h + '</div>';
+  }
+
+  /* ---------- 1. single-level translator ---------- */
+  const TPRE = [
+    { label: 'שקף 24 · P1', as: '64KB', pg: '16KB', ram: '128KB', pt: '3,7,5,2', va: '33K' },
+    { label: 'שקף 25 · P3', as: '64KB', pg: '16KB', ram: '192KB', pt: '8,x,9,11', va: '33K' },
+    { label: 'שקף 26 · P2', as: '64KB', pg: '16KB', ram: '192KB', pt: 'x,4,x,1', va: '17007' },
+    { label: 'שקף 29', as: '128KB', pg: '8KB', ram: '192KB', pt: 'x,4,x,1,11,7,12,x,14,x,x,5,3,6,x,x', va: '66159' },
+    { label: 'גישה לדף לא חוקי', as: '64KB', pg: '16KB', ram: '192KB', pt: 'x,4,x,1', va: '40000' }
+  ];
+  function translator(el) {
+    el.innerHTML = `<div class="w-head"><span class="w-title">מחשבון תרגום כתובת</span><span class="chips"></span></div>
+      <div class="w-form">
+        <label>מרחב כתובות <input id="t-as" type="text" inputmode="text"></label>
+        <label>גודל דף <input id="t-pg" type="text"></label>
+        <label>גודל RAM <input id="t-ram" type="text"></label>
+        <label class="wide">טבלת דפים (x = לא חוקי) <input id="t-pt" type="text"></label>
+        <label>כתובת וירטואלית <input id="t-va" type="text"></label>
+      </div>
+      <div class="w-out" aria-live="polite"></div>`;
+    const f = id => $('#' + id, el), out = $('.w-out', el), chips = $('.chips', el);
+    function load(p) { f('t-as').value = p.as; f('t-pg').value = p.pg; f('t-ram').value = p.ram; f('t-pt').value = p.pt; f('t-va').value = p.va; run(); }
+    TPRE.forEach((p, i) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = p.label.replace(/([A-Za-z][A-Za-z0-9]*)/g, B('$1')); b.onclick = () => { [...chips.children].forEach(c => c.classList.remove('on')); b.classList.add('on'); load(p); }; chips.appendChild(b); });
+    function err(m) { out.innerHTML = `<div class="w-err">${m}</div>`; }
+    function run() {
+      const AS = parseSize(f('t-as').value), PG = parseSize(f('t-pg').value), RAM = parseSize(f('t-ram').value), VA = parseSize(f('t-va').value);
+      const pt = f('t-pt').value.split(/[\s,]+/).filter(Boolean).map(x => /^[xX✗-]$/.test(x) ? null : parseInt(x, 10));
+      if ([AS, PG, RAM, VA].some(isNaN)) return err('אחד השדות לא מספר תקין. אפשר לכתוב 16384, 16K או 16KB.');
+      if (!isPow2(AS) || !isPow2(PG)) return err('מרחב הכתובות וגודל הדף חייבים להיות חזקה של 2.');
+      if (PG > AS) return err('גודל הדף גדול ממרחב הכתובות.');
+      if (VA >= AS) return err(`הכתובת ${B(VA)} מחוץ למרחב הכתובות: הכתובת הגבוהה ביותר היא ${B(AS - 1)}.`);
+      const vbits = log2(AS), ob = log2(PG), vb = vbits - ob, pages = AS / PG, frames = Math.floor(RAM / PG), fb = Math.max(1, Math.ceil(log2(frames)));
+      if (pt.length !== pages) return err(`בטבלת הדפים צריכות להיות ${pages} כניסות, אחת לכל דף, אבל יש ${pt.length}.`);
+      if (pt.some(x => x !== null && (isNaN(x) || x < 0 || x >= frames))) return err(`כל מספר מסגרת בטבלה צריך להיות בין 0 ל-${frames - 1}, כי ב-RAM יש ${frames} מסגרות.`);
+      const vpn = Math.floor(VA / PG), off = VA % PG, pfn = pt[vpn];
+      let h = '<ol class="w-steps">';
+      h += `<li><strong>פירוק הכתובת.</strong> מרחב הכתובות הוא ${fmtSize(AS)}, כלומר ${vbits} ביטים. גודל דף ${fmtSize(PG)} דורש ${ob} ביטים של <bdi dir="ltr">offset</bdi>, ולכן ל-<bdi dir="ltr">VPN</bdi> נשארים ${vb} ביטים (${pages} דפים).
+        <span class="fline">${vbits} = ${vb} + ${ob}</span>${strip(bin(VA, vbits), [{ len: vb, cls: 'g-vpn', label: 'VPN', val: vpn }, { len: ob, cls: 'g-off', label: 'Offset', val: off }], `virtual address = ${VA}`)}</li>`;
+      h += `<li><strong>חיפוש בטבלת הדפים.</strong> ה-<bdi dir="ltr">VPN</bdi> הוא האינדקס בטבלה.<div class="pt-row">${pt.map((x, i) => `<span class="pte${i === vpn ? ' hit' : ''}${x === null ? ' inv' : ''}"><small>${i}</small>${x === null ? '✗' : x}</span>`).join('')}</div></li>`;
+      if (pfn === null) {
+        h += `<li class="trap"><strong>כניסה לא חוקית.</strong> דף ${vpn} לא ממופה (<bdi dir="ltr">valid = 0</bdi>). החומרה מבצעת <bdi dir="ltr">trap</bdi> למערכת ההפעלה, שבדרך כלל מסיימת את התהליך (<bdi dir="ltr">segmentation fault</bdi>).</li></ol>`;
+        out.innerHTML = h; return;
+      }
+      const PA = pfn * PG + off, pbits = fb + ob;
+      h += `<li><strong>המסגרת.</strong> דף ${vpn} נמצא במסגרת ${pfn}. ה-<bdi dir="ltr">offset</bdi> עובר כמו שהוא. ב-RAM יש ${frames} מסגרות, ולכן ל-<bdi dir="ltr">PFN</bdi> צריך ${fb} ביטים, והכתובת הפיזית היא בת ${pbits} ביטים.
+        ${strip(bin(PA, pbits), [{ len: fb, cls: 'g-pfn', label: 'PFN', val: pfn }, { len: ob, cls: 'g-off', label: 'Offset', val: off }], `physical address = ${PA}`)}</li>`;
+      h += `<li><strong>בחישוב עשרוני:</strong><span class="fline">PA = PFN × page size + offset</span><span class="fline">PA = ${pfn} × ${PG} + ${off} = ${PA}${PA % 1024 === 0 ? ' = ' + PA / 1024 + 'K' : ''}</span></li></ol>`;
+      out.innerHTML = h;
+    }
+    el.addEventListener('input', run);
+    chips.firstChild.click();
+  }
+
+  /* ---------- 2. multi-level splitter ---------- */
+  const MPRE = [
+    { label: 'שקפים 46–47', as: '16KB', pg: '32B', pte: '2B', va: '6362' },
+    { label: 'שקפים 49–50', as: '1GB', pg: '512B', pte: '4B', va: '' },
+    { label: '32 ביט, דף 4KB', as: '4GB', pg: '4KB', pte: '4B', va: '' }
+  ];
+  function splitter(el) {
+    el.innerHTML = `<div class="w-head"><span class="w-title">פירוק כתובת לטבלה רב-שלבית</span><span class="chips"></span></div>
+      <div class="w-form">
+        <label>מרחב כתובות <input id="m-as" type="text"></label>
+        <label>גודל דף <input id="m-pg" type="text"></label>
+        <label>גודל PTE <input id="m-pte" type="text"></label>
+        <label>כתובת (לא חובה) <input id="m-va" type="text"></label>
+      </div><div class="w-out" aria-live="polite"></div>`;
+    const f = id => $('#' + id, el), out = $('.w-out', el), chips = $('.chips', el);
+    MPRE.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = p.label.replace(/(\d+KB|\d+ ביט)/g, B('$1')); b.onclick = () => { [...chips.children].forEach(c => c.classList.remove('on')); b.classList.add('on'); f('m-as').value = p.as; f('m-pg').value = p.pg; f('m-pte').value = p.pte; f('m-va').value = p.va; run(); }; chips.appendChild(b); });
+    function run() {
+      const AS = parseSize(f('m-as').value), PG = parseSize(f('m-pg').value), PTE = parseSize(f('m-pte').value);
+      const vaRaw = f('m-va').value.trim(), VA = vaRaw ? parseSize(vaRaw) : null;
+      if ([AS, PG, PTE].some(isNaN) || !isPow2(AS) || !isPow2(PG) || !isPow2(PTE)) { out.innerHTML = '<div class="w-err">כל הגדלים צריכים להיות חזקות של 2 (למשל 16KB, 32B, 2B).</div>'; return; }
+      if (PTE >= PG) { out.innerHTML = '<div class="w-err">ה-PTE חייב להיות קטן מהדף.</div>'; return; }
+      if (VA !== null && (isNaN(VA) || VA >= AS)) { out.innerHTML = `<div class="w-err">הכתובת צריכה להיות מספר בין 0 ל-${AS - 1}.</div>`; return; }
+      const vbits = log2(AS), ob = log2(PG), vpnb = vbits - ob, k = log2(PG / PTE);
+      const two = vpnb > k ? [vpnb - k, k] : [vpnb];
+      const full = []; { let left = vpnb; while (left > 0) { full.unshift(Math.min(k, left)); left -= k; } }
+      const linear = 2 ** vpnb * PTE;
+      let h = '<ol class="w-steps">';
+      h += `<li><strong>כמה דפים?</strong> ${vbits} ביטים בכתובת, ${ob} מהם <bdi dir="ltr">offset</bdi>, ולכן <bdi dir="ltr">VPN</bdi> של ${vpnb} ביטים.<span class="fline">#pages = 2^${vpnb} = ${(2 ** vpnb).toLocaleString('en-US')}</span>טבלה לינארית הייתה תופסת:<span class="fline">2^${vpnb} × ${PTE}B = ${fmtSize(linear)}</span></li>`;
+      h += `<li><strong>כמה כניסות נכנסות בדף אחד?</strong><span class="fline">${PG}B / ${PTE}B = ${PG / PTE} = 2^${k}</span>לכן אינדקס בחלק של טבלת הדפים הוא ${k} ביטים, וכל חלק נכנס בדיוק בדף.</li>`;
+      function grp(levels) {
+        const names = levels.map((_, i) => i === levels.length - 1 ? 'PT index' : (levels.length > 2 ? `PD${i} index` : 'PD index'));
+        const vals = []; if (VA !== null) { let v = Math.floor(VA / PG); for (let i = levels.length - 1; i >= 0; i--) { vals[i] = v % 2 ** levels[i]; v = Math.floor(v / 2 ** levels[i]); } }
+        return { vals, groups: levels.map((n, i) => ({ len: n, cls: i === levels.length - 1 ? 'g-vpn' : 'g-pd', label: names[i], val: VA !== null ? vals[i] : undefined })).concat([{ len: ob, cls: 'g-off', label: 'Offset', val: VA !== null ? VA % PG : undefined }]) };
+      }
+      const bits = VA !== null ? bin(VA, vbits).split('') : Array.from({ length: vbits }, (_, i) => String(vbits - 1 - i));
+      const cap = VA !== null ? `virtual address = ${VA}, VPN = ${Math.floor(VA / PG)}` : 'bit positions';
+      const g2 = grp(two);
+      h += `<li><strong>שתי רמות:</strong> ${k} ביטים לאינדקס בחלק של טבלת הדפים, ו-${two[0]} הביטים הנותרים של ה-<bdi dir="ltr">VPN</bdi> לאינדקס ב-<bdi dir="ltr">Page Directory</bdi>.${strip(bits, g2.groups, cap)}</li>`;
+      if (two.length === 2) {
+        const pdBytes = 2 ** two[0] * PTE, pdPages = pdBytes / PG;
+        if (pdPages <= 1) h += `<li><strong>האם ה-Page Directory נכנס בדף?</strong><span class="fline">2^${two[0]} × ${PTE}B = ${fmtSize(pdBytes)}</span> כן – שתי רמות מספיקות.</li>`;
+        else {
+          h += `<li><strong>האם ה-Page Directory נכנס בדף?</strong><span class="fline">2^${two[0]} × ${PTE}B = ${fmtSize(pdBytes)} = ${pdPages} pages</span> לא – הוא מתפרס על ${pdPages} דפים.`;
+          if (full.length > 2) { const gf = grp(full); h += ` אם רוצים שגם הוא ייכנס בדף, מוסיפים <bdi dir="ltr">Directory</bdi> ל-<bdi dir="ltr">Directory</bdi> (כמו בשקף 50) ומקבלים ${full.length} רמות:${strip(bits, gf.groups, cap)}`; }
+          h += '</li>';
+        }
+      }
+      if (VA !== null && two.length === 2) { const v = g2.vals; h += `<li><strong>התרגום:</strong> נכנסים ל-<bdi dir="ltr">Page Directory</bdi> בכניסה ${v[0]}, מגיעים לחלק ${v[0]} של טבלת הדפים, ושם בכניסה ${v[1]} נמצא ה-<bdi dir="ltr">PFN</bdi>. ה-<bdi dir="ltr">offset</bdi> (${VA % PG}) מועתק כמו שהוא.</li>`; }
+      out.innerHTML = h + '</ol>';
+    }
+    el.addEventListener('input', run);
+    chips.firstChild.click();
+  }
+
+  /* ---------- 3. TLB array access ---------- */
+  function tlbDemo(el) {
+    el.innerHTML = `<div class="w-head"><span class="w-title">גישות למערך דרך ה-TLB</span></div>
+      <div class="w-form">
+        <label>מספר איברים <input id="l-n" type="number" min="1" max="64" value="10"></label>
+        <label>גודל איבר (בתים) <input id="l-e" type="number" min="1" value="4"></label>
+        <label>גודל דף (בתים) <input id="l-p" type="number" min="4" value="16"></label>
+        <label>a[0] מתחיל בהיסט <input id="l-o" type="number" min="0" value="4"></label>
+      </div><div class="w-out" aria-live="polite"></div>`;
+    const v = id => parseInt($('#' + id, el).value, 10), out = $('.w-out', el);
+    function run() {
+      const n = v('l-n'), e = v('l-e'), p = v('l-p'), o = v('l-o');
+      if ([n, e, p, o].some(x => isNaN(x) || x < 0) || n < 1 || n > 64 || e < 1 || p < 1) { out.innerHTML = '<div class="w-err">מספר איברים בין 1 ל-64, וגדלים חיוביים.</div>'; return; }
+      const seen = new Set(); let hits = 0; const rows = {};
+      for (let i = 0; i < n; i++) {
+        const pg = Math.floor((o + i * e) / p), hit = seen.has(pg); seen.add(pg); if (hit) hits++;
+        (rows[pg] = rows[pg] || []).push({ i, hit });
+      }
+      let h = '<div class="tlb-grid">';
+      Object.keys(rows).forEach(pg => { h += `<div class="tlb-row"><span class="tlb-pg">Page ${pg}</span>${rows[pg].map(c => `<span class="tlb-c ${c.hit ? 'h' : 'm'}"><b>a[${c.i}]</b><small>${c.hit ? 'hit' : 'miss'}</small></span>`).join('')}</div>`; });
+      h += '</div>';
+      const miss = n - hits;
+      h += `<div class="w-sum"><span>פגיעות (hit): <strong>${hits}</strong></span><span>החטאות (miss): <strong>${miss}</strong></span><span>שיעור פגיעה: <strong>${Math.round(100 * hits / n)}%</strong></span></div>`;
+      h += `<p class="w-note">בלי <bdi dir="ltr">TLB</bdi> כל גישה דורשת 2 גישות לזיכרון: אחת לטבלת הדפים ואחת לנתון.</p><span class="fline">${n} × 2 = ${2 * n}</span><p class="w-note">עם <bdi dir="ltr">TLB</bdi> רק החטאה דורשת גישה נוספת:</p><span class="fline">${n} + ${miss} = ${n + miss}</span>`;
+      out.innerHTML = h;
+    }
+    el.addEventListener('input', run); run();
+  }
+
+  /* ---------- 4. free list ---------- */
+  function freeList(el) {
+    const N = 8;
+    let next, head, used, log;
+    el.innerHTML = `<div class="w-head"><span class="w-title">רשימה חופשית בתוך הזיכרון</span></div>
+      <div class="fl-body"><div class="fl-mem"></div><div class="fl-side"><div class="fl-chain"></div>
+      <div class="fl-ctrl"><button type="button" class="btn fl-alloc">הקצה chunk</button>
+        <label class="fl-fl">שחרר <select class="fl-sel" aria-label="איזה chunk לשחרר"></select></label><button type="button" class="btn ghost fl-free">שחרר</button></div>
+      <div class="fl-ctrl"><button type="button" class="btn ghost fl-demo">התרחיש של שקף 18</button><button type="button" class="btn ghost fl-reset">אפס</button></div>
+      <ol class="fl-log" aria-live="polite"></ol></div></div>`;
+    const mem = $('.fl-mem', el), chain = $('.fl-chain', el), sel = $('.fl-sel', el), lg = $('.fl-log', el);
+    function reset() { next = Array.from({ length: N }, (_, i) => i + 1 < N ? i + 1 : null); head = 0; used = new Set(); log = []; draw(); }
+    function alloc() {
+      if (head === null) { log.push('אין מקום פנוי: הרשימה ריקה, ההקצאה נכשלת.'); draw(); return; }
+      const c = head; head = next[c]; used.add(c);
+      log.push(`הקצאה: לוקחים את הראש, chunk ${c}. הראש החדש הוא ${head === null ? 'ריק' : head}.`); draw(c);
+    }
+    function free(c) {
+      if (!used.has(c)) return;
+      used.delete(c); next[c] = head; head = c;
+      log.push(`שחרור chunk ${c}: כותבים בתוכו next = ${next[c] === null ? '_' : next[c]} והוא נעשה הראש.`); draw(c);
+    }
+    function draw(mark) {
+      mem.innerHTML = '<div class="fl-lab">Memory</div>' + Array.from({ length: N }, (_, i) => {
+        const isHead = i === head;
+        return `<div class="fl-cell${used.has(i) ? ' used' : ''}${i === mark ? ' fresh' : ''}"><span class="fl-i">${i}</span><span class="fl-v">${used.has(i) ? 'בשימוש' : 'next: ' + (next[i] === null ? '_' : next[i])}</span>${isHead ? '<span class="fl-head">head</span>' : ''}</div>`;
+      }).join('');
+      const items = []; let c = head, guard = 0; while (c !== null && guard++ < N) { items.push(c); c = next[c]; }
+      chain.innerHTML = '<span class="fl-h">head</span>' + (items.length ? items.map(x => `<span class="fl-ar">→</span><span class="fl-n">${x}</span>`).join('') : '<span class="fl-ar">→</span><span class="fl-empty">ריקה</span>');
+      sel.innerHTML = [...used].sort((a, b) => a - b).map(x => `<option value="${x}">chunk ${x}</option>`).join('');
+      $('.fl-free', el).disabled = !used.size; sel.disabled = !used.size;
+      lg.innerHTML = log.slice(-6).map(x => `<li>${x.replace(/(chunk|next) /g, (m) => B(m.trim()) + ' ')}</li>`).join('');
+    }
+    $('.fl-alloc', el).onclick = alloc;
+    $('.fl-free', el).onclick = () => free(parseInt(sel.value, 10));
+    $('.fl-reset', el).onclick = reset;
+    $('.fl-demo', el).onclick = () => { reset(); for (let i = 0; i < 6; i++) alloc(); [0, 2, 5].forEach(free); log = ['6 הקצאות: chunks 0–5 נלקחו מהראש לפי הסדר.', 'שחרור 0, אחר כך 2, אחר כך 5: כל אחד נדחף לראש.', 'התוצאה זהה לשקף 18: ' + B('head → 5 → 2 → 0 → 6 → 7') + '.']; draw(); };
+    reset();
+  }
+
+  /* ---------- 5. page replacement simulator ---------- */
+  const RPRE = [
+    { label: 'שקפים 61–63', refs: '0 1 2 0 1 3 0 3 1 2 1', n: 3, pol: 'OPT' },
+    { label: 'Belady · 3 מסגרות', refs: '1 2 3 4 1 2 5 1 2 3 4 5', n: 3, pol: 'FIFO' },
+    { label: 'Belady · 4 מסגרות', refs: '1 2 3 4 1 2 5 1 2 3 4 5', n: 4, pol: 'FIFO' },
+    { label: 'Clock', refs: 'A B C D A D E C A F', n: 4, pol: 'CLOCK' }
+  ];
+  function simulate(refs, n, pol) {
+    const rows = []; let cache = [], hits = 0;
+    const use = {}; let hand = 0;
+    refs.forEach((r, i) => {
+      let res, ev = '', note = '';
+      if (pol === 'CLOCK') {
+        if (cache.includes(r)) { res = 'Hit'; hits++; use[r] = 1; note = B(`use(${r}) = 1`); }
+        else {
+          res = 'Miss';
+          if (cache.length < n) { cache.push(r); use[r] = 1; }
+          else {
+            const passed = [];
+            while (use[cache[hand]]) { use[cache[hand]] = 0; passed.push(cache[hand]); hand = (hand + 1) % n; }
+            ev = cache[hand]; delete use[ev]; cache[hand] = r; use[r] = 1; hand = (hand + 1) % n;
+            note = passed.length ? `איפוס: ${B(passed.join(', '))}` : '';
+          }
+        }
+        rows.push({ r, res, ev, frames: cache.map(c => ({ c, u: use[c] })), hand: cache.length === n ? hand : cache.length % n, note });
+        return;
+      }
+      if (cache.includes(r)) {
+        res = 'Hit'; hits++;
+        if (pol === 'LRU') { cache = cache.filter(c => c !== r); cache.push(r); }
+      } else {
+        res = 'Miss';
+        if (cache.length >= n) {
+          if (pol === 'OPT') {
+            const fut = refs.slice(i + 1);
+            let best = null, bd = -1;
+            cache.forEach((c, j) => { const d = fut.indexOf(c) < 0 ? Infinity : fut.indexOf(c); if (d > bd || (d === bd && d === Infinity)) { bd = d; best = c; } });
+            ev = best;
+          } else ev = cache[0];
+          cache = cache.filter(c => c !== ev);
+        }
+        cache.push(r);
+      }
+      rows.push({ r, res, ev, frames: cache.map(c => ({ c })) });
+    });
+    const distinct = new Set(refs).size;
+    return { rows, hits, total: refs.length, cold: distinct };
+  }
+  function replacer(el) {
+    el.innerHTML = `<div class="w-head"><span class="w-title">סימולטור החלפת דפים</span><span class="chips"></span></div>
+      <div class="w-form">
+        <label class="wide">רצף גישות <input id="r-refs" type="text"></label>
+        <label>מסגרות <input id="r-n" type="number" min="1" max="8"></label>
+        <label>מדיניות <select id="r-pol"><option value="OPT">OPT</option><option value="FIFO">FIFO</option><option value="LRU">LRU</option><option value="CLOCK">Clock</option></select></label>
+      </div><div class="w-out" aria-live="polite"></div>`;
+    const f = id => $('#' + id, el), out = $('.w-out', el), chips = $('.chips', el);
+    RPRE.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = p.label.replace(/([A-Za-z]+)/g, B('$1')); b.onclick = () => { [...chips.children].forEach(c => c.classList.remove('on')); b.classList.add('on'); f('r-refs').value = p.refs; f('r-n').value = p.n; f('r-pol').value = p.pol; run(); }; chips.appendChild(b); });
+    function run() {
+      const refs = f('r-refs').value.trim().split(/[\s,]+/).filter(Boolean), n = parseInt(f('r-n').value, 10), pol = f('r-pol').value;
+      if (!refs.length || isNaN(n) || n < 1 || n > 8) { out.innerHTML = '<div class="w-err">צריך רצף גישות (מופרד ברווחים) ומספר מסגרות בין 1 ל-8.</div>'; return; }
+      if (refs.length > 40) { out.innerHTML = '<div class="w-err">עד 40 גישות, כדי שהטבלה תישאר קריאה.</div>'; return; }
+      const s = simulate(refs, n, pol);
+      let h = `<div class="tbl"><table class="rp"><tr><th>#</th><th>גישה</th><th>תוצאה</th><th>פונה</th><th>מטמון</th>${pol === 'CLOCK' ? '<th>הערה</th>' : ''}</tr>`;
+      s.rows.forEach((x, i) => {
+        const fr = x.frames.map((c, j) => `<span class="fr${pol === 'CLOCK' && j === x.hand ? ' hand' : ''}${c.c === x.r ? ' cur' : ''}">${esc(c.c)}${pol === 'CLOCK' ? `<sup>${c.u}</sup>` : ''}</span>`).join('');
+        h += `<tr class="${x.res === 'Hit' ? 'is-hit' : 'is-miss'}"><td class="num">${i + 1}</td><td class="num"><b>${esc(x.r)}</b></td><td><span class="rp-res">${x.res === 'Hit' ? 'Hit' : 'Miss'}</span></td><td class="num">${esc(x.ev)}</td><td class="num"><span class="frs">${fr}</span></td>${pol === 'CLOCK' ? `<td class="rp-note">${x.note || ''}</td>` : ''}</tr>`;
+      });
+      h += '</table></div>';
+      const warm = s.total - s.cold;
+      h += `<div class="w-sum"><span>פגיעות: <strong>${s.hits}</strong> מתוך ${s.total}</span><span>שיעור פגיעה: <strong>${(100 * s.hits / s.total).toFixed(1)}%</strong></span><span>בלי <bdi dir="ltr">cold-start</bdi>: <strong>${warm > 0 ? (100 * s.hits / warm).toFixed(1) + '%' : '—'}</strong></span></div>`;
+      h += `<span class="fline">hit rate = ${s.hits} / ${s.total}</span><span class="fline">without cold start = ${s.hits} / (${s.total} − ${s.cold}) = ${s.hits} / ${warm}</span>`;
+      if (pol === 'CLOCK') h += '<p class="w-note">המספר הקטן ליד כל דף הוא ה-<bdi dir="ltr">use bit</bdi>. הדף המסומן במסגרת הוא המקום שהמחוג מצביע עליו אחרי הגישה.</p>';
+      if (pol === 'FIFO' || pol === 'LRU') h += `<p class="w-note">סדר הדפים במטמון הוא סדר התור: ${pol === 'FIFO' ? 'השמאלי נכנס ראשון ויפונה ראשון' : 'השמאלי הוא זה שהשתמשו בו הכי מזמן'}, כמו בשקפים.</p>`;
+      out.innerHTML = h;
+    }
+    el.addEventListener('input', run); el.addEventListener('change', run);
+    chips.firstChild.click();
+  }
+
+  /* ---------- 6. workload charts ---------- */
+  function charts(el) {
+    let data; try { data = JSON.parse($('#work-data').textContent); } catch (e) { return; }
+    const POL = [['OPT', 'var(--c-opt)'], ['LRU', 'var(--c-lru)'], ['FIFO', 'var(--c-fifo)'], ['RAND', 'var(--c-rand)'], ['CLOCK', 'var(--c-clock)']];
+    const T = { rand: 'No-locality', '8020': '80-20', loop: 'Looping (50 דפים)' }, KEYS = ['rand', '8020', 'loop'];
+    const W = 300, H = 230, L = 38, R = 10, Tp = 12, Bt = 34, pw = W - L - R, ph = H - Tp - Bt;
+    let h = `<div class="ch-legend">${POL.map(([n, c]) => `<span><i style="background:${c}"></i>${n === 'CLOCK' ? 'Clock' : n}</span>`).join('')}</div><div class="ch-row">`;
+    KEYS.forEach(k => {
+      const d = data[k], X = s => L + (s / 100) * pw, Y = v => Tp + ph - (v / 100) * ph;
+      let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${T[k]}">`;
+      [0, 25, 50, 75, 100].forEach(v => { s += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="10" fill="var(--muted)" class="mono">${v}%</text>`; });
+      [0, 25, 50, 75, 100].forEach(v => { s += `<text x="${X(v)}" y="${H - Bt + 16}" text-anchor="middle" font-size="10" fill="var(--muted)" class="mono">${v}</text>`; });
+      s += `<text x="${L + pw / 2}" y="${H - 4}" text-anchor="middle" font-size="11" fill="var(--muted)">Cache size (pages)</text>`;
+      POL.forEach(([p, c]) => { s += `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" points="${d.sizes.map((z, i) => X(z) + ',' + Y(d[p][i])).join(' ')}"/>`; });
+      s += `<line class="ch-x" x1="0" x2="0" y1="${Tp}" y2="${Tp + ph}" stroke="var(--muted)" stroke-dasharray="3 3" visibility="hidden"/>`;
+      s += `<rect class="ch-hit" x="${L}" y="${Tp}" width="${pw}" height="${ph}" fill="transparent"/></svg>`;
+      h += `<figure class="ch" data-k="${k}"><figcaption>${T[k].replace(/([A-Za-z0-9-]+)/, B('$1'))}</figcaption>${s}<div class="ch-tip" hidden></div></figure>`;
+    });
+    h += '</div>';
+    let tb = '<details class="ch-table"><summary>הנתונים בטבלה</summary><div class="tbl"><table><tr><th>עומס</th><th class="num">מטמון</th>' + POL.map(p => `<th class="num">${p[0]}</th>`).join('') + '</tr>';
+    KEYS.forEach(k => data[k].sizes.forEach((z, i) => { if (z % 25 === 0 || z === 1 || z === 50) tb += `<tr><td>${B(T[k].split(' ')[0])}</td><td class="num">${z}</td>${POL.map(p => `<td class="num">${data[k][p[0]][i]}%</td>`).join('')}</tr>`; }));
+    h += tb + '</table></div></details>';
+    el.innerHTML = h;
+    el.querySelectorAll('figure.ch').forEach(fg => {
+      const k = fg.dataset.k, d = data[k], svg = fg.querySelector('svg'), xl = fg.querySelector('.ch-x'), tip = fg.querySelector('.ch-tip');
+      const move = ev => {
+        const r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) * W / r.width;
+        const s = Math.max(0, Math.min(100, (x - L) / pw * 100));
+        let bi = 0; d.sizes.forEach((z, i) => { if (Math.abs(z - s) < Math.abs(d.sizes[bi] - s)) bi = i; });
+        const px = L + d.sizes[bi] / 100 * pw; xl.setAttribute('x1', px); xl.setAttribute('x2', px); xl.setAttribute('visibility', 'visible');
+        tip.hidden = false;
+        tip.innerHTML = `<div class="tt-h">מטמון: ${d.sizes[bi]} דפים</div>` + POL.map(([p, c]) => `<div><i style="background:${c}"></i>${p === 'CLOCK' ? 'Clock' : p}<b>${d[p][bi]}%</b></div>`).join('');
+        const left = (px / W) * r.width; tip.style.insetInlineStart = 'auto'; tip.style.left = Math.min(r.width - 150, Math.max(0, left + 10)) + 'px';
+      };
+      svg.addEventListener('pointermove', move); svg.addEventListener('pointerleave', () => { tip.hidden = true; xl.setAttribute('visibility', 'hidden'); });
+    });
+  }
+
+  const reg = { translator, splitter, tlb: tlbDemo, freelist: freeList, replace: replacer, charts };
+  document.querySelectorAll('[data-vm]').forEach(el => { const f = reg[el.dataset.vm]; if (f) { try { f(el); } catch (e) { el.textContent = 'שגיאה בטעינת הרכיב'; console.error(e); } } });
+})();
+
+</script>
+</body>
+</html>
+
+</body>
+</html>

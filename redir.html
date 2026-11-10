@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>הפניות וצינורות · מערכות הפעלה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: right-side sticky chapter rail (like a man-page index) + one reading column; boxes are color-coded by role. */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --sunk:#eceff3; --fg:#1b2430; --muted:#5b6676; --line:#d6dbe2;
+  --ink:#1d5f8f;           /* course blue, from the slides */
+  --amber:#b86a00;         /* highlight / keypoint */
+  --theory:#1d5f8f; --theory-bg:#e8f1f8;
+  --formula:#6b3fa0; --formula-bg:#f1ebf8;
+  --example:#1f7a4d; --example-bg:#e7f4ed;
+  --warn:#b3261e; --warn-bg:#fbebea;
+  --exercise:#8a5a00; --exercise-bg:#fbf2df;
+  --summary:#3c4757; --summary-bg:#eef0f3;
+  --code-bg:#f2f4f7; --code-fg:#1b2430;
+  --hl-kw:#a4237a; --hl-str:#1f7a4d; --hl-num:#b86a00; --hl-com:#7a8494; --hl-fn:#1d5f8f; --hl-type:#6b3fa0;
+  --f-display:"Secular One","IBM Plex Sans Hebrew",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Hebrew",system-ui,"Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --sunk:#1f2833; --fg:#e3e8ef; --muted:#9aa5b4; --line:#2c3744;
+  --ink:#6db3e6; --amber:#f0a83c;
+  --theory:#6db3e6; --theory-bg:#16283a; --formula:#b892ea; --formula-bg:#241b36;
+  --example:#5ccb93; --example-bg:#13291f; --warn:#f08079; --warn-bg:#331816;
+  --exercise:#e8b04f; --exercise-bg:#2e2412; --summary:#b6c0cd; --summary-bg:#1e2630;
+  --code-bg:#0d1218; --code-fg:#dde3ea;
+  --hl-kw:#e48ac6; --hl-str:#7fd6a6; --hl-num:#f0b45c; --hl-com:#7d8898; --hl-fn:#7cc0ef; --hl-type:#c3a3f0;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{direction:rtl;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;line-height:1.75;margin:0}
+.wrap{display:flex;gap:32px;max-width:1240px;margin:0 auto;padding-block:24px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+nav.side{flex:0 0 250px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:flex-start;
+  max-height:calc(100vh - 32px);overflow-y:auto;font-size:14.5px;padding-inline-end:8px}
+nav.side .brand{font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px}
+nav.side .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+nav.side a{display:block;color:var(--fg);text-decoration:none;padding:3px 10px;border-inline-start:2px solid transparent}
+nav.side a:hover{color:var(--ink)}
+nav.side a.ch{font-weight:700;margin-top:14px}
+nav.side a.sec{color:var(--muted);font-size:13.5px}
+nav.side a.active{border-inline-start-color:var(--ink);color:var(--ink)}
+main{flex:1;min-width:0;max-width:820px}
+main p, main li, .box-body p, .box-body li{direction:rtl;unicode-bidi:isolate;text-align:right}
+main strong, .box-body strong{margin-inline-end:.15em}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;line-height:1.3}
+.chapter{margin-top:56px;padding-top:8px}
+.chapter:first-of-type{margin-top:8px}
+.ch-head{border-bottom:2px solid var(--line);padding-bottom:14px;margin-bottom:8px}
+.ch-num{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+h1{font-size:34px;margin:4px 0 6px;color:var(--fg)}
+.hook{color:var(--muted);margin:0}
+h2{font-size:24px;margin:40px 0 10px;color:var(--ink)}
+h3{font-size:19px;margin:26px 0 6px}
+.t,.ltr{direction:ltr;unicode-bidi:isolate}
+code{direction:ltr;unicode-bidi:isolate}
+main :not(pre) > code{white-space:nowrap}
+svg{direction:ltr}
+code,.t{font-family:var(--f-mono);font-size:.9em}
+p code, li code, td code, .box-body code{background:var(--sunk);padding:1px 5px;border-radius:4px;direction:ltr;unicode-bidi:isolate}
+pre{direction:ltr;text-align:left;background:var(--code-bg);color:var(--code-fg);border:1px solid var(--line);
+  border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;margin:12px 0}
+main pre code, .box-body pre code{background:none;padding:0;font-size:inherit;border-radius:0}
+.hljs-keyword,.hljs-built_in{color:var(--hl-kw)} .hljs-string{color:var(--hl-str)} .hljs-number,.hljs-literal{color:var(--hl-num)}
+.hljs-comment{color:var(--hl-com);font-style:italic} .hljs-title,.hljs-function .hljs-title{color:var(--hl-fn)} .hljs-type,.hljs-meta{color:var(--hl-type)}
+.hljs-variable,.hljs-params{color:inherit}
+
+/* boxes */
+.box{border:1px solid var(--line);border-inline-start:4px solid var(--c);background:var(--cb);border-radius:6px;padding:12px 16px;margin:16px 0}
+.box-title{font-weight:700;color:var(--c);font-size:14px;letter-spacing:.02em;margin-bottom:4px}
+.box-body > :first-child{margin-top:0} .box-body > :last-child{margin-bottom:0}
+.theory{--c:var(--theory);--cb:var(--theory-bg)} .formula{--c:var(--formula);--cb:var(--formula-bg)}
+.example{--c:var(--example);--cb:var(--example-bg)} .warn{--c:var(--warn);--cb:var(--warn-bg)}
+.exercise{--c:var(--exercise);--cb:var(--exercise-bg)} .summary{--c:var(--summary);--cb:var(--summary-bg)}
+.keypoint{background:linear-gradient(transparent 60%, color-mix(in srgb,var(--amber) 28%, transparent) 60%);font-weight:500}
+.fline{display:block;direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:15px;margin:8px 0;padding:6px;background:var(--surface);border-radius:4px}
+
+/* function cards */
+.fn{border:1px solid var(--line);background:var(--surface);border-radius:8px;margin:14px 0;overflow:hidden}
+.fn-sig{direction:ltr;text-align:left;font-family:var(--f-mono);font-size:14.5px;background:var(--sunk);padding:8px 14px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.fn-body{padding:10px 14px}
+.fn-body dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.fn-body dt{color:var(--muted);font-size:14px;font-weight:700}
+.fn-body dd{margin:0;min-width:0}
+
+/* tables */
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:right;vertical-align:top}
+th{background:var(--sunk);font-weight:700}
+td.mono,td.num{direction:ltr;unicode-bidi:isolate;text-align:center;font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums}
+
+/* figures */
+figure{margin:18px 0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto}
+figure svg{display:block;margin:0 auto;max-width:100%}
+figcaption{color:var(--muted);font-size:14px;text-align:center;margin-top:6px}
+svg text{font-family:var(--f-body)}
+svg .mono{font-family:var(--f-mono)}
+
+/* reveal */
+details.sol{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+details.sol summary{cursor:pointer;color:var(--exercise);font-weight:700;list-style:none}
+details.sol summary::before{content:"◂ ";display:inline-block;transition:transform .15s}
+details.sol[open] summary::before{transform:rotate(-90deg)}
+details.sol summary:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;margin:18px 0}
+.sim-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.sim label{font-size:14px;color:var(--muted)}
+.sim select,.sim input,.sim button{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.sim input[type=number]{width:64px;direction:ltr}
+.sim button{cursor:pointer;background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.sim button.ghost{background:transparent;color:var(--ink)}
+.jobs{display:flex;flex-wrap:wrap;gap:8px}
+.job{display:flex;gap:6px;align-items:center;background:var(--sunk);padding:4px 8px;border-radius:6px;font-family:var(--f-mono);font-size:13px}
+.gantt{overflow-x:auto}
+.legend{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sim .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer}
+
+
+/* dry-run tracer */
+.trace{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:18px 0;overflow:hidden}
+.trace:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tr-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.tr-title{font-family:var(--f-display);color:var(--ink);font-size:17px}
+.tr-vars{display:flex;flex-wrap:wrap;gap:6px}
+.trace .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body)}
+.trace .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tr-body{display:flex;flex-direction:column}
+.tr-vis{min-width:0}
+.tr-note{padding:12px 14px;background:var(--theory-bg);border-top:1px solid var(--line);direction:rtl;unicode-bidi:isolate;text-align:right;line-height:1.7}
+.tr-grid{display:flex;flex-wrap:wrap;gap:14px;padding:12px 14px}
+.tr-code{flex:1 1 330px;min-width:0}
+.tr-side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tr-pre{margin:0;padding:8px 0;font-size:13.5px;overflow-x:auto}
+.tr-pre > code{display:block;min-width:max-content}
+.tr-ln{display:flex;gap:10px;align-items:center;padding:1px 10px;min-height:1.7em}
+.tr-ln.act{background:color-mix(in srgb,var(--amber) 18%,transparent)}
+.tr-num{color:var(--muted);min-width:1.6em;text-align:right;user-select:none}
+.tr-src{flex:1;white-space:pre}
+.tr-mk{display:flex;gap:4px}
+.tr-pid{font-size:11px;font-weight:600;border:1.5px solid var(--pc);color:var(--pc);border-radius:999px;padding:0 6px;line-height:1.5;background:var(--surface)}
+.tr-pid.on{background:var(--pc);color:var(--surface)}
+.tr-table{font-size:13.5px}
+.tr-table th,.tr-table td{padding:4px 8px}
+.tr-table tr.act td{background:color-mix(in srgb,var(--amber) 14%,var(--surface))}
+.tr-table tr.st-reaped td{color:var(--muted);text-decoration:line-through}
+.tr-table tr.st-zombie .tr-st{color:var(--warn);font-weight:700}
+.tr-table tr.st-blocked .tr-st{color:var(--exercise);font-weight:700}
+.tr-table tr.st-running .tr-st,.tr-table tr.st-kernel .tr-st{color:var(--example);font-weight:700}
+.tr-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--pc);margin-inline-end:6px;vertical-align:middle}
+.tr-buf{white-space:pre-wrap;font-size:12.5px;min-width:11em}
+.tr-table td.num{white-space:nowrap}
+.tr-tree{overflow-x:auto}
+.tr-tree svg{display:block;margin:0 auto}
+.tr-outwrap{padding:0 14px 10px}
+.tr-label{font-size:13px;color:var(--muted);margin-bottom:4px}
+.tr-out{margin:0;min-height:2.4em;white-space:pre-wrap}
+.tr-o{color:var(--pc);font-weight:600}
+.tr-o.new{background:color-mix(in srgb,var(--pc) 16%,transparent)}
+.tr-empty{color:var(--muted);font-family:var(--f-body);direction:rtl;unicode-bidi:isolate}
+.tr-ctrl{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);background:var(--sunk)}
+.tr-ctrl button{font:inherit;font-size:14px;padding:6px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
+.tr-ctrl button.ghost{background:transparent;color:var(--ink)}
+.tr-ctrl button:disabled{opacity:.4;cursor:default}
+.tr-count{font-size:13px;color:var(--muted);margin-inline:auto}
+
+@media (max-width:860px){
+  .wrap{flex-direction:column;gap:8px}
+  nav.side{position:static;max-height:none;flex:none;border-bottom:1px solid var(--line);padding-bottom:12px}
+  nav.side a.sec{display:none}
+  h1{font-size:28px}
+}
+
+/* ---- wide screens: the page widens, prose keeps its reading width, dry runs sit side by side ---- */
+@media (min-width:1400px){
+  .wrap{max-width:1700px}
+  main{max-width:none}
+  main > section > *, main .box, main details > *{max-width:820px}
+  main > section > .trace, main .box:has(.trace), main details:has(.trace) > *, main .box .trace, main > section > .sim{max-width:none}
+  main .box:has(.trace) > .box-body > :not(details):not(.trace){max-width:788px}
+  .tr-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);grid-template-areas:"vis note";align-items:stretch}
+  .tr-vis{grid-area:vis}
+  .tr-note{grid-area:note;border-top:none;border-inline-start:1px solid var(--line);font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+nav.side a.brand{display:block;font-family:var(--f-display);font-size:22px;color:var(--ink);line-height:1.3;margin-bottom:4px;padding:0;border:0;text-decoration:none}
+nav.side a.ch.here{color:var(--ink);border-inline-start-color:var(--ink)}
+.pager{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin-top:56px;padding-top:18px;border-top:2px solid var(--line)}
+.pager a{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 16px}
+.pager a:hover{border-color:var(--ink)}
+.pager a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pager .dir{font-size:13px;color:var(--muted)}
+.pager .nm{font-family:var(--f-display);font-size:19px;color:var(--ink)}
+.pager a.next{text-align:left}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:24px 0}
+@media (min-width:1100px){.cards{grid-template-columns:repeat(6,minmax(0,1fr))}.card{grid-column:span 2}.card:nth-child(4){grid-column:2 / span 2}}
+main bdi, .tr-note bdi{white-space:nowrap}
+.card{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card:hover{border-color:var(--ink)}
+.card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.card .num{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.card h2{margin:0;font-size:22px;color:var(--ink)}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.card ul{margin:4px 0 0;padding-inline-start:18px;font-size:14px;color:var(--fg)}
+.card .tag{font-size:12.5px;color:var(--exercise);font-weight:700;margin-top:auto;padding-top:6px}
+.hero{padding:8px 0 4px;border-bottom:2px solid var(--line)}
+.hero h1{font-size:38px;margin:4px 0 8px}
+/* ---- virtual-memory widgets ---- */
+:root{--c-opt:#8a5a00;--c-lru:#1d5f8f;--c-fifo:#1f7a4d;--c-rand:#6b3fa0;--c-clock:#b3261e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-opt:#b97f1c;--c-lru:#4a9bd4;--c-fifo:#35a873;--c-rand:#a479d8;--c-clock:#e0625a}}
+:root[data-theme="dark"]{--c-opt:#b97f1c;--c-lru:#4a9bd4;--c-fifo:#35a873;--c-rand:#a479d8;--c-clock:#e0625a}
+.vmw{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:18px 0;overflow:hidden}
+.vmw.charts{padding:12px 14px}
+.w-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.w-title{font-family:var(--f-display);color:var(--ink);font-size:17px}
+.vmw .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.vmw .chip{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:3px 10px;cursor:pointer;font-family:var(--f-body)}
+.vmw .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.vmw .chip:focus-visible,.vmw button:focus-visible,.vmw input:focus-visible,.vmw select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.w-form{display:flex;flex-wrap:wrap;gap:10px 14px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.w-form label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);flex:1 1 120px;min-width:0}
+.w-form label.wide{flex:3 1 260px}
+.w-form input,.w-form select{font:inherit;font-family:var(--f-mono);font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);direction:ltr;text-align:left;width:100%;min-width:0}
+.w-out{padding:12px 14px}
+.w-err{color:var(--warn);font-weight:700}
+.w-note{color:var(--muted);font-size:14px;margin:6px 0}
+.w-steps{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:12px}
+.w-steps li.trap{color:var(--warn)}
+.w-sum{display:flex;flex-wrap:wrap;gap:8px 20px;margin:10px 0 4px;font-size:15px}
+.bits-wrap{overflow-x:auto;margin:8px 0;padding-bottom:2px}
+.bits{display:flex;gap:6px;direction:ltr;width:max-content}
+.bgrp{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bcells{display:flex;border:1.5px solid var(--gc);border-radius:5px;overflow:hidden}
+.bit{font-family:var(--f-mono);font-size:13px;min-width:21px;height:26px;display:flex;align-items:center;justify-content:center;background:var(--gb);color:var(--fg);border-inline-end:1px solid color-mix(in srgb,var(--gc) 35%,transparent)}
+.bit:last-child{border-inline-end:none}
+.blab{font-family:var(--f-mono);font-size:12px;color:var(--gc);white-space:nowrap}
+.bval{font-family:var(--f-mono);font-size:14px;font-weight:700;color:var(--gc)}
+.bcap{font-family:var(--f-mono);font-size:12px;color:var(--muted);direction:ltr;text-align:left;margin-top:4px}
+.g-vpn{--gc:var(--theory);--gb:var(--theory-bg)}.g-off{--gc:var(--exercise);--gb:var(--exercise-bg)}.g-pfn{--gc:var(--example);--gb:var(--example-bg)}.g-pd{--gc:var(--formula);--gb:var(--formula-bg)}
+.pt-row{display:flex;flex-wrap:wrap;gap:4px;direction:ltr;margin-top:6px}
+.pte{display:flex;flex-direction:column;align-items:center;min-width:36px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;font-family:var(--f-mono);font-size:14px;background:var(--bg)}
+.pte small{font-size:10px;color:var(--muted)}
+.pte.inv{color:var(--muted)}
+.pte.hit{border:2px solid var(--ink);background:var(--theory-bg);font-weight:700}
+.pte.hit.inv{border-color:var(--warn);background:var(--warn-bg);color:var(--warn)}
+.tlb-grid{display:flex;flex-direction:column;gap:6px;direction:ltr}
+.tlb-row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tlb-pg{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:64px}
+.tlb-c{display:flex;flex-direction:column;align-items:center;min-width:52px;padding:3px 6px;border-radius:5px;font-family:var(--f-mono);font-size:12px;border:1.5px solid}
+.tlb-c.m{border-color:var(--warn);background:var(--warn-bg)}
+.tlb-c.h{border-color:var(--example);background:var(--example-bg)}
+.tlb-c small{font-size:10px;color:var(--muted)}
+.fl-body{display:flex;flex-wrap:wrap;gap:16px;padding:12px 14px}
+.fl-mem{flex:0 0 220px;display:flex;flex-direction:column;gap:3px}
+.fl-lab{font-weight:700;text-align:center;font-size:14px}
+.fl-cell{position:relative;display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:5px;background:var(--theory-bg);border:1px solid var(--theory);font-size:13px}
+.fl-cell.used{background:var(--sunk);border-color:var(--line);color:var(--muted)}
+.fl-cell.fresh{outline:2.5px solid var(--amber);outline-offset:1px}
+.fl-i{font-family:var(--f-mono);font-weight:700;min-width:1.2em}
+.fl-v{font-family:var(--f-mono);direction:ltr;unicode-bidi:isolate}
+.fl-cell.used .fl-v{font-family:var(--f-body)}
+.fl-head{position:absolute;inset-inline-end:-6px;font-family:var(--f-mono);font-size:11px;background:var(--amber);color:var(--surface);border-radius:4px;padding:0 5px}
+.fl-side{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.fl-chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;direction:ltr;font-family:var(--f-mono)}
+.fl-h{font-size:12px;background:var(--amber);color:var(--surface);border-radius:4px;padding:2px 6px}
+.fl-n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--example);color:var(--surface);font-weight:700}
+.fl-ar{color:var(--muted)}
+.fl-empty{color:var(--muted);font-family:var(--f-body)}
+.fl-ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fl-fl{display:flex;gap:6px;align-items:center;font-size:14px}
+.fl-ctrl select{font:inherit;font-size:14px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.vmw .btn{font:inherit;font-size:14px;padding:6px 12px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
+.vmw .btn.ghost{background:transparent;color:var(--ink)}
+.vmw .btn:disabled{opacity:.4;cursor:default}
+.fl-log{margin:0;padding-inline-start:20px;font-size:14px;color:var(--fg);min-height:9em}
+table.rp td{padding:4px 8px}
+table.rp tr.is-hit .rp-res{color:var(--example);font-weight:700}
+table.rp tr.is-miss .rp-res{color:var(--warn);font-weight:700}
+.frs{display:inline-flex;gap:4px}
+.fr{display:inline-block;min-width:24px;padding:1px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.fr.cur{background:var(--theory-bg);border-color:var(--theory)}
+.fr.hand{outline:2px solid var(--amber)}
+.fr sup{font-size:10px;color:var(--muted);margin-inline-start:1px}
+.rp-note{font-size:12px;color:var(--muted)}
+.ch-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;direction:ltr;justify-content:center;margin-bottom:6px}
+.ch-legend span{display:inline-flex;align-items:center;gap:6px}
+.ch-legend i,.ch-tip i{display:inline-block;width:14px;height:3px;border-radius:2px}
+.ch-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.ch-row{grid-template-columns:minmax(0,1fr)}}
+figure.ch{min-width:0;margin:0;position:relative;border:none;padding:0;background:none;overflow:visible}
+figure.ch figcaption{margin:0 0 4px;font-weight:700;color:var(--fg)}
+figure.ch svg{width:100%;height:auto;display:block;touch-action:none}
+.ch-tip{position:absolute;top:28px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px;box-shadow:0 2px 8px color-mix(in srgb,var(--fg) 16%,transparent);pointer-events:none;direction:ltr;text-align:left;min-width:130px;z-index:3}
+.ch-tip div{display:flex;align-items:center;gap:6px}
+.ch-tip b{margin-inline-start:auto;font-variant-numeric:tabular-nums}
+.ch-tip .tt-h{font-weight:700;margin-bottom:2px;direction:rtl}
+details.ch-table{margin-top:10px}
+details.ch-table summary{cursor:pointer;color:var(--ink);font-size:14px}
+/* ---- FD table widget ---- */
+.fd-body{display:flex;flex-wrap:wrap;gap:16px;padding:12px 14px}
+.fd-tab{flex:0 0 250px;display:flex;flex-direction:column;gap:3px}
+.fd-h{display:flex;gap:8px;font-size:13px;color:var(--muted);font-weight:700;padding:0 8px}
+.fd-h span:first-child{min-width:62px}
+.fd-row{display:flex;gap:8px;align-items:center;padding:5px 8px;border:1px solid var(--line);border-radius:5px;background:var(--surface)}
+.fd-row.free{background:var(--sunk);color:var(--muted)}
+.fd-row.fresh{outline:2.5px solid var(--amber);outline-offset:1px}
+.fd-n{font-family:var(--f-mono);font-weight:700;min-width:62px;display:flex;align-items:baseline;gap:6px}
+.fd-n small{font-weight:400;font-size:11px;color:var(--muted)}
+.fd-t{font-family:var(--f-mono);font-size:13px;direction:ltr;unicode-bidi:isolate;padding:1px 6px;border-radius:4px}
+.fd-t.k-term{background:var(--theory-bg);color:var(--fg)}
+.fd-t.k-file{background:var(--example-bg);color:var(--fg)}
+.fd-t.k-pr,.fd-t.k-pw{background:var(--exercise-bg);color:var(--fg)}
+.fd-side{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.fd-ops{display:flex;flex-direction:column;gap:6px}
+.fd-op{display:flex;gap:6px;align-items:center;direction:ltr;justify-content:flex-end}
+.fd-op .btn{font-family:var(--f-mono);min-width:64px}
+.fd-op input{font:inherit;font-family:var(--f-mono);font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);width:70px}
+.fd-op input.fd-name{width:120px}
+.fd-log{margin:0;padding-inline-start:20px;font-size:14px;min-height:10em}
+.fd-call{font-family:var(--f-mono);font-weight:600}
+.fd-note{display:block;color:var(--muted);font-size:13px}
+</style>
+
+
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="he">
+<nav class="side" aria-label="תוכן העניינים">
+  <a class="brand" href="index.html">מערכות הפעלה</a>
+  <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
+  <a class="ch" href="intro.html">1 · מבוא</a>
+  <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
+  <a class="ch" href="processes.html">3 · תהליכים</a>
+  <a class="ch" href="scheduling.html">4 · תזמון</a>
+  <a class="ch" href="signals.html">5 · זומבים וסיגנלים</a>
+  <a class="ch here" href="redir.html" aria-current="page">6 · הפניות וצינורות</a>
+  <a class="sec" href="#r-exec" data-id="r-exec">exec – מה נשמר</a>
+  <a class="sec" href="#r-files" data-id="r-files">פעולות על קבצים</a>
+  <a class="sec" href="#r-redir" data-id="r-redir">הפניות ו-dup2</a>
+  <a class="sec" href="#r-ipc" data-id="r-ipc">FIFO ו-pipe</a>
+  <a class="sec" href="#r-ex" data-id="r-ex">תרגיל הפניה ושרשור</a>
+  <a class="ch" href="vmem.html">7 · זיכרון וירטואלי</a>
+</nav>
+<main>
+<section class="chapter" id="ch6" style="margin-top:8px">
+<div class="ch-head">
+  <div class="ch-num">Chapter 6 · Redirection &amp; Pipes</div>
+  <h1>הפניות וצינורות</h1>
+  <p class="hook">איך ה-<bdi dir="ltr">shell</bdi> מממש את <code>&gt;</code> ו-<code>|</code> בלי שהתוכנית שרצה תדע בכלל: קבצים, <bdi dir="ltr">file descriptors</bdi>, <code>dup2</code> ו-<code>pipe</code>. שאלות <code>exec</code> מהפרק הזה חוזרות כמעט בכל מבחן.</p>
+</div>
+
+<h2 id="r-exec">חזרה: <bdi dir="ltr">exec</bdi> – תוכנית אחרת באותו תהליך</h2>
+<p><code>execvp</code> טוען לתהליך הנוכחי את קובץ הריצה של תוכנית אחרת: ה-<bdi dir="ltr">Text</bdi>, ה-<bdi dir="ltr">Data</bdi>, ה-<bdi dir="ltr">Heap</bdi> וה-<bdi dir="ltr">Stack</bdi> נדרסים, ו-<code>main</code> של התוכנית החדשה מתחיל לרוץ. <strong>לא נוצר תהליך חדש</strong>, ו-<code>exec</code> שהצליח <strong>לא חוזר</strong>.</p>
+<div class="box theory"><div class="box-title">מה נשמר אחרי <bdi dir="ltr">exec</bdi></div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>נשמר</th><th>לא נשמר</th></tr>
+<tr><td><strong>מזהה התהליך</strong> – אותו <bdi dir="ltr">PID</bdi> ואותו הורה</td><td>כל הזיכרון: קוד, משתנים, ערימה, מחסנית</td></tr>
+<tr><td><strong>הקבצים הפתוחים</strong> – כל ה-<bdi dir="ltr">file descriptors</bdi></td><td>ה-<bdi dir="ltr">signal handlers</bdi> – הקוד שלהם נדרס, ולכן הם חוזרים לברירת מחדל</td></tr>
+<tr><td>סיגנלים שמוגדרים להתעלמות (<code>SIG_IGN</code>)</td><td></td></tr>
+</table></div>
+<p><span class="keypoint">הקבצים הפתוחים נשמרים</span> – וזה כל הסוד של הפניות: משנים את הקבצים הפתוחים <em>אחרי</em> <code>fork</code> ו<em>לפני</em> <code>exec</code>, והתוכנית החדשה כותבת לאן שהפנינו בלי לדעת.</p>
+</div></div>
+
+<h3>שאלות מבחינות על <bdi dir="ltr">exec</bdi></h3>
+<p>בשלוש השאלות: כל קריאות המערכת מצליחות, לא נוצרים תהליכים אחרים במערכת, וכל תהליך חדש מקבל מזהה גדול ב-1 מהקודם. כל התשובות נבדקו בהרצה אמיתית.</p>
+
+<div class="box exercise"><div class="box-title"><bdi dir="ltr">24BA</bdi> · מה ההמשך?</div><div class="box-body">
+<p>נתון הקוד של תוכנית בשם <code>myexec</code>:</p>
+<pre><code class="language-c">int main()
+{
+    char* args[] = {"myexec", NULL};
+    printf("PID: %d\n", getpid());
+    execvp(args[0], args);
+}</code></pre>
+<p>הריצו את התוכנית, ושורת הפלט הראשונה הייתה <code>PID: 300</code>. מה ההמשך?</p>
+<details class="sol"><summary>פתרון</summary>
+<p><strong>"<bdi dir="ltr">PID: 300</bdi>" שוב ושוב, עד שעוצרים את התוכנית.</strong> <code>execvp</code> מריץ שוב את <code>main</code> של <code>myexec</code> <em>באותו תהליך</em>, כך שזו בעצם לולאה אינסופית. לא נוצר אף תהליך חדש, ולכן ה-<bdi dir="ltr">PID</bdi> לא משתנה והתוכנית גם לא תקרוס בגלל ריבוי תהליכים.</p>
+<p>בהרצה אמיתית: חמש השורות הראשונות היו אותו <bdi dir="ltr">PID</bdi> בדיוק.</p>
+<div class="trace" data-trace="ex24ba"></div>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title"><bdi dir="ltr">24BB</bdi> · מה הפלט?</div><div class="box-body">
+<p>נתון הקוד של תוכנית בשם <code>execme</code>:</p>
+<pre><code class="language-c">int main()
+{
+    char* args[] = {"execme", NULL};
+    if (!fork()) {
+        execvp(args[0], args);
+        printf("PID: %d\n", getpid());
+    }
+}</code></pre>
+<p>הריצו את התוכנית, והתהליך שנוצר קיבל את המזהה 300. מה הפלט?</p>
+<details class="sol"><summary>פתרון</summary>
+<p><strong>אין פלט בכלל.</strong> ה-<code>printf</code> נמצא אחרי <code>execvp</code>, והוא ירוץ רק אם <code>exec</code> נכשל – וכאן כל הקריאות מצליחות.</p>
+<p>מה כן קורה: כל תהליך יוצר ילד ומסתיים, והילד מריץ את <code>execme</code> מההתחלה – וחוזר חלילה. זו שרשרת אינסופית של תהליכים (300, 301, 302…), אבל בכל רגע חיים לכל היותר שניים, ולכן המערכת לא קורסת מריבוי תהליכים. כל ילד נשאר יתום ומאומץ על ידי <code>init</code>.</p>
+<p>בהרצה אמיתית (עם הגבלה ל-6 דורות): אפס שורות פלט, וכל ילד מהדור השני והלאה דיווח שההורה שלו הוא <bdi dir="ltr">PID 1</bdi>.</p>
+<div class="trace" data-trace="ex24bb"></div>
+</details></div></div>
+
+<div class="box exercise"><div class="box-title"><bdi dir="ltr">22BB</bdi> · פלט אפשרי, ומספר התהליכים</div><div class="box-body">
+<pre><code class="language-c">int main() {
+    int r1 = fork() || fork();
+    if (r1) {
+        char* args[3] = {"echo", "r1: TRUE", NULL};
+        execvp(args[0], args);
+        printf("r1: TRUE\n");
+    } else {
+        printf("r1: FALSE\n");
+    }
+    wait(NULL);
+
+    int r2 = fork() && fork();
+    if (r2) {
+        char* args[3] = {"echo", "r2: TRUE", NULL};
+        execvp(args[0], args);
+    }
+    else {
+        printf("r2: FALSE\n");
+    }
+    if (r1 || r2)
+        printf("END\n");
+}</code></pre>
+<p>כתבו פלט אפשרי, וכמה תהליכים נוצרו. <strong>תזכורת:</strong> ב-<code>&amp;&amp;</code> וב-<code>||</code>, אם התוצאה כבר ידועה מהאופרנד הראשון, השני לא מבוצע.</p>
+<details class="sol"><summary>פתרון</summary>
+<div class="tbl"><table>
+<tr><th>תהליך</th><th>r1</th><th>r2</th><th>מה הוא מדפיס</th></tr>
+<tr><td>המקורי</td><td class="num">1</td><td>—</td><td><code>r1: TRUE</code> (דרך <code>echo</code>)</td></tr>
+<tr><td>הבן (מה-<bdi dir="ltr">fork</bdi> הראשון)</td><td class="num">1</td><td>—</td><td><code>r1: TRUE</code> (דרך <code>echo</code>)</td></tr>
+<tr><td>הנכד (מה-<bdi dir="ltr">fork</bdi> השני ב-<code>||</code>)</td><td class="num">0</td><td class="num">1</td><td><code>r1: FALSE</code>, ואחר כך <code>r2: TRUE</code> (דרך <code>echo</code>)</td></tr>
+<tr><td>שני בני הנכד</td><td class="num">0</td><td class="num">0</td><td><code>r2: FALSE</code> כל אחד</td></tr>
+</table></div>
+<pre><code>r1: TRUE
+r1: TRUE
+r1: FALSE
+r2: TRUE
+r2: FALSE
+r2: FALSE</code></pre>
+<p><strong>אף תהליך לא מדפיס <bdi dir="ltr">END</bdi>:</strong> שני התהליכים היחידים שמגיעים לשורה האחרונה הם בני הנכד, ואצלם <code>r1</code> ו-<code>r2</code> שניהם 0. <strong>נוצרו 5 תהליכים</strong> בסך הכל (כולל המקורי).</p>
+<p>בהרצה אמיתית של 200 פעמים: תמיד בדיוק 6 שורות האלה ובלי <code>END</code>. סדר השורות יכול להשתנות, כי התהליכים רצים במקביל.</p>
+<div class="trace" data-trace="ex22bb"></div>
+</details></div></div>
+
+<h2 id="r-files">פעולות על קבצים</h2>
+<p>ברמת מערכת ההפעלה קובץ פתוח מזוהה על ידי מספר שלם – <strong>file descriptor</strong> (<bdi dir="ltr">FD</bdi>). זה המקביל של <code>FILE*</code> בספריית <bdi dir="ltr">C</bdi>, אבל ברמה נמוכה יותר.</p>
+<div class="fn"><div class="fn-sig">int open(const char* pathname, int flags, mode_t mode);</div><div class="fn-body"><dl>
+<dt>מחזיר</dt><dd>את ה-<bdi dir="ltr">FD</bdi> החדש – תמיד <strong>הקטן ביותר הפנוי</strong> – או <bdi dir="ltr">-1</bdi> אם הפתיחה נכשלה.</dd>
+<dt>flags</dt><dd>חובה <strong>בדיוק אחד</strong> מבין <code>O_RDONLY</code>, <code>O_WRONLY</code>, <code>O_RDWR</code>, ואפשר להוסיף עם <code>|</code>: <code>O_CREAT</code> (יצירה אם לא קיים), <code>O_APPEND</code> (כתיבה לסוף), <code>O_TRUNC</code> (מחיקת התוכן אם קיים).</dd>
+<dt>mode</dt><dd>ההרשאות לקובץ חדש, במבנה <code>RWXRWXRWX</code> כמספר בינארי. לדוגמה <code>0644</code> הוא <code>rw-r--r--</code>.</dd>
+</dl></div></div>
+<div class="fn"><div class="fn-sig">ssize_t read(int fd, void* buf, size_t count);   ssize_t write(int fd, void* buf, size_t count);</div><div class="fn-body"><dl>
+<dt>buf, count</dt><dd>לאן לקרוא / מאיפה לכתוב, וכמה <strong>בתים</strong>.</dd>
+<dt>מחזיר</dt><dd>כמה בתים נקראו או נכתבו <strong>בפועל</strong> (יכול להיות פחות מ-<code>count</code>), <bdi dir="ltr">-1</bdi> בשגיאה, ו-0 ב-<code>read</code> כשאין עוד מה לקרוא (<bdi dir="ltr">EOF</bdi>).</dd>
+</dl></div></div>
+<div class="fn"><div class="fn-sig">off_t lseek(int fd, off_t offset, int whence);   int close(int fd);</div><div class="fn-body"><dl>
+<dt>whence</dt><dd>יחסית למה ה-<code>offset</code>: <code>SEEK_SET</code> (תחילת הקובץ), <code>SEEK_CUR</code> (המיקום הנוכחי), <code>SEEK_END</code> (סוף הקובץ).</dd>
+<dt>מעבר לסוף</dt><dd><strong>מותר לחרוג מסוף הקובץ.</strong> כתיבה שם "מרחיבה" את הקובץ, והרווח מתמלא באפסים.</dd>
+</dl></div></div>
+<div class="box example"><div class="box-title">בדקתי: כתיבה אחרי סוף הקובץ</div><div class="box-body">
+<pre><code class="language-c">int f = open("s.bin", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+write(f, "AB", 2);
+lseek(f, 5, SEEK_END);   // 5 bytes past the end
+write(f, "C", 1);
+close(f);</code></pre>
+<p>התוכן בפועל (לפי <code>od -c</code>): <code>A B \0 \0 \0 \0 \0 C</code> – שמונה בתים, וחמישה אפסים באמצע.</p>
+</div></div>
+
+<div class="box theory"><div class="box-title">אותן פעולות בשלוש רמות (תרגול 3)</div><div class="box-body">
+<div class="tbl"><table>
+<tr><th>פעולה</th><th><bdi dir="ltr">Linux</bdi> (קריאות מערכת)</th><th><bdi dir="ltr">C</bdi> (ספרייה)</th><th>Python</th></tr>
+<tr><td>קובץ פתוח</td><td class="mono">int fd</td><td class="mono">FILE* f</td><td class="mono">f</td></tr>
+<tr><td>פתיחה</td><td class="mono">open(name, flags, mode)</td><td class="mono">fopen(name, mode)</td><td class="mono">open(name, mode)</td></tr>
+<tr><td>שגיאה בפתיחה</td><td class="mono">fd == -1</td><td class="mono">f == NULL</td><td>Exception</td></tr>
+<tr><td>קריאה</td><td class="mono">read(fd, buf, count)</td><td class="mono">fread(buf, size, count, f)</td><td class="mono">f.read(size)</td></tr>
+<tr><td>כתיבה</td><td class="mono">write(fd, buf, count)</td><td class="mono">fwrite(buf, size, count, f)</td><td class="mono">f.write(buf)</td></tr>
+<tr><td>סוף קובץ</td><td class="mono">s == 0</td><td class="mono">s == 0</td><td class="mono">not chunk</td></tr>
+<tr><td>ניווט</td><td class="mono">lseek(fd, off, whence)</td><td class="mono">fseek(f, off, whence)</td><td class="mono">f.seek(off, from_what)</td></tr>
+<tr><td>סגירה</td><td class="mono">close(fd)</td><td class="mono">fclose(f)</td><td class="mono">f.close()</td></tr>
+</table></div>
+</div></div>
+
+<h2 id="r-redir">הפניות ו-<bdi dir="ltr">dup2</bdi></h2>
+<p>לכל תהליך יש <strong>טבלת <bdi dir="ltr">file descriptors</bdi></strong>, ושלוש הכניסות הראשונות פתוחות מההתחלה:</p>
+<div class="tbl"><table>
+<tr><th class="num">FD</th><th>שם</th><th>תפקיד</th><th>מי משתמש</th></tr>
+<tr><td class="num">0</td><td class="mono">stdin</td><td>קלט סטנדרטי</td><td class="mono">scanf</td></tr>
+<tr><td class="num">1</td><td class="mono">stdout</td><td>פלט סטנדרטי</td><td class="mono">printf</td></tr>
+<tr><td class="num">2</td><td class="mono">stderr</td><td>דיווח שגיאות</td><td class="mono">perror</td></tr>
+</table></div>
+<p><code>printf</code> לא יודע לאן הוא כותב – הוא פשוט כותב ל-<bdi dir="ltr">FD 1</bdi>. אם נגרום ל-<bdi dir="ltr">FD 1</bdi> להצביע על קובץ, כל הפלט יגיע לקובץ.</p>
+<div class="fn"><div class="fn-sig">int dup(int oldfd);   int dup2(int oldfd, int newfd);</div><div class="fn-body"><dl>
+<dt>dup</dt><dd>משכפל את <code>oldfd</code> אל ה-<bdi dir="ltr">FD</bdi> <strong>הפנוי הקטן ביותר</strong>. אחרי השכפול שני המספרים מצביעים על אותו קובץ פתוח.</dd>
+<dt>dup2</dt><dd>משכפל את <code>oldfd</code> בדיוק אל <code>newfd</code>, ו<strong>סוגר את <bdi dir="ltr">newfd</bdi> קודם</strong> אם הוא היה בשימוש.</dd>
+<dt>למה צריך</dt><dd>כשיש לנו כבר <bdi dir="ltr">FD</bdi> (למשל של <code>pipe</code>) ורוצים שהוא יהיה דווקא 0 או 1.</dd>
+</dl></div></div>
+<p>נסו בעצמכם. כל פעולה מקבלת את ה-<bdi dir="ltr">FD</bdi> כמו שמערכת ההפעלה הייתה נותנת:</p>
+<div class="vmw" data-vm="fdtable"></div>
+<div class="box example"><div class="box-title">בדקתי: <bdi dir="ltr">dup</bdi> אחרי <bdi dir="ltr">close</bdi>(1)</div><div class="box-body">
+<pre><code class="language-c">int f = open("x.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);  // 3
+int a = dup(f);    // 4 – the lowest free FD
+close(1);
+int b = dup(f);    // 1 – now FD 1 is the lowest free
+printf("to file\n");</code></pre>
+<p>בהרצה: <code>open=3 dup=4 after close(1) dup=1</code>, והשורה <code>to file</code> נכתבה לקובץ ולא למסך. זו הדרך ה"ישנה" להפניה – <code>dup2</code> עושה את הסגירה וההעתקה בפעולה אחת.</p>
+</div></div>
+
+<h3>כך עובד ה-<bdi dir="ltr">shell</bdi></h3>
+<pre><code class="language-c">while (1) {
+    char **args = read_user();        // read a command
+    pid_t rc = fork();                // new process
+    if (rc == 0) {
+        /* set up process: redirections */
+        execvp(args[0], args);        // run the program
+    }
+    else {
+        if (!bg)                      // unless running in background (&)
+            waitpid(rc, NULL, 0);
+    }
+}</code></pre>
+<div class="box example"><div class="box-title"><bdi dir="ltr">ls &gt</bdi>; <bdi dir="ltr">out.txt</bdi> – מה ה-<bdi dir="ltr">shell</bdi> עושה בפועל</div><div class="box-body">
+<pre><code class="language-c">pid_t rc = fork();
+if (rc == 0) {
+    int fd = open("out.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) { perror("open"); exit(1); }
+    dup2(fd, STDOUT_FILENO);   // FD 1 now points to out.txt
+    close(fd);                 // the copy in FD 1 is enough
+    char *args[] = { "ls", NULL };
+    execvp(args[0], args);     // ls writes to FD 1 without knowing
+    perror("execvp"); exit(1);
+}
+waitpid(rc, NULL, 0);</code></pre>
+<p>הרצתי בתיקייה עם <code>a.c</code>, <code>b.c</code>, <code>c.txt</code>: הקובץ <code>out.txt</code> הכיל את ארבעת השמות (כולל <code>out.txt</code> עצמו, כי הוא נוצר לפני ש-<code>ls</code> רץ), ושום דבר לא הודפס למסך.</p>
+</div></div>
+
+<h2 id="r-ipc">תקשורת בין תהליכים: <bdi dir="ltr">FIFO</bdi> ו-<bdi dir="ltr">pipe</bdi></h2>
+<p>אפשר לתקשר דרך קובץ רגיל, אבל זה <strong>מסורבל</strong> (מה אם קראנו לפני שנכתב? צריך סנכרון) ו<strong>בזבזני</strong> (הנתונים נשמרים בדיסק בלי צורך).</p>
+<div class="tbl"><table>
+<tr><th>מנגנון</th><th>איך יוצרים</th><th>מתי משתמשים</th></tr>
+<tr><td><strong>FIFO</strong> (<bdi dir="ltr">named pipe</bdi>)</td><td><code>mkfifo(pathname, mode)</code>, או הפקודה <code>mkfifo</code> ב-<bdi dir="ltr">shell</bdi></td><td>בין תהליכים <strong>שאין ביניהם קשר</strong>. יש שם בתיקייה, אבל שום דבר לא נכתב לדיסק – הנתונים עוברים ב-<bdi dir="ltr">buffer</bdi> בזיכרון הקרנל. כל תוכנית שקוראת או כותבת לקובץ אפשר להפנות ל-<bdi dir="ltr">FIFO</bdi>.</td></tr>
+<tr><td><strong>pipe</strong> (<bdi dir="ltr">unnamed pipe</bdi>)</td><td><code>pipe(int pipefd[2])</code></td><td>בין תהליכים <strong>קשורים</strong> (<bdi dir="ltr">pipe</bdi> ואחריו <code>fork</code>). אותו מנגנון בלי קובץ. עליו מבוסס השרשור <code>|</code>.</td></tr>
+</table></div>
+<div class="box theory"><div class="box-title">pipe(fd)</div><div class="box-body">
+<p><code>fd[1]</code> הוא הצד <strong>הכותב</strong>, <code>fd[0]</code> הוא הצד <strong>הקורא</strong>. מה שנכתב ל-<code>fd[1]</code> נקרא מ-<code>fd[0]</code>, דרך <bdi dir="ltr">buffer</bdi> בזיכרון הקרנל.</p>
+<div class="tbl"><table>
+<tr><th>מצב</th><th>מה קורה</th></tr>
+<tr><td><strong>קריאה</strong>, ה-<bdi dir="ltr">buffer</bdi> ריק</td><td>הקריאה <strong>חוסמת</strong> עד שנכתבים נתונים</td></tr>
+<tr><td><strong>קריאה</strong>, כל הצדדים הכותבים נסגרו</td><td>קוראים את מה שנשאר, ואז <bdi dir="ltr">EOF</bdi> (<code>read</code> מחזיר 0)</td></tr>
+<tr><td><strong>כתיבה</strong>, ה-<bdi dir="ltr">buffer</bdi> מלא</td><td>הכתיבה <strong>חוסמת</strong> עד שקוראים נתונים</td></tr>
+<tr><td><strong>כתיבה</strong>, כל הצדדים הקוראים נסגרו</td><td>התהליך מקבל <code>SIGPIPE</code></td></tr>
+</table></div>
+<p>אחרי <code>fork</code> לשני התהליכים יש את שני הצדדים. התקשורת <strong>חד-כיוונית</strong> (כדי להימנע מבעיות סנכרון): כל תהליך סוגר את הצד שהוא לא משתמש בו. לתקשורת דו-כיוונית משתמשים <strong>בשני צינורות</strong>.</p>
+</div></div>
+<figure>
+<svg viewBox="0 0 560 170" width="560" role="img" aria-label="שני תהליכים וצינור ביניהם">
+  <defs><marker id="pa1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--warn)"/></marker><marker id="pa2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--example)"/></marker></defs>
+  <g font-size="13" text-anchor="middle">
+    <rect x="10" y="20" width="150" height="130" rx="6" fill="var(--surface)" stroke="var(--line)"/><text x="85" y="40" fill="var(--fg)" font-weight="700">writer (ls)</text>
+    <rect x="30" y="56" width="110" height="28" rx="4" fill="var(--warn-bg)" stroke="var(--warn)"/><text x="85" y="75" fill="var(--fg)" class="mono">fd[1] → FD 1</text>
+    <rect x="30" y="100" width="110" height="28" rx="4" fill="var(--sunk)" stroke="var(--line)" stroke-dasharray="4 3"/><text x="85" y="119" fill="var(--muted)" class="mono">fd[0] closed</text>
+    <rect x="215" y="62" width="130" height="50" rx="6" fill="var(--exercise-bg)" stroke="var(--exercise)"/><text x="280" y="84" fill="var(--fg)" font-weight="700">buffer</text><text x="280" y="102" fill="var(--muted)" font-size="11">kernel memory</text>
+    <rect x="400" y="20" width="150" height="130" rx="6" fill="var(--surface)" stroke="var(--line)"/><text x="475" y="40" fill="var(--fg)" font-weight="700">reader (wc -l)</text>
+    <rect x="420" y="56" width="110" height="28" rx="4" fill="var(--sunk)" stroke="var(--line)" stroke-dasharray="4 3"/><text x="475" y="75" fill="var(--muted)" class="mono">fd[1] closed</text>
+    <rect x="420" y="100" width="110" height="28" rx="4" fill="var(--example-bg)" stroke="var(--example)"/><text x="475" y="119" fill="var(--fg)" class="mono">fd[0] → FD 0</text>
+  </g>
+  <path d="M140 70 C180 70 180 80 213 82" stroke="var(--warn)" stroke-width="2" fill="none" marker-end="url(#pa1)"/>
+  <path d="M345 92 C385 95 385 114 418 114" stroke="var(--example)" stroke-width="2" fill="none" marker-end="url(#pa2)"/>
+</svg>
+<figcaption><bdi dir="ltr">ls | wc -l</bdi>: כל תהליך משאיר פתוח רק את הצד שלו</figcaption>
+</figure>
+<div class="box example"><div class="box-title"><bdi dir="ltr">ls | wc -l</bdi> – מה ה-<bdi dir="ltr">shell</bdi> עושה בפועל</div><div class="box-body">
+<pre><code class="language-c">int fd[2];
+pipe(fd);                          // fd[0] = read end, fd[1] = write end
+if (fork() == 0) {                 // first child: ls
+    dup2(fd[1], STDOUT_FILENO);
+    close(fd[0]); close(fd[1]);
+    execlp("ls", "ls", NULL);
+    perror("ls"); exit(1);
+}
+if (fork() == 0) {                 // second child: wc -l
+    dup2(fd[0], STDIN_FILENO);
+    close(fd[0]); close(fd[1]);
+    execlp("wc", "wc", "-l", NULL);
+    perror("wc"); exit(1);
+}
+close(fd[0]); close(fd[1]);        // parent must close too
+while (wait(NULL) > 0);</code></pre>
+<p>בהרצה התקבל 4, בדיוק כמו <code>ls | wc -l</code> ב-<bdi dir="ltr">shell</bdi> באותה תיקייה.</p>
+</div></div>
+<div class="box warn"><div class="box-title">המלכודת: לשכוח לסגור צד כותב</div><div class="box-body">
+<p><code>wc</code> מסיים רק כשהוא מקבל <bdi dir="ltr">EOF</bdi>, וזה קורה רק כש<strong>כל</strong> הצדדים הכותבים של הצינור סגורים – גם זה שאצל ההורה. מחקתי מהקוד למעלה את השורה <code>close(fd[0]); close(fd[1]);</code> של ההורה והרצתי: התוכנית <strong>נתקעה</strong> ונעצרה רק אחרי <bdi dir="ltr">timeout</bdi> של שתי שניות.</p>
+</div></div>
+
+<h2 id="r-ex">תרגיל: הפניה ושרשור</h2>
+<div class="box exercise"><div class="box-title">תרגול נוסף (הרצאה + תרגול 3)</div><div class="box-body">
+<p>כתבו תוכנית ש:</p>
+<ul>
+<li>יוצרת תהליך חדש.</li>
+<li>בתהליך <strong>המקורי</strong> מבצעת הפניית <strong>פלט</strong> לפי ארגומנט 1 (שם קובץ).</li>
+<li>בתהליך <strong>החדש</strong> מבצעת הפניית <strong>קלט</strong> לפי ארגומנט 2 (שם קובץ).</li>
+<li>משרשרת בין התהליכים, כך שהפלט של התהליך החדש מופנה לקלט של התהליך המקורי – באמצעות <code>pipe</code>. לזכור לסגור את כל הצדדים שלא בשימוש.</li>
+<li>מריצה בתהליך החדש את התוכנית לפי הארגומנט השלישי והלאה (אפשר להניח שאין סימנים מיוחדים).</li>
+<li>מדפיסה בתהליך המקורי את כל הקלט שמתקבל.</li>
+<li>בודקת שגיאות לאורך כל הדרך.</li>
+</ul>
+<details class="sol"><summary>פתרון</summary>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;sys/wait.h&gt;
+
+/* usage: ./redir &lt;out-file&gt; &lt;in-file&gt; &lt;prog&gt; [args...] */
+int main(int argc, char *argv[]) {
+    if (argc &lt; 4) { fprintf(stderr, "usage: %s out in prog [args]\n", argv[0]); exit(1); }
+    int fd[2];
+    if (pipe(fd) == -1) { perror("pipe"); exit(1); }
+
+    pid_t rc = fork();
+    if (rc == -1) { perror("fork"); exit(1); }
+
+    if (rc == 0) {                                   /* child: in-file -&gt; prog -&gt; pipe */
+        int in = open(argv[2], O_RDONLY);
+        if (in == -1) { perror("open input"); exit(1); }
+        if (dup2(in, STDIN_FILENO) == -1) { perror("dup2"); exit(1); }
+        if (dup2(fd[1], STDOUT_FILENO) == -1) { perror("dup2"); exit(1); }
+        close(in); close(fd[0]); close(fd[1]);       /* close every unused end */
+        execvp(argv[3], &amp;argv[3]);
+        perror("execvp");                            /* reached only if exec failed */
+        exit(1);
+    }
+
+    /* parent: pipe -&gt; stdin, stdout -&gt; out-file */
+    int out = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (out == -1) { perror("open output"); exit(1); }
+    if (dup2(fd[0], STDIN_FILENO) == -1) { perror("dup2"); exit(1); }
+    if (dup2(out, STDOUT_FILENO) == -1) { perror("dup2"); exit(1); }
+    close(out); close(fd[0]); close(fd[1]);          /* must close write end, or read never sees EOF */
+
+    char buf[256];
+    ssize_t n;
+    while ((n = read(STDIN_FILENO, buf, sizeof buf)) &gt; 0)
+        if (write(STDOUT_FILENO, buf, n) != n) { perror("write"); exit(1); }
+    if (n == -1) { perror("read"); exit(1); }
+    int status;
+    if (waitpid(rc, &amp;status, 0) == -1) { perror("waitpid"); exit(1); }
+    if (WIFEXITED(status) &amp;&amp; WEXITSTATUS(status) != 0) {
+        fprintf(stderr, "child failed with code %d\n", WEXITSTATUS(status));
+        exit(1);
+    }
+    return 0;
+}</code></pre>
+<p><strong>בדיקה בהרצה:</strong></p>
+<ul>
+<li><code>./redir out.txt in.txt sort</code> כש-<code>in.txt</code> מכיל <bdi dir="ltr">banana, apple, cherry</bdi>: ב-<code>out.txt</code> התקבל <bdi dir="ltr">apple, banana, cherry</bdi>.</li>
+<li><code>./redir out2.txt in.txt wc -l</code>: התקבל 3.</li>
+<li>קובץ קלט שלא קיים: התוכנית מדפיסה את השגיאה והקוד שלה הוא 1:<pre><code>open input: No such file or directory
+child failed with code 1</code></pre></li>
+</ul>
+<p><strong>שתי נקודות חשובות:</strong> ההורה סוגר את <code>fd[1]</code> לפני הקריאה – אחרת <code>read</code> לא יקבל אף פעם <bdi dir="ltr">EOF</bdi> והתוכנית תיתקע. וההורה בודק את סטטוס היציאה של הילד עם <code>WEXITSTATUS</code>, כדי לדווח אם הילד נכשל.</p>
+</details>
+</div></div>
+
+<div class="box summary"><div class="box-title">סיכום פרק 6</div><div class="box-body">
+<ul>
+<li><code>exec</code> שומר <bdi dir="ltr">PID</bdi>, קבצים פתוחים וסיגנלים מסוג <code>SIG_IGN</code>; כל השאר נדרס. <code>exec</code> שהצליח לא חוזר.</li>
+<li><code>open</code> ו-<code>dup</code> מחזירים תמיד את ה-<bdi dir="ltr">FD</bdi> הפנוי הקטן ביותר; <bdi dir="ltr">-1</bdi> הוא שגיאה.</li>
+<li>הפניה = <code>fork</code>, <code>open</code>, <code>dup2</code> לתוך 0 או 1, <code>close</code>, <code>exec</code>.</li>
+<li><code>pipe</code>: <code>fd[1]</code> כותב, <code>fd[0]</code> קורא; קריאה חוסמת כשריק, <bdi dir="ltr">EOF</bdi> רק כשכל הכותבים סגורים, <code>SIGPIPE</code> כשאין קוראים.</li>
+<li>לסגור כל צד שלא בשימוש – בכל תהליך, כולל ההורה.</li>
+</ul>
+</div></div>
+</section>
+
+<nav class="pager" aria-label="מעבר בין נושאים">
+<a class="prev" href="signals.html"><span class="dir">הנושא הקודם</span><span class="nm">פרק 5 · זומבים וסיגנלים</span></a>
+<a class="next" href="vmem.html"><span class="dir">הנושא הבא</span><span class="nm">פרק 7 · זיכרון וירטואלי</span></a>
+</nav>
+
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script>
+try { hljs.highlightAll(); } catch (e) {}
+
+/* ---------- scheduler core ---------- */
+function simulate(jobs, alg, q) {
+  jobs = jobs.map((j, i) => ({ name: j.name, arr: +j.arr, burst: +j.burst, idx: i, rem: +j.burst, first: null, done: null }));
+  const seg = []; let t = 0;
+  const push = (name, s, e) => { if (e <= s) return; const l = seg[seg.length - 1]; if (l && l.name === name && l.e === s) l.e = e; else seg.push({ name, s, e }); };
+  const byArr = (a, b) => a.arr - b.arr || a.idx - b.idx;
+  const left = () => jobs.some(j => j.rem > 0);
+  if (alg === 'FCFS' || alg === 'SJF') {
+    while (left()) {
+      const ready = jobs.filter(j => j.rem > 0 && j.arr <= t);
+      if (!ready.length) { const nx = Math.min(...jobs.filter(j => j.rem > 0).map(j => j.arr)); push('idle', t, nx); t = nx; continue; }
+      ready.sort(alg === 'SJF' ? (a, b) => a.burst - b.burst || byArr(a, b) : byArr);
+      const j = ready[0]; j.first = t; push(j.name, t, t + j.rem); t += j.rem; j.rem = 0; j.done = t;
+    }
+  } else if (alg === 'SRTF') {
+    while (left()) {
+      const ready = jobs.filter(j => j.rem > 0 && j.arr <= t);
+      if (!ready.length) { const nx = Math.min(...jobs.filter(j => j.rem > 0).map(j => j.arr)); push('idle', t, nx); t = nx; continue; }
+      ready.sort((a, b) => a.rem - b.rem || byArr(a, b));
+      const j = ready[0]; if (j.first === null) j.first = t;
+      const nextArr = Math.min(Infinity, ...jobs.filter(x => x.rem > 0 && x.arr > t).map(x => x.arr));
+      const run = Math.min(j.rem, nextArr - t);
+      push(j.name, t, t + run); t += run; j.rem -= run; if (!j.rem) j.done = t;
+    }
+  } else { // RR
+    q = Math.max(1, +q || 1);
+    const pending = jobs.slice().sort(byArr); const queue = [];
+    const admit = (upto) => { while (pending.length && pending[0].arr <= upto) queue.push(pending.shift()); };
+    admit(t);
+    while (queue.length || pending.length) {
+      if (!queue.length) { const nx = pending[0].arr; push('idle', t, nx); t = nx; admit(t); continue; }
+      const j = queue.shift(); if (j.first === null) j.first = t;
+      const run = Math.min(q, j.rem); push(j.name, t, t + run); t += run; j.rem -= run;
+      admit(t);
+      if (j.rem > 0) queue.push(j); else j.done = t;
+    }
+  }
+  const rows = jobs.map(j => ({ name: j.name, arr: j.arr, burst: j.burst, tat: j.done - j.arr, resp: j.first - j.arr }));
+  const avg = k => rows.reduce((s, r) => s + r[k], 0) / rows.length;
+  return { seg, rows, avgTat: avg('tat'), avgResp: avg('resp'), end: t };
+}
+
+/* ---------- rendering ---------- */
+const palette = ['var(--example)', 'var(--theory)', 'var(--exercise)', 'var(--formula)', 'var(--warn)', 'var(--summary)'];
+function colorOf(name, names) { return name === 'idle' ? 'var(--sunk)' : palette[names.indexOf(name) % palette.length]; }
+function fmt(x) { return Number.isInteger(x) ? String(x) : x.toFixed(2); }
+function gantt(res, names, title) {
+  const W = 560, L = 10, H = 34, scale = (W - 2 * L) / Math.max(1, res.end);
+  const step = res.end <= 20 ? 1 : res.end <= 40 ? 5 : res.end <= 100 ? 10 : Math.ceil(res.end / 10);
+  let s = `<svg viewBox="0 0 ${W} ${H + 40}" width="${W}" role="img" aria-label="Gantt">`;
+  res.seg.forEach(g => {
+    const x = L + g.s * scale, w = (g.e - g.s) * scale;
+    s += `<rect x="${x}" y="8" width="${w}" height="${H}" fill="${colorOf(g.name, names)}" stroke="var(--surface)" stroke-width="1"/>`;
+    if (w > 14 && g.name !== 'idle') s += `<text x="${x + w / 2}" y="${8 + H / 2 + 5}" text-anchor="middle" font-size="13" class="mono" fill="var(--surface)">${g.name}</text>`;
+  });
+  for (let v = 0; v <= res.end; v += step) {
+    const x = L + v * scale;
+    s += `<line x1="${x}" y1="${H + 8}" x2="${x}" y2="${H + 14}" stroke="var(--muted)"/><text x="${x}" y="${H + 28}" text-anchor="middle" font-size="11" class="mono" fill="var(--muted)">${v}</text>`;
+  }
+  s += '</svg>';
+  let tbl = '<div class="tbl"><table><tr><th>עבודה</th><th>הגעה</th><th>אורך</th><th>Turnaround</th><th>Response</th></tr>';
+  res.rows.forEach(r => tbl += `<tr><td class="mono">${r.name}</td><td class="num">${r.arr}</td><td class="num">${r.burst}</td><td class="num">${r.tat}</td><td class="num">${r.resp}</td></tr>`);
+  tbl += `<tr><th>ממוצע</th><td></td><td></td><td class="num">${fmt(res.avgTat)}</td><td class="num">${fmt(res.avgResp)}</td></tr></table></div>`;
+  return `<figure>${title ? `<figcaption style="margin:0 0 6px">${title}</figcaption>` : ''}${s}${tbl}</figure>`;
+}
+
+const presets = [
+  { label: 'FCFS · 10/10/10', alg: 'FCFS', jobs: [['A', 0, 10], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'FCFS · A=60', alg: 'FCFS', jobs: [['A', 0, 60], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'SJF · A=60', alg: 'SJF', jobs: [['A', 0, 60], ['B', 0, 10], ['C', 0, 10]] },
+  { label: 'SJF · B,C at t=10', alg: 'SJF', jobs: [['A', 0, 60], ['B', 10, 10], ['C', 10, 10]] },
+  { label: 'SRTF · B,C at t=10', alg: 'SRTF', jobs: [['A', 0, 60], ['B', 10, 10], ['C', 10, 10]] },
+  { label: 'RR · 5/5/5, q=1', alg: 'RR', q: 1, jobs: [['A', 0, 5], ['B', 0, 5], ['C', 0, 5]] },
+];
+const toJobs = p => p.jobs.map(([name, arr, burst]) => ({ name, arr, burst }));
+
+/* lecture figures */
+(function () {
+  const box = document.getElementById('lec-gantts'); if (!box) return;
+  const L = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const caps = [L('FCFS') + ': שלוש עבודות של 10, ממוצע 20', L('FCFS') + ': עבודה ' + L('A') + ' הארוכה ראשונה, ממוצע 70', L('SJF') + ': אותן עבודות, ממוצע 36.67', L('SJF') + ': ' + L('B') + ' ו-' + L('C') + ' מגיעות בזמן 10, ממוצע 63.33', L('SRTF') + ': אותו מקרה, ממוצע 36.67'];
+  let html = '';
+  presets.slice(0, 5).forEach((p, i) => { const j = toJobs(p); html += gantt(simulate(j, p.alg, p.q), j.map(x => x.name), caps[i]); });
+  box.innerHTML = html;
+  const rr = presets[5], rj = toJobs(rr);
+  document.getElementById('rr-gantt').innerHTML = gantt(simulate(rj, 'RR', 1), rj.map(x => x.name));
+})();
+
+/* interactive simulator */
+(function () {
+  const jobsEl = document.getElementById('jobs'), out = document.getElementById('out');
+  if (!jobsEl) return;
+  const alg = document.getElementById('alg'), q = document.getElementById('q');
+  let jobs = toJobs(presets[4]), uid = 0;
+  function renderJobs() {
+    jobsEl.innerHTML = '';
+    jobs.forEach((j, i) => {
+      const d = document.createElement('div'); d.className = 'job'; const id = 'j' + (uid++);
+      d.innerHTML = `<strong>${j.name}</strong><label for="${id}a">הגעה</label><input id="${id}a" type="number" min="0" value="${j.arr}"><label for="${id}b">אורך</label><input id="${id}b" type="number" min="1" value="${j.burst}"><button class="ghost" type="button" aria-label="הסר ${j.name}">×</button>`;
+      d.querySelector(`#${id}a`).oninput = e => { j.arr = Math.max(0, +e.target.value || 0); };
+      d.querySelector(`#${id}b`).oninput = e => { j.burst = Math.max(1, +e.target.value || 1); };
+      d.querySelector('button').onclick = () => { if (jobs.length > 1) { jobs.splice(i, 1); renderJobs(); run(); } };
+      jobsEl.appendChild(d);
+    });
+  }
+  function run() {
+    q.disabled = alg.value !== 'RR';
+    const res = simulate(jobs, alg.value, q.value);
+    out.innerHTML = gantt(res, jobs.map(j => j.name), alg.value + (alg.value === 'RR' ? ` · quantum ${q.value}` : ''));
+  }
+  document.getElementById('add').onclick = () => { if (jobs.length >= 6) return; jobs.push({ name: 'ABCDEF'[jobs.length] || 'X', arr: 0, burst: 5 }); renderJobs(); run(); };
+  document.getElementById('run').onclick = run;
+  alg.onchange = run; q.oninput = run;
+  const pc = document.getElementById('presets');
+  presets.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = p.label;
+    b.onclick = () => { jobs = toJobs(p); alg.value = p.alg; if (p.q) q.value = p.q; renderJobs(); run(); }; pc.appendChild(b); });
+  alg.value = 'SRTF'; renderJobs(); run();
+})();
+
+/* ================= dry-run tracer ================= */
+(function () {
+  const C = x => '<code>' + x + '</code>';
+  const E = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const PCOL = ['var(--example)', 'var(--theory)', 'var(--exercise)', 'var(--formula)', 'var(--warn)', 'var(--summary)'];
+  const ST = { running: 'רץ', ready: 'מוכן', blocked: 'חסום', zombie: 'זומבי', reaped: 'נאסף', kernel: 'בקרנל' };
+
+  /* ---- builder ---- */
+  function B(code) {
+    const t = { code, procs: [], out: [], steps: [] };
+    const P = pid => t.procs.find(p => p.pid === pid);
+    const api = {
+      proc(pid, ppid, line, vars, extra) { t.procs.push(Object.assign({ pid, ppid, line, vars: vars || {}, state: 'running', prog: null, buf: '' }, extra || {})); return api; },
+      fork(par, child) { const p = P(par); t.procs.push({ pid: child, ppid: par, line: p.line, vars: JSON.parse(JSON.stringify(p.vars)), state: 'ready', prog: p.prog, buf: p.buf }); return api; },
+      at(pid, line) { P(pid).line = line; return api; },
+      v(pid, k, val) { P(pid).vars[k] = val; return api; },
+      st(pid, s) { P(pid).state = s; if (s === 'reaped' || s === 'zombie') P(pid).line = null; return api; },
+      ppid(pid, pp) { P(pid).ppid = pp; return api; },
+      prog(pid, name) { P(pid).prog = name; return api; },
+      buf(pid, s) { P(pid).buf = s; return api; },
+      print(pid, text) { t.out.push({ pid, text }); return api; },
+      snap(active, note) {
+        t.steps.push({ procs: JSON.parse(JSON.stringify(t.procs)), out: t.out.slice(), active, note });
+        t.procs.forEach(p => { if (p.state === 'running' && p.pid !== active) p.state = 'ready'; });
+        return api;
+      },
+      run(pid) { t.procs.forEach(p => { if (p.state === 'running') p.state = 'ready'; }); P(pid).state = 'running'; return api; },
+      done() { return t; }
+    };
+    return api;
+  }
+
+  const KF = (par, child) => `<strong>מאחורי הקלעים:</strong> ${C('fork')} היא קריאת מערכת, ולכן ${E(par)} מבצע ${E('trap')} ועובר לקרנל. הקרנל מקצה ${E('PID')} חדש (${child}), יוצר ${E('PCB')} חדש בטבלת התהליכים ומעתיק לתוכו את מרחב הכתובות של ההורה, את האוגרים ואת הקבצים הפתוחים. בפועל ההעתקה עצלה, בשיטת ${E('copy-on-write')}. שני התהליכים נמצאים עכשיו באותה נקודה בקוד.`;
+  const RET = (par, child) => `הקרנל קובע ערך החזרה שונה לכל אחד: ההורה ${E(par)} מקבל ${child} (ה-${E('PID')} של הילד), והילד ${E(child)} מקבל 0. מכאן הם ממשיכים בנפרד, וכל אחד עובד על <strong>העותק שלו</strong> של המשתנים.`;
+
+  const traces = {};
+
+  /* 1. basic fork */
+  traces.basic = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int main() {', '    pid_t pid1 = getpid();', '    pid_t pid2 = fork();', '    printf("%d\\n", getpid());', '    printf("%d\\n", pid1);', '    printf("%d\\n", pid2);', '}']);
+    b.proc(5, 1, 1).snap(5, `יש תהליך אחד, ${E('PID 5')}. הוא מתחיל לרוץ ב-${C('main')}.`);
+    b.at(5, 2).v(5, 'pid1', 5).snap(5, `${C('getpid()')} מחזירה 5, והערך נשמר ב-${C('pid1')}. שימו לב: זה קורה <strong>לפני</strong> ה-${C('fork')}, ולכן העותק של הילד יקבל את אותו ערך.`);
+    b.at(5, 3).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'pid2', 6).v(6, 'pid2', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 4).print(5, '5\n').snap(5, `המתזמן ממשיך להריץ את ההורה. ${C('getpid()')} מחזירה לו 5.`);
+    b.at(5, 5).print(5, '5\n').snap(5, `${C('pid1')} של ההורה הוא 5.`);
+    b.at(5, 6).print(5, '6\n').snap(5, `${C('pid2')} של ההורה הוא 6, ה-${E('PID')} של הילד.`);
+    b.at(5, 7).st(5, 'reaped').run(6).at(6, 4).print(6, '6\n').snap(6, `ההורה סיים. הילד, שהיה במצב "מוכן", מקבל עכשיו את המעבד וממשיך משורה 4 – בדיוק מאיפה ש-${C('fork')} חזר אליו. ${C('getpid()')} מחזירה לו 6.`);
+    b.ppid(6, 1).at(6, 5).print(6, '5\n').snap(6, `${C('pid1')} של הילד הוא 5: הערך הועתק מההורה. וכיוון שההורה כבר מת, הילד נעשה <strong>יתום</strong>, ולכן אומץ ע"י ${C('init')} וה-${E('PPID')} שלו הוא עכשיו 1.`);
+    b.at(6, 6).print(6, '0\n').snap(6, `${C('pid2')} של הילד הוא 0 – הערך ש-${C('fork')} החזיר לו.`);
+    b.at(6, 7).st(6, 'reaped').snap(null, `גם הילד סיים, ו-${C('init')} אוסף אותו. סדר אחר (הילד רץ ראשון, או החלפות באמצע) היה נותן סדר שורות אחר, אבל אותן שש שורות.`);
+    return b.done(); })() }];
+
+  /* 2. fork + wait, private copy */
+  traces.waitx = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int x = 0;', 'int rc = fork();', 'if (rc) {', '    wait(NULL);', '} else {', '    x += 3;', '}', 'printf("%d\\n", x);']);
+    b.proc(5, 1, 1, { x: 0 }).snap(5, `${E('PID 5')} מאתחל ${C('x = 0')}.`);
+    b.at(5, 2).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'rc', 6).v(6, 'rc', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 4).st(5, 'blocked').snap(5, `ההורה: ${C('rc')} הוא 6, כלומר "אמת", ונכנס ל-${C('if')}. ${C('wait')} היא קריאת מערכת: הקרנל בודק אם יש ילד שכבר הסתיים. אין, ולכן ההורה עובר למצב <strong>חסום</strong> ולא מקבל מעבד עד שילד יסתיים.`);
+    b.run(6).at(6, 6).v(6, 'x', 3).snap(6, `המתזמן מריץ את הילד. אצלו ${C('rc')} הוא 0, ולכן הוא ב-${C('else')} ומגדיל את ${C('x')} ל-3. זה משנה <strong>רק את העותק שלו</strong> – ה-${C('x')} של ההורה עדיין 0.`);
+    b.at(6, 8).print(6, '3\n').snap(6, `הילד מדפיס 3.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `הילד מסיים. הקרנל לא מוחק אותו מיד: הוא הופך ל<strong>זומבי</strong> (נשאר בטבלה עם סטטוס היציאה), שולח ${E('SIGCHLD')} להורה ומעיר אותו – ההורה עובר מ"חסום" ל"מוכן".`);
+    b.run(5).st(6, 'reaped').snap(5, `ה-${C('wait')} של ההורה חוזר עם 6 ו<strong>אוסף</strong> את הזומבי – הרשומה שלו נמחקת מטבלת התהליכים.`);
+    b.at(5, 8).print(5, '0\n').snap(5, `ההורה מדפיס את ה-${C('x')} שלו: 0. בזכות ה-${C('wait')} הסדר תמיד 3 ואז 0.`);
+    b.st(5, 'reaped').snap(null, `סוף.`);
+    return b.done(); })() }];
+
+  /* 3. exec */
+  traces.exec = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int rc = fork();', 'if (rc == 0) {', '    char *args[] = { "wc", "-l", "exec.c", NULL };', '    execvp(args[0], args);', '    printf("this shouldn\'t print out\\n");', '} else {', '    int rc_wait = wait(NULL);', '    printf("I am parent of %d (rc_wait:%d)\\n", rc, rc_wait);', '}']);
+    b.proc(5, 1, 1, {}, { prog: 'exec_demo' }).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.v(5, 'rc', 6).v(6, 'rc', 0).st(5, 'running').snap(5, RET(5, 6));
+    b.at(5, 7).st(5, 'blocked').snap(5, `ההורה נכנס ל-${C('else')} ונחסם ב-${C('wait')} עד שהילד יסתיים.`);
+    b.run(6).at(6, 3).v(6, 'args', '{wc, -l, exec.c}').snap(6, `הילד בונה את מערך הארגומנטים. האיבר הראשון הוא שם התוכנית, והמערך מסתיים ב-${C('NULL')}.`);
+    b.at(6, 4).st(6, 'kernel').snap(6, `${C('execvp')} היא קריאת מערכת. הקרנל טוען את התוכנית ${C('wc')} מהדיסק <strong>לתוך אותו תהליך.</strong> הוא זורק את ה-${E('Text')}, ה-${E('Data')}, ה-${E('Heap')} וה-${E('Stack')} של הילד, וטוען את אלה של ${C('wc')}. ה-${E('PID')}, ה-${E('PPID')} והקבצים הפתוחים לא משתנים.`);
+    b.prog(6, 'wc').at(6, null).st(6, 'running').v(6, 'args', undefined).v(6, 'rc', undefined).snap(6, `עכשיו תהליך 6 מריץ את ה-${C('main')} של ${C('wc')}. הקוד שלנו כבר לא קיים בזיכרון שלו, ולכן אין לו שורה מסומנת – ושורה 5 <strong>לעולם לא תרוץ</strong>, כי ${C('exec')} שהצליח לא חוזר.`);
+    b.print(6, '27 exec.c\n').snap(6, `${C('wc -l')} מדפיס את מספר השורות בקובץ.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `${C('wc')} מסיים, תהליך 6 הופך לזומבי וההורה מתעורר.`);
+    b.run(5).st(6, 'reaped').v(5, 'rc_wait', 6).snap(5, `${C('wait')} מחזיר 6 ואוסף את הזומבי.`);
+    b.at(5, 8).print(5, 'I am parent of 6 (rc_wait:6)\n').snap(5, `ההורה מדפיס. ${C('rc')} ו-${C('rc_wait')} שווים, כי זה אותו ילד.`);
+    b.st(5, 'reaped').snap(null, `כך בדיוק ה-${E('shell')} מריץ כל פקודה: ${C('fork')}, בילד ${C('exec')}, ובהורה ${C('wait')}.`);
+    return b.done(); })() }];
+
+  /* 4. SB20 */
+  traces.sb20 = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int i = 0;', 'if (fork()) {', '    ++i;', '    fork();', '}', 'else if (fork())', '    ++i;', 'printf("%d", i);']);
+    b.proc(5, 1, 1, { i: 0 }).snap(5, `${C('i = 0')}.`);
+    b.at(5, 2).fork(5, 6).snap(5, `${C('fork')} ראשון: נוצר תהליך 6 עם ${C('i = 0')}. להורה הוחזר 6 (אמת), לילד 0 (שקר).`);
+    b.at(5, 3).v(5, 'i', 1).snap(5, `ההורה נכנס ל-${C('if')} ומגדיל את ה-${C('i')} שלו ל-1.`);
+    b.at(5, 4).fork(5, 7).snap(5, `${C('fork')} שני, בתוך הבלוק: נוצר 7 – עותק של 5, ולכן גם אצלו ${C('i = 1')}. ערך ההחזרה לא נשמר, אז שניהם פשוט ממשיכים.`);
+    b.at(5, 8).print(5, '1').snap(5, `5 מדלג על ה-${C('else')} ומדפיס 1.`);
+    b.st(5, 'reaped').run(7).at(7, 8).print(7, '1').snap(7, `7 מדפיס 1.`);
+    b.st(7, 'reaped').run(6).at(6, 6).fork(6, 8).snap(6, `עכשיו 6. אצלו ה-${C('fork')} הראשון החזיר 0, ולכן הוא ב-${C('else if (fork())')} – ומבצע ${C('fork')} נוסף: נוצר 8 עם ${C('i = 0')}.`);
+    b.at(6, 7).v(6, 'i', 1).snap(6, `ל-6 הוחזר 8 (אמת), ולכן הוא מגדיל את ${C('i')} ל-1.`);
+    b.at(6, 8).print(6, '1').snap(6, `6 מדפיס 1.`);
+    b.st(6, 'reaped').run(8).at(8, 8).print(8, '0').snap(8, `ל-8 הוחזר 0, אז הוא לא מגדיל, ומדפיס 0.`);
+    b.st(8, 'reaped').snap(null, `פלט: ${C('1110')}. בסדר הרצה אחר ה-0 יכול להופיע בכל מקום, אבל תמיד יהיו שלושה 1 ואפס אחד.`);
+    return b.done(); })() }];
+
+  /* 5. SA20 with three schedules */
+  function sa20(order) {
+    const b = B(['fork();', 'if (fork() == 0) {', '    printf("B");', '} else {', '    wait(NULL);', '    printf("A");', '}']);
+    b.proc(5, 1, 1).fork(5, 6).snap(5, `${C('fork')} ראשון: יש עכשיו 5 ו-6. ערך ההחזרה לא נשמר, אז שניהם ממשיכים לשורה 2.`);
+    b.at(5, 2).fork(5, 7).snap(5, `5 מבצע את ה-${C('fork')} השני ויוצר את 7. ל-7 הוחזר 0, ולכן הוא ידפיס ${C('B')}.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `5 קיבל ערך חיובי, נכנס ל-${C('else')} ונחסם ב-${C('wait')}. שימו לב: <strong>יש לו שני ילדים</strong> – 6 ו-7 – ו-${C('wait')} יחזור כשאחד מהם, לא משנה איזה, יסתיים.`);
+    b.run(6).at(6, 2).fork(6, 8).snap(6, `6 מגיע לשורה 2 ויוצר את 8, שידפיס ${C('B')}.`);
+    b.at(6, 5).st(6, 'blocked').snap(6, `6 נחסם ב-${C('wait')}. לו יש ילד אחד: 8.`);
+    if (order === 'BBAA') {
+      b.run(7).at(7, 3).print(7, 'B').snap(7, `7 מדפיס ${C('B')}.`);
+      b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים והופך לזומבי. 5 מתעורר.`);
+      b.run(8).at(8, 3).print(8, 'B').snap(8, `לפני ש-5 מספיק לרוץ, המתזמן מריץ את 8, שמדפיס ${C('B')}.`);
+      b.st(8, 'zombie').st(6, 'ready').snap(null, `8 מסיים. 6 מתעורר.`);
+      b.run(5).st(7, 'reaped').at(5, 6).print(5, 'A').snap(5, `5 רץ: ${C('wait')} אסף את 7, ו-5 מדפיס ${C('A')}.`);
+      b.st(5, 'reaped').run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'reaped').snap(null, `פלט: ${C('BBAA')} – הסדר הנפוץ.`);
+    } else if (order === 'BABA') {
+      b.run(7).at(7, 3).print(7, 'B').snap(7, `7 מדפיס ${C('B')}.`);
+      b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים והופך לזומבי. 5 מתעורר.`);
+      b.run(5).st(7, 'reaped').at(5, 6).print(5, 'A').snap(5, `הפעם 5 רץ מיד: ${C('wait')} אוסף את 7, ו-5 מדפיס ${C('A')}.`);
+      b.st(5, 'reaped').ppid(6, 1).run(8).at(8, 3).print(8, 'B').snap(8, `5 מסיים; 6 נעשה יתום ומאומץ ע"י ${C('init')}. עכשיו 8 מדפיס ${C('B')}.`);
+      b.st(8, 'zombie').run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 מתעורר, אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'reaped').snap(null, `פלט: ${C('BABA')}.`);
+    } else {
+      b.run(8).at(8, 3).print(8, 'B').snap(8, `המתזמן מריץ קודם את 8, שמדפיס ${C('B')}. 7 עדיין לא רץ בכלל.`);
+      b.st(8, 'zombie').st(6, 'ready').snap(null, `8 מסיים והופך לזומבי; 6 מתעורר.`);
+      b.run(6).st(8, 'reaped').at(6, 6).print(6, 'A').snap(6, `6 אוסף את 8 ומדפיס ${C('A')}.`);
+      b.st(6, 'zombie').st(5, 'ready').snap(null, `<strong>כאן המלכודת:</strong> 6 מסיים, והוא ילד של 5. הקרנל מעיר את 5 – כי ${C('wait')} מחכה לילד <em>כלשהו</em>, ו-6 הוא ילד שהסתיים.`);
+      b.run(5).st(6, 'reaped').at(5, 6).print(5, 'A').snap(5, `${C('wait')} של 5 חוזר עם 6 (לא עם 7!), ו-5 מדפיס ${C('A')} – בזמן ש-7 עוד לא הדפיס כלום.`);
+      b.st(5, 'reaped').ppid(7, 1).run(7).at(7, 3).print(7, 'B').snap(7, `5 מסיים, 7 נעשה יתום ומאומץ ע"י ${C('init')}. רק עכשיו 7 רץ ומדפיס ${C('B')}.`);
+      b.st(7, 'reaped').snap(null, `פלט: ${C('BAAB')}. נדיר, אבל חוקי לגמרי.`);
+    }
+    return b.done();
+  }
+  traces.sa20 = () => [{ label: 'BBAA', t: sa20('BBAA') }, { label: 'BABA', t: sa20('BABA') }, { label: 'BAAB', t: sa20('BAAB') }];
+
+  /* 6. AA24 */
+  traces.aa24 = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['char *str = "hello";', 'if (fork() && fork()) {', '    wait(NULL);', '    printf("1: %s\\n", str);', '    wait(NULL);', '    printf("1: %s\\n", str);', '} else {', '    wait(NULL);', '    printf("0: %s\\n", str);', '    str = "goodbye";', '    wait(NULL);', '    printf("0: %s\\n", str);', '}']);
+    b.proc(5, 1, 1, { str: '"hello"' }).snap(5, `${C('str')} מצביע ל-${C('"hello"')}.`);
+    b.at(5, 2).fork(5, 6).snap(5, `ה-${C('fork')} השמאלי ב-${C('&&')}: נוצר 6. ל-5 הוחזר 6 (אמת), ל-6 הוחזר 0 (שקר).`);
+    b.fork(5, 7).snap(5, `כי האופרנד הראשון אמת אצל 5, הוא מחשב גם את השני: עוד ${C('fork')}, ונוצר 7. ל-5 הוחזר 7, ל-7 הוחזר 0.`);
+    b.at(5, 3).st(5, 'blocked').snap(5, `אצל 5 שני האופרנדים אמת, אז הוא ב-${C('if')}, ונחסם ב-${C('wait')} הראשון.`);
+    b.run(6).at(6, 8).snap(6, `אצל 6 האופרנד הראשון 0 (שקר), ולכן ה-${C('fork')} השני <strong>לא בוצע בכלל</strong> (קיצור של ${C('&&')}). 6 ב-${C('else')}. ל-6 אין ילדים, אז ${C('wait')} מחזיר מיד ${E('-1')} ולא חוסם.`);
+    b.at(6, 9).print(6, '0: hello\n').snap(6, `6 מדפיס.`);
+    b.at(6, 10).v(6, 'str', '"goodbye"').snap(6, `6 משנה את ה-${C('str')} <strong>שלו</strong>. ל-5 ול-7 יש עותקים משלהם, והם עדיין ${C('"hello"')}.`);
+    b.at(6, 12).print(6, '0: goodbye\n').snap(6, `עוד ${C('wait')} שחוזר מיד, והדפסה.`);
+    b.st(6, 'zombie').st(5, 'ready').snap(null, `6 מסיים, הופך לזומבי ומעיר את 5.`);
+    b.run(5).st(6, 'reaped').at(5, 4).print(5, '1: hello\n').snap(5, `${C('wait')} של 5 אסף את 6. 5 מדפיס את ה-${C('str')} שלו – ${C('hello')}.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `${C('wait')} השני: 7 עדיין חי, אז 5 נחסם שוב.`);
+    b.run(7).at(7, 9).print(7, '0: hello\n').snap(7, `7 (ה-${C('fork')} השני החזיר לו 0) ב-${C('else')}, ה-${C('wait')} שלו חוזר מיד, והוא מדפיס.`);
+    b.at(7, 12).v(7, 'str', '"goodbye"').print(7, '0: goodbye\n').snap(7, `7 משנה את העותק שלו ומדפיס.`);
+    b.st(7, 'zombie').st(5, 'ready').snap(null, `7 מסיים ומעיר את 5.`);
+    b.run(5).st(7, 'reaped').at(5, 6).print(5, '1: hello\n').snap(5, `5 אוסף את 7 ומדפיס שוב ${C('hello')}. השורה הזו תמיד אחרונה: היא באה אחרי ${C('wait')} שני, כלומר אחרי ששני הילדים סיימו.`);
+    b.st(5, 'reaped').snap(null, `סוף. שש שורות.`);
+    return b.done(); })() }];
+
+  /* 7. stdout buffer */
+  function bufTrace(unbuf) {
+    const b = B(['printf("Good afternoon");', 'fork();', 'printf(", good evening");', 'fork();', 'printf(" and good night\\n");']);
+    const W = (pid, s, line, nl) => {
+      b.at(pid, line);
+      if (unbuf) { b.print(pid, s); return; }
+      const cur = b.done().procs.find(p => p.pid === pid).buf + s;
+      if (nl) { b.print(pid, cur); b.buf(pid, ''); } else b.buf(pid, cur);
+    };
+    b.proc(5, 1, 1);
+    W(5, 'Good afternoon', 1, false);
+    b.snap(5, unbuf ? `עם ${C('setbuf(stdout, NULL)')} אין באפר: הטקסט נשלח למסך מיד.` : `${C('printf')} לא כותב למסך. הוא מעתיק את הטקסט ל<strong>באפר</strong> בתוך הזיכרון של התהליך (עמודת "באפר"). בלי ${C('\\n')} הבאפר לא נשלח.`);
+    b.at(5, 2).fork(5, 6).snap(5, unbuf ? `${C('fork')}: נוצר 6. הבאפר ריק, אז אין מה להעתיק.` : `${C('fork')} מעתיק את כל הזיכרון של 5 – <strong>כולל הבאפר</strong>. עכשיו ל-6 יש עותק של "${E('Good afternoon')}" שעוד לא הודפס.`);
+    W(5, ', good evening', 3, false); W(6, ', good evening', 3, false);
+    b.snap(5, `שניהם מוסיפים "${E(', good evening')}".`);
+    b.at(5, 4).at(6, 4).fork(5, 7).fork(6, 8).snap(5, unbuf ? `עוד ${C('fork')} בכל תהליך: 4 תהליכים, כולם עם באפר ריק.` : `עוד ${C('fork')} בכל אחד: 7 מקבל עותק של הבאפר של 5, ו-8 של 6. ארבעה תהליכים, ובכל אחד אותו משפט חלקי.`);
+    [5, 6, 7, 8].forEach(p => W(p, ' and good night\n', 5, true));
+    b.snap(null, unbuf ? `כל תהליך מדפיס את השורה האחרונה. סך הכל: ${E('Good afternoon')} פעם אחת, ${E('good evening')} פעמיים, ${E('and good night')} ארבע פעמים.` : `כל אחד מוסיף את סוף המשפט עם ${C('\\n')} – ושורה חדשה גורמת לבאפר להישלח. כל אחד מארבעת התהליכים מדפיס את <strong>כל</strong> המשפט.`);
+    [5, 6, 7, 8].forEach(p => b.st(p, 'reaped'));
+    b.snap(null, unbuf ? `לכן בקורס תמיד מניחים ${C('setbuf(stdout, NULL)')}.` : `ארבע שורות זהות. זה מה שבלבל בשקף – והסיבה שתמיד משתמשים ב-${C('setbuf')}.`);
+    return b.done();
+  }
+  traces.buf = () => [{ label: 'עם באפר (ברירת מחדל)', t: bufTrace(false) }, { label: 'עם setbuf', t: bufTrace(true) }];
+
+  /* 8. zombie */
+  traces.zombie = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['int rc = fork();', 'if (rc == 0) {', '    exit(0);', '}', 'sleep(10);', 'wait(NULL);']);
+    b.proc(5, 1, 1).fork(5, 6).v(5, 'rc', 6).v(6, 'rc', 0).snap(5, `${C('fork')}: נוצר 6.`);
+    b.at(5, 5).st(5, 'blocked').snap(5, `ההורה מדלג על ה-${C('if')} ונכנס ל-${C('sleep(10)')} – חסום ל-10 שניות.`);
+    b.run(6).at(6, 3).snap(6, `הילד נכנס ל-${C('if')} וקורא ל-${C('exit(0)')}.`);
+    b.st(6, 'zombie').snap(null, `הילד סיים, אבל <strong>לא נמחק</strong>. הקרנל משחרר את הזיכרון שלו, אבל משאיר את הרשומה בטבלת התהליכים – ה-${E('PID')} וסטטוס היציאה – כי ההורה עלול לבקש אותם ב-${C('wait')}. זה זומבי. ב-${C('ps')} הוא מופיע עם מצב ${E('Z')} או ${E('&lt;defunct&gt;')}. הקרנל גם שולח ${E('SIGCHLD')} להורה, אבל ברירת המחדל היא להתעלם ממנו.`);
+    b.snap(null, `ההורה עדיין ישן. כל עוד הוא לא קורא ל-${C('wait')}, הזומבי תופס רשומה בטבלה. הורה שרץ הרבה זמן ויוצר הרבה ילדים בלי לאסוף אותם ימלא את הטבלה בזומבים.`);
+    b.run(5).at(5, 6).st(6, 'reaped').snap(5, `ההורה מתעורר וקורא ל-${C('wait')}. יש ילד זומבי, אז ${C('wait')} חוזר מיד עם 6 ו<strong>אוסף</strong> אותו: הרשומה נמחקת. פתרון בלי לחכות: handler ל-${E('SIGCHLD')} שקורא ל-${C('waitpid')} (בהמשך הפרק).`);
+    b.st(5, 'reaped').snap(null, `סוף.`);
+    return b.done(); })() }];
+
+  /* ---- exec exam traces (redirection chapter) ---- */
+  traces.ex24ba = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['char* args[] = {"myexec", NULL};', 'printf("PID: %d\\n", getpid());', 'execvp(args[0], args);']);
+    b.proc(300, 299, 1, {}, { prog: 'myexec' }).snap(300, `תהליך 300 מריץ את ${C('myexec')}.`);
+    b.at(300, 2).print(300, 'PID: 300\n').snap(300, `שורת הפלט הראשונה: ${C('PID: 300')}.`);
+    b.at(300, 3).st(300, 'kernel').snap(300, `${C('execvp')}: הקרנל טוען את ${C('myexec')} מהדיסק <strong>לתוך אותו תהליך</strong>. כל הזיכרון נדרס, ה-${E('PID')} נשאר 300.`);
+    b.st(300, 'running').at(300, 1).snap(300, `${C('main')} מתחיל מההתחלה – באותו תהליך. בטבלה עדיין יש תהליך אחד בלבד.`);
+    b.at(300, 2).print(300, 'PID: 300\n').snap(300, `שוב ${C('PID: 300')}.`);
+    b.at(300, 3).st(300, 'kernel').snap(300, `שוב ${C('execvp')}, ושוב אותו תהליך...`);
+    b.st(300, 'running').at(300, 2).print(300, 'PID: 300\n').snap(300, `וכך הלאה, עד שעוצרים את התוכנית. לא נוצר אף תהליך, ולכן המערכת גם לא תקרוס מריבוי תהליכים.`);
+    return b.done(); })() }];
+
+  traces.ex24bb = () => [{ label: 'הרצה', t: (() => {
+    const b = B(['char* args[] = {"execme", NULL};', 'if (!fork()) {', '    execvp(args[0], args);', '    printf("PID: %d\\n", getpid());', '}', '/* end of main */']);
+    b.proc(299, 100, 1, {}, { prog: 'execme' }).snap(299, `התהליך הראשון (נקרא לו 299) מריץ את ${C('execme')}.`);
+    b.at(299, 2).fork(299, 300).snap(299, `${C('fork')}: נוצר תהליך 300. אצל 299 ${C('fork')} החזיר 300, ולכן ${C('!fork()')} הוא שקר.`);
+    b.at(299, 6).st(299, 'reaped').ppid(300, 1).snap(null, `299 מדלג על הבלוק ומסיים את ${C('main')}. תהליך 300 נשאר <strong>יתום</strong> ומאומץ על ידי ${C('init')} – ה-${E('PPID')} שלו עכשיו 1.`);
+    b.run(300).at(300, 3).st(300, 'kernel').snap(300, `אצל 300 ${C('fork')} החזיר 0, ולכן הוא נכנס לבלוק וקורא ל-${C('execvp')}.`);
+    b.st(300, 'running').at(300, 1).snap(300, `${C('execme')} נטען מחדש לתוך תהליך 300. השורה של ${C('printf')} <strong>לא תרוץ אף פעם</strong> – ${C('exec')} שהצליח לא חוזר.`);
+    b.at(300, 2).fork(300, 301).snap(300, `300 עושה בדיוק מה ש-299 עשה: יוצר את 301...`);
+    b.at(300, 6).st(300, 'reaped').ppid(301, 1).snap(null, `...ומסתיים. ${C('init')} אוסף אותו, ו-301 מאומץ.`);
+    b.run(301).at(301, 3).st(301, 'kernel').snap(301, `301 מריץ ${C('execvp')}, ויצור את 302, וכן הלאה.`);
+    b.st(301, 'running').at(301, 1).snap(301, `<strong>אין פלט בכלל.</strong> זו שרשרת אינסופית, אבל בכל רגע חיים לכל היותר שני תהליכים, ולכן התוכנית לא קורסת מריבוי תהליכים.`);
+    return b.done(); })() }];
+
+  traces.ex22bb = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int r1 = fork() || fork();', 'if (r1) {', '    char* args[3] = {"echo", "r1: TRUE", NULL};', '    execvp(args[0], args);', '    printf("r1: TRUE\\n");', '} else {', '    printf("r1: FALSE\\n");', '}', 'wait(NULL);', 'int r2 = fork() && fork();', 'if (r2) {', '    char* args[3] = {"echo", "r2: TRUE", NULL};', '    execvp(args[0], args);', '}', 'else {', '    printf("r2: FALSE\\n");', '}', 'if (r1 || r2)', '    printf("END\\n");']);
+    b.proc(5, 1, 1, {}, { prog: 'prog' }).snap(5, `תהליך 5 מתחיל. נקרא לו "המקורי".`);
+    b.fork(5, 6).v(5, 'r1', 1).snap(5, `${C('fork')} השמאלי ב-${C('||')}: נוצר 6. אצל 5 הוחזר 6 (אמת), ולכן ${C('||')} כבר יודע שהתוצאה אמת – <strong>ה-fork הימני לא מבוצע</strong>. ${C('r1 = 1')}.`);
+    b.run(6).fork(6, 7).v(6, 'r1', 1).v(7, 'r1', 0).snap(6, `אצל 6 ה-${C('fork')} השמאלי החזיר 0 (שקר), ולכן הוא חייב לחשב את הימני: נוצר 7. ל-6 הוחזר 7 (אמת) ולכן ${C('r1 = 1')}. ל-7 הוחזר 0, ואצלו ${C('0 || 0 = 0')}.`);
+    b.run(5).at(5, 4).prog(5, 'echo').at(5, null).print(5, 'r1: TRUE\n').snap(5, `5: ${C('r1')} אמת, ולכן ${C('execvp')} של ${C('echo')}. ${C('echo')} מדפיס ${C('r1: TRUE')}. שורה 5 לא תרוץ – ${C('exec')} לא חוזר.`);
+    b.st(5, 'reaped').ppid(6, 1).run(6).prog(6, 'echo').at(6, null).print(6, 'r1: TRUE\n').snap(6, `${C('echo')} של 5 הסתיים. גם 6 מריץ ${C('echo')}: שוב ${C('r1: TRUE')}.`);
+    b.st(6, 'reaped').ppid(7, 1).run(7).at(7, 7).print(7, 'r1: FALSE\n').snap(7, `7: ${C('r1 = 0')}, ולכן הוא ב-${C('else')} ומדפיס ${C('r1: FALSE')}.`);
+    b.at(7, 9).snap(7, `${C('wait(NULL)')}: ל-7 אין ילדים, ולכן ${C('wait')} מחזיר ${E('-1')} מיד ולא חוסם.`);
+    b.at(7, 10).fork(7, 8).snap(7, `${C('fork')} השמאלי ב-${C('&&')}: נוצר 8. אצל 7 הוחזר 8 (אמת), ולכן ${C('&&')} צריך לחשב גם את הימני.`);
+    b.fork(7, 9).v(7, 'r2', 1).v(8, 'r2', 0).v(9, 'r2', 0).snap(7, `ה-${C('fork')} הימני: נוצר 9. ל-7 הוחזר 9, ולכן ${C('r2 = 1')}. אצל 8 השמאלי היה 0, ולכן ${C('&&')} עצר מיד – ${C('r2 = 0')}. אצל 9 הימני החזיר 0 – גם ${C('r2 = 0')}.`);
+    b.at(7, 13).prog(7, 'echo').at(7, null).print(7, 'r2: TRUE\n').snap(7, `7: ${C('r2')} אמת, ${C('execvp')} של ${C('echo')} מדפיס ${C('r2: TRUE')}. גם 7 לא יגיע לשורה של ${C('END')}.`);
+    b.st(7, 'reaped').ppid(8, 1).ppid(9, 1).run(8).at(8, 16).print(8, 'r2: FALSE\n').snap(8, `8: ${C('r2: FALSE')}.`);
+    b.at(8, 18).snap(8, `${C('r1 || r2')}: אצל 8 שניהם 0 (את ${C('r1')} הוא קיבל בהעתקה מ-7). <strong>END לא מודפס.</strong>`);
+    b.st(8, 'reaped').run(9).at(9, 16).print(9, 'r2: FALSE\n').snap(9, `9: ${C('r2: FALSE')}, ואותו דבר – אין ${C('END')}.`);
+    b.st(9, 'reaped').snap(null, `סוף. 6 שורות, אין ${C('END')}, ו-<strong>5 תהליכים</strong> בסך הכל: 5, 6, 7, 8, 9.`);
+    return b.done(); })() }];
+
+  /* ---- renderer ---- */
+  function colorOfPid(pid, all) { return PCOL[all.indexOf(pid) % PCOL.length]; }
+  function hl(line) {
+    try { return hljs.highlight(line, { language: 'c', ignoreIllegals: true }).value; } catch (e) { return esc(line); }
+  }
+  function treeSvg(procs, all) {
+    const nodes = procs.map(p => ({ pid: p.pid, par: p.ppid, state: p.state, c: [] }));
+    const byPid = Object.fromEntries(nodes.map(n => [n.pid, n]));
+    const roots = [];
+    // draw by original parent (first ppid seen) so the tree keeps its shape after adoption
+    nodes.forEach(n => { const op = (procs.find(p => p.pid === n.pid).origPpid) ?? n.par; const pn = byPid[op]; if (pn) pn.c.push(n); else roots.push(n); });
+    let leaf = 0; const all2 = [];
+    (function lay(list, d) { list.forEach(n => { n.d = d; if (n.c.length) { lay(n.c, d + 1); n.x = (n.c[0].x + n.c[n.c.length - 1].x) / 2; } else n.x = leaf++; all2.push(n); }); })(roots, 0);
+    const dx = 62, dy = 56, W = Math.max(leaf, 1) * dx, H = (Math.max(0, ...all2.map(n => n.d)) + 1) * dy;
+    const X = n => n.x * dx + dx / 2, Y = n => n.d * dy + 24;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="עץ תהליכים">`;
+    all2.forEach(n => n.c.forEach(k => s += `<line x1="${X(n)}" y1="${Y(n)}" x2="${X(k)}" y2="${Y(k)}" stroke="var(--line)" stroke-width="1.6"/>`));
+    all2.forEach(n => {
+      const gone = n.state === 'reaped', z = n.state === 'zombie';
+      s += `<circle cx="${X(n)}" cy="${Y(n)}" r="17" fill="${gone ? 'var(--sunk)' : 'var(--surface)'}" stroke="${colorOfPid(n.pid, all)}" stroke-width="${n.state === 'running' ? 3.5 : 2}" ${gone || z ? 'stroke-dasharray="4 3"' : ''}/>`;
+      s += `<text x="${X(n)}" y="${Y(n) + 5}" text-anchor="middle" font-size="14" class="mono" fill="${gone ? 'var(--muted)' : 'var(--fg)'}">${n.pid}</text>`;
+      if (z) s += `<text x="${X(n)}" y="${Y(n) - 21}" text-anchor="middle" font-size="10" fill="var(--warn)" class="mono">Z</text>`;
+    });
+    return s + '</svg>';
+  }
+  function render(el, variants) {
+    let vi = 0, si = 0;
+    el.innerHTML = `<div class="tr-head"><span class="tr-title">הרצה יבשה</span><span class="tr-vars"></span></div>
+      <div class="tr-body">
+        <div class="tr-vis">
+          <div class="tr-grid"><div class="tr-code"></div><div class="tr-side"><div class="tr-procs"></div><div class="tr-tree"></div></div></div>
+          <div class="tr-outwrap"><div class="tr-label">פלט על המסך</div><pre class="tr-out"></pre></div>
+          <div class="tr-ctrl"><button type="button" class="ghost tr-reset">מההתחלה</button><button type="button" class="ghost tr-prev">הקודם</button><span class="tr-count"></span><button type="button" class="tr-next">הבא</button></div>
+        </div>
+        <div class="tr-note" aria-live="polite"></div>
+      </div>`;
+    const q = c => el.querySelector(c);
+    const vars = q('.tr-vars');
+    if (variants.length > 1) variants.forEach((v, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = /[א-ת]/.test(v.label) ? v.label.replace(/([A-Za-z]+)/g, '<bdi dir="ltr">$1</bdi>') : `<bdi dir="ltr">${v.label}</bdi>`;
+      b.onclick = () => { vi = i; si = 0; draw(); }; vars.appendChild(b);
+    });
+    function draw() {
+      const t = variants[vi].t, step = t.steps[si];
+      // remember the first parent of each process for tree shape
+      const firstPar = {}; t.steps.forEach(s => s.procs.forEach(p => { if (!(p.pid in firstPar)) firstPar[p.pid] = p.ppid; }));
+      const all = []; t.steps.forEach(s => s.procs.forEach(p => { if (!all.includes(p.pid)) all.push(p.pid); }));
+      [...vars.children].forEach((b, i) => b.classList.toggle('on', i === vi));
+      // code with markers
+      const live = step.procs.filter(p => p.line != null && p.state !== 'reaped' && p.state !== 'zombie');
+      let ch = '<pre class="tr-pre"><code>';
+      t.code.forEach((line, i) => {
+        const here = live.filter(p => p.line === i + 1);
+        const act = here.some(p => p.pid === step.active);
+        ch += `<span class="tr-ln${act ? ' act' : ''}"><span class="tr-num">${i + 1}</span><span class="tr-src">${hl(line) || ' '}</span><span class="tr-mk">${here.map(p => `<span class="tr-pid${p.pid === step.active ? ' on' : ''}" style="--pc:${colorOfPid(p.pid, all)}">${p.pid}</span>`).join('')}</span></span>`;
+      });
+      ch += '</code></pre>';
+      q('.tr-code').innerHTML = ch;
+      // process table
+      const keys = []; step.procs.forEach(p => Object.keys(p.vars).forEach(k => { if (p.vars[k] !== undefined && !keys.includes(k)) keys.push(k); }));
+      const showBuf = t.steps.some(s => s.procs.some(p => p.buf));
+      const showProg = t.steps.some(s => s.procs.some(p => p.prog));
+      let tb = '<div class="tbl"><table class="tr-table"><tr><th>PID</th><th>PPID</th><th>מצב</th>' + (showProg ? '<th>תוכנית</th>' : '') + keys.map(k => `<th class="num">${k}</th>`).join('') + (showBuf ? '<th>באפר</th>' : '') + '</tr>';
+      step.procs.forEach(p => {
+        tb += `<tr class="st-${p.state}${p.pid === step.active ? ' act' : ''}"><td class="num"><span class="tr-dot" style="--pc:${colorOfPid(p.pid, all)}"></span>${p.pid}</td><td class="num">${p.ppid}</td><td><span class="tr-st">${ST[p.state]}</span></td>` +
+          (showProg ? `<td class="num">${p.prog || ''}</td>` : '') +
+          keys.map(k => `<td class="num">${p.vars[k] === undefined ? '—' : esc(String(p.vars[k]))}</td>`).join('') +
+          (showBuf ? `<td class="num tr-buf">${p.buf ? esc(p.buf.replace(/\n/g, '\\n')) : '∅'}</td>` : '') + '</tr>';
+      });
+      q('.tr-procs').innerHTML = tb + '</table></div>';
+      // tree
+      const tp = step.procs.map(p => Object.assign({}, p, { origPpid: firstPar[p.pid] }));
+      q('.tr-tree').innerHTML = treeSvg(tp, all);
+      // output
+      const o = q('.tr-out');
+      o.innerHTML = step.out.length ? step.out.map((x, i) => `<span class="tr-o${i === step.out.length - 1 && si > 0 && t.steps[si - 1].out.length < step.out.length ? ' new' : ''}" style="--pc:${colorOfPid(x.pid, all)}" title="PID ${x.pid}">${esc(x.text)}</span>`).join('') : '<span class="tr-empty">(עדיין ריק)</span>';
+      q('.tr-note').innerHTML = step.note;
+      q('.tr-count').textContent = `שלב ${si + 1} מתוך ${t.steps.length}`;
+      q('.tr-prev').disabled = si === 0; q('.tr-next').disabled = si === t.steps.length - 1;
+    }
+    q('.tr-next').onclick = () => { if (si < variants[vi].t.steps.length - 1) { si++; draw(); } };
+    q('.tr-prev').onclick = () => { if (si > 0) { si--; draw(); } };
+    q('.tr-reset').onclick = () => { si = 0; draw(); };
+    el.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') q('.tr-next').click(); if (e.key === 'ArrowRight') q('.tr-prev').click(); });
+    draw();
+    /* lock sizes: measure every step of every variant, keep the max, so nothing moves between steps */
+    const PARTS = ['.tr-note', '.tr-code', '.tr-procs', '.tr-tree', '.tr-out'];
+    function lock() {
+      if (!el.offsetParent) return;                    // hidden (closed <details>): lock when shown
+      const box = PARTS.map(c => q(c));
+      box.forEach(b => { b.style.minHeight = ''; });
+      const max = box.map(() => 0), keepV = vi, keepS = si;
+      variants.forEach((v, i) => v.t.steps.forEach((_, j) => {
+        vi = i; si = j; draw();
+        box.forEach((b, k) => { max[k] = Math.max(max[k], b.getBoundingClientRect().height); });
+      }));
+      vi = keepV; si = keepS; draw();
+      box.forEach((b, k) => { b.style.minHeight = Math.ceil(max[k]) + 'px'; });
+    }
+    el._lock = lock;
+    lock();
+  }
+  window.__traces = traces;
+  document.querySelectorAll('.trace[data-trace]').forEach(el => {
+    const f = traces[el.dataset.trace]; if (!f) return;
+    el.tabIndex = 0; el.setAttribute('role', 'group'); el.setAttribute('aria-label', 'הרצה יבשה');
+    try { render(el, f()); } catch (e) { el.textContent = 'שגיאה בטעינת ההרצה היבשה'; console.error(e); }
+  });
+  const relock = () => document.querySelectorAll('.trace').forEach(t => t._lock && t._lock());
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => { if (d.open) d.querySelectorAll('.trace').forEach(t => t._lock && t._lock()); }));
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relock, 150); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(relock);
+})();
+
+/* fork trees */
+document.querySelectorAll('.tree').forEach(el => {
+  let spec; try { spec = JSON.parse(el.dataset.tree); } catch (e) { return; }
+  const nodes = []; let leaf = 0;
+  (function lay(n, d) { n.d = d; if (n.c) { n.c.forEach(k => lay(k, d + 1)); n.x = (n.c[0].x + n.c[n.c.length - 1].x) / 2; } else n.x = leaf++; nodes.push(n); })(spec, 0);
+  const depth = Math.max(...nodes.map(n => n.d)), dx = 110, dy = 64, W = Math.max(leaf, 1) * dx, H = (depth + 1) * dy;
+  const X = n => n.x * dx + dx / 2, Y = n => n.d * dy + 26;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="עץ תהליכים">`;
+  nodes.forEach(n => (n.c || []).forEach((k, i) => s += `<line x1="${X(n)}" y1="${Y(n)}" x2="${X(k)}" y2="${Y(k)}" stroke="${i === 0 ? 'var(--theory)' : 'var(--example)'}" stroke-width="1.6"/>`));
+  nodes.forEach(n => { s += `<rect x="${X(n) - 46}" y="${Y(n) - 14}" width="92" height="28" rx="14" fill="${n.c ? 'var(--surface)' : 'var(--sunk)'}" stroke="var(--line)"/><text x="${X(n)}" y="${Y(n) + 5}" text-anchor="middle" font-size="13" class="mono" fill="var(--fg)">${n.n}</text>`; });
+  s += '</svg>';
+  el.innerHTML = `<figure>${s}<figcaption>כחול = ענף ההורה (fork החזיר <bdi dir="ltr">&gt; 0</bdi>) · ירוק = ענף הילד (0)</figcaption></figure>`;
+});
+
+
+/* active section in sidebar (current page only) */
+(function () {
+  const links = [...document.querySelectorAll('nav.side a[data-id]')];
+  const map = new Map(links.map(a => [a.dataset.id, a]));
+  const targets = [...map.keys()].map(id => document.getElementById(id)).filter(Boolean);
+  if (!targets.length) return;
+  function upd() {
+    let cur = targets[0];
+    for (const t of targets) if (t.getBoundingClientRect().top < 120) cur = t;
+    links.forEach(a => a.classList.remove('active'));
+    const a = map.get(cur.id); if (a) a.classList.add('active');
+  }
+  addEventListener('scroll', upd, { passive: true }); upd();
+})();
+</script>
+
+<script>
+/* ================= FD table widget ================= */
+(function () {
+  const B = x => '<bdi dir="ltr">' + x + '</bdi>';
+  const C = x => '<code>' + x + '</code>';
+  function fdtable(el) {
+    const N = 8;
+    let fds, objs, nextObj, log, fresh;
+    el.innerHTML = `<div class="w-head"><span class="w-title">טבלת ה-${B('file descriptors')} של תהליך</span><span class="chips"></span></div>
+      <div class="fd-body"><div class="fd-tab"></div>
+      <div class="fd-side">
+        <div class="fd-ops">
+          <div class="fd-op"><button type="button" class="btn fd-open">open</button><input class="fd-name" type="text" value="out.txt" aria-label="שם הקובץ"></div>
+          <div class="fd-op"><button type="button" class="btn fd-close">close</button><input class="fd-a" type="number" min="0" max="7" value="1" aria-label="FD לסגירה"></div>
+          <div class="fd-op"><button type="button" class="btn fd-dup">dup</button><input class="fd-d" type="number" min="0" max="7" value="3" aria-label="FD לשכפול"></div>
+          <div class="fd-op"><button type="button" class="btn fd-dup2">dup2</button><input class="fd-o" type="number" min="0" max="7" value="3" aria-label="oldfd"><input class="fd-n" type="number" min="0" max="7" value="1" aria-label="newfd"></div>
+          <div class="fd-op"><button type="button" class="btn fd-pipe">pipe</button><button type="button" class="btn ghost fd-reset">אפס</button></div>
+        </div>
+        <ol class="fd-log" aria-live="polite"></ol>
+      </div></div>`;
+    const q = s => el.querySelector(s);
+    function reset() {
+      objs = { 1: { n: 'keyboard', k: 'term' }, 2: { n: 'screen', k: 'term' } };
+      fds = [1, 2, 2, null, null, null, null, null]; nextObj = 3; log = []; fresh = null; draw();
+    }
+    const lowest = () => fds.findIndex(x => x === null);
+    const say = (code, res, note) => { log.push(`<span class="fd-call">${B(code + ' → ' + res)}</span>${note ? '<span class="fd-note">' + note + '</span>' : ''}`); };
+    function open(name) {
+      const i = lowest(); if (i < 0) { say(`open("${name}")`, -1, 'אין FD פנוי'); return draw(); }
+      objs[nextObj] = { n: name, k: 'file' }; fds[i] = nextObj++; fresh = [i];
+      say(`open("${name}")`, i, `ה-${B('FD')} הפנוי הקטן ביותר`); draw();
+    }
+    function close(a) {
+      if (!(a >= 0 && a < N) || fds[a] === null) { say(`close(${a})`, -1, `${B('FD ' + a)} לא פתוח`); return draw(); }
+      fds[a] = null; fresh = null; say(`close(${a})`, 0, ''); draw();
+    }
+    function dup(a) {
+      if (!(a >= 0 && a < N) || fds[a] === null) { say(`dup(${a})`, -1, `${B('FD ' + a)} לא פתוח`); return draw(); }
+      const i = lowest(); if (i < 0) { say(`dup(${a})`, -1, 'אין FD פנוי'); return draw(); }
+      fds[i] = fds[a]; fresh = [i]; say(`dup(${a})`, i, `${B('FD ' + i)} ו-${B('FD ' + a)} מצביעים לאותו מקום`); draw();
+    }
+    function dup2(a, b) {
+      if (!(a >= 0 && a < N) || fds[a] === null || !(b >= 0 && b < N)) { say(`dup2(${a}, ${b})`, -1, 'ארגומנט לא חוקי'); return draw(); }
+      if (a === b) { say(`dup2(${a}, ${b})`, b, 'אותו FD – לא קורה כלום'); return draw(); }
+      const was = fds[b] !== null; fds[b] = fds[a]; fresh = [b];
+      say(`dup2(${a}, ${b})`, b, was ? `${B('FD ' + b)} נסגר קודם` : ''); draw();
+    }
+    function pipe() {
+      const r = lowest(); if (r < 0) { say('pipe(fd)', -1, ''); return draw(); }
+      fds[r] = -1; const w = lowest(); fds[r] = null;
+      if (w < 0) { say('pipe(fd)', -1, 'אין 2 FD פנויים'); return draw(); }
+      const id = nextObj++; objs[id] = { n: 'pipe #' + id, k: 'pipe' };
+      fds[r] = id * 10; fds[w] = id * 10 + 1; objs[id * 10] = { n: `pipe #${id} (read)`, k: 'pr' }; objs[id * 10 + 1] = { n: `pipe #${id} (write)`, k: 'pw' };
+      fresh = [r, w]; say('pipe(fd)', 0, `fd[0] = ${r} (קריאה), fd[1] = ${w} (כתיבה)`); draw();
+    }
+    function draw() {
+      const names = { 0: 'stdin', 1: 'stdout', 2: 'stderr' };
+      q('.fd-tab').innerHTML = '<div class="fd-h"><span>FD</span><span>מצביע אל</span></div>' + fds.map((o, i) => {
+        const ob = o === null ? null : objs[o];
+        return `<div class="fd-row${o === null ? ' free' : ''}${fresh && fresh.includes(i) ? ' fresh' : ''}"><span class="fd-n">${i}${names[i] ? `<small>${names[i]}</small>` : ''}</span><span class="fd-t ${ob ? 'k-' + ob.k : ''}">${ob ? ob.n : 'פנוי'}</span></div>`;
+      }).join('');
+      q('.fd-log').innerHTML = log.slice(-7).map(x => `<li>${x}</li>`).join('');
+    }
+    q('.fd-open').onclick = () => open(q('.fd-name').value.trim() || 'file');
+    q('.fd-close').onclick = () => close(parseInt(q('.fd-a').value, 10));
+    q('.fd-dup').onclick = () => dup(parseInt(q('.fd-d').value, 10));
+    q('.fd-dup2').onclick = () => dup2(parseInt(q('.fd-o').value, 10), parseInt(q('.fd-n').value, 10));
+    q('.fd-pipe').onclick = pipe;
+    q('.fd-reset').onclick = reset;
+    const PRE = [
+      { label: 'ls > out.txt', run: () => { reset(); open('out.txt'); dup2(3, 1); close(3); log.push('התוצאה: ' + B('FD 1') + ' מצביע ל-' + B('out.txt') + ', ו-' + B('ls') + ' שירוץ אחרי ' + B('exec') + ' יכתוב לשם.'); draw(); } },
+      { label: 'sort < in.txt', run: () => { reset(); open('in.txt'); dup2(3, 0); close(3); draw(); } },
+      { label: 'close(1) + dup', run: () => { reset(); open('x.txt'); dup(3); close(1); dup(3); draw(); } },
+      { label: 'pipe → stdout', run: () => { reset(); pipe(); dup2(4, 1); close(3); close(4); log.push('כך נראה הצד הכותב (למשל ' + B('ls') + ' ב-' + B('ls | wc') + '): רק ' + B('FD 1') + ' מחובר לצינור.'); draw(); } }
+    ];
+    const chips = q('.chips');
+    PRE.forEach(p => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.innerHTML = B(p.label); b.onclick = () => { [...chips.children].forEach(c => c.classList.remove('on')); b.classList.add('on'); p.run(); }; chips.appendChild(b); });
+    reset();
+  }
+  document.querySelectorAll('[data-vm="fdtable"]').forEach(el => { try { fdtable(el); } catch (e) { el.textContent = 'שגיאה בטעינת הרכיב'; console.error(e); } });
+})();
+
+</script>
+</body>
+</html>
+
+</body>
+</html>
