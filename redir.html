@@ -64,7 +64,7 @@ nav.side .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
 nav.side a{display:block;color:var(--fg);text-decoration:none;padding:3px 10px;border-inline-start:2px solid transparent}
 nav.side a:hover{color:var(--ink)}
 nav.side a.ch{font-weight:700;margin-top:14px}
-nav.side a.xlink{margin:10px 0 2px;border:1.5px solid var(--theory);border-radius:8px;padding:6px 10px;color:var(--theory);font-weight:600}
+nav.side a.xlink{margin:26px 0 8px;border:1.5px solid var(--theory);border-radius:8px;padding:6px 10px;color:var(--theory);font-weight:600}
 nav.side a.sec{color:var(--muted);font-size:13.5px}
 nav.side a.active{border-inline-start-color:var(--ink);color:var(--ink)}
 main{flex:1;min-width:0;max-width:820px}
@@ -224,6 +224,11 @@ nav.side a.ch.here{color:var(--ink);border-inline-start-color:var(--ink)}
 .pager .dir{font-size:13px;color:var(--muted)}
 .pager .nm{font-family:var(--f-display);font-size:19px;color:var(--ink)}
 .pager a.next{text-align:left}
+a.drill{display:flex;flex-direction:column;gap:2px;margin-top:48px;text-decoration:none;border:1.5px solid var(--theory);background:var(--theory-bg);border-radius:10px;padding:14px 18px}
+a.drill .dir{font-size:13px;color:var(--muted)}
+a.drill .nm{font-family:var(--f-display);font-size:19px;color:var(--theory)}
+a.drill:hover{filter:brightness(.97)}
+a.drill+.pager{margin-top:20px}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:24px 0}
 @media (min-width:1100px){.cards{grid-template-columns:repeat(6,minmax(0,1fr))}.card{grid-column:span 2}.card:nth-child(4){grid-column:2 / span 2}}
 main bdi, .tr-note bdi{white-space:nowrap}
@@ -360,7 +365,6 @@ details.ch-table summary{cursor:pointer;color:var(--ink);font-size:14px}
 <nav class="side" aria-label="תוכן העניינים">
   <a class="brand" href="index.html">מערכות הפעלה</a>
   <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
-  <a class="ch xlink" href="https://eliorch.github.io/osque/#t=redir" target="_blank" rel="noopener">✎ תרגול שאלות מבחן על הפרק ↗</a>
   <a class="ch" href="intro.html">1 · מבוא</a>
   <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
   <a class="ch" href="processes.html">3 · תהליכים</a>
@@ -373,6 +377,7 @@ details.ch-table summary{cursor:pointer;color:var(--ink);font-size:14px}
   <a class="sec" href="#r-ipc" data-id="r-ipc">FIFO ו-pipe</a>
   <a class="sec" href="#r-ex" data-id="r-ex">תרגיל הפניה ושרשור</a>
   <a class="ch" href="vmem.html">7 · זיכרון וירטואלי</a>
+  <a class="ch xlink" href="https://eliorch.github.io/osque/" target="_blank" rel="noopener">✎ מעבר לאתר התרגול ↗</a>
 </nav>
 <main>
 <section class="chapter" id="ch6" style="margin-top:8px">
@@ -703,6 +708,7 @@ child failed with code 1</code></pre></li>
 </div></div>
 </section>
 
+<a class="drill" href="https://eliorch.github.io/osque/#t=redir" target="_blank" rel="noopener"><span class="dir">סיימת את הפרק?</span><span class="nm">מעבר לתרגול הפרק – שאלות ממבחנים ↗</span></a>
 <nav class="pager" aria-label="מעבר בין נושאים">
 <a class="prev" href="signals.html"><span class="dir">הנושא הקודם</span><span class="nm">פרק 5 · זומבים וסיגנלים</span></a>
 <a class="next" href="vmem.html"><span class="dir">הנושא הבא</span><span class="nm">פרק 7 · זיכרון וירטואלי</span></a>
