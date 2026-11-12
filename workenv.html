@@ -376,25 +376,70 @@ code.gloss{border-bottom-style:dashed}
 </div></div>
 <p>לפי נתוני הקורס, הממוצע של מי שתרגל בחנים גבוה ב-12 נקודות; לציון 70 הפער הוא 29 נקודות.</p>
 
-<h2 id="vm">מכונה וירטואלית: <bdi dir="ltr">VirtualBox + Vagrant + Ubuntu</bdi></h2>
+<h2 id="vm">מכונה וירטואלית: <bdi dir="ltr">Vagrant + Ubuntu</bdi></h2>
 <p><strong>VM</strong> היא אמולציה של מחשב שלם, שמאפשרת להריץ מערכת הפעלה אחרת (<bdi dir="ltr">Linux</bdi> על <bdi dir="ltr">Windows</bdi>, למשל). בקורס נכתוב קוד "רגיש" שעלול לשבש מערכת, אז ה-<bdi dir="ltr">VM</bdi> גם מגינה על המחשב האישי.</p>
 <ul>
-<li><strong>VirtualBox:</strong> <bdi dir="ltr">VMM – Virtual Machine Monitor</bdi> חינמי וקוד-פתוח, התוכנה שמריצה את המכונה.</li>
+<li><strong>VirtualBox</strong> (ב-<bdi dir="ltr">Windows</bdi> ובאינטל) או <strong>QEMU</strong> (במעבדי אפל): <bdi dir="ltr">VMM – Virtual Machine Monitor</bdi> חינמי וקוד-פתוח, התוכנה שמריצה את המכונה.</li>
 <li><strong>Vagrant:</strong> כלי קוד-פתוח שמפשט יצירת <bdi dir="ltr">VM</bdi>, התקנת מערכת ההפעלה והעבודה מולה. הכל משורת הפקודה.</li>
 </ul>
-<pre><code class="language-bash"># in a new, empty folder:
-vagrant init hashicorp/bionic64
-vagrant up          # create the VM and install the OS
-vagrant ssh         # connect to the VM
+<h3>איזה מחשב יש לי?</h3>
+<p>ההתקנה שונה לפי סוג המעבד. בודקים בתפריט התפוח ← <bdi dir="ltr">About This Mac</bdi> (אודות המק): אם בשורה <bdi dir="ltr">Chip</bdi> כתוב <bdi dir="ltr">Apple M1/M2/M3/M4</bdi>, זה מעבד אפל. אפשר גם בטרמינל: <code>uname -m</code> מחזיר <code>arm64</code> במעבד אפל ו-<code>x86_64</code> באינטל.</p>
+<div class="tbl"><table>
+<tr><th>מחשב</th><th>מריצים את ה-<bdi dir="ltr">VM</bdi> עם</th><th>הוראות</th></tr>
+<tr><td><bdi dir="ltr">Mac</bdi> עם מעבד אפל <bdi dir="ltr">(M1–M4)</bdi></td><td><bdi dir="ltr">QEMU + Vagrant</bdi></td><td><a href="#vm-apple">כאן למטה</a></td></tr>
+<tr><td><bdi dir="ltr">Windows</bdi>, <bdi dir="ltr">Mac</bdi> עם אינטל, <bdi dir="ltr">Linux</bdi></td><td><bdi dir="ltr">VirtualBox + Vagrant</bdi></td><td><a href="#vm-intel">כאן למטה</a></td></tr>
+</table></div>
 
-# one-time setup (inside the VM):
-sudo apt update -y
+<h3 id="vm-apple"><bdi dir="ltr">Mac</bdi> עם מעבד אפל</h3>
+<p>במעבדי אפל <bdi dir="ltr">VirtualBox</bdi> לא מתאים, ובמקומו משתמשים ב-<bdi dir="ltr">QEMU</bdi>. מערכת ההפעלה ב-<bdi dir="ltr">VM</bdi> היא <bdi dir="ltr">Ubuntu 22.04</bdi> לארכיטקטורת <bdi dir="ltr">ARM</bdi>.</p>
+<p><strong>לפני הכל: שיתוף קבצים.</strong> התיקייה המסונכרנת <code>/vagrant</code> עובדת דרך שיתוף קבצים של ה-<bdi dir="ltr">Mac</bdi>, אז מפעילים אותו פעם אחת:</p>
+<ol>
+<li><bdi dir="ltr">System Settings</bdi> (הגדרות המערכת) ← <bdi dir="ltr">General</bdi> (כללי) ← <bdi dir="ltr">Sharing</bdi> (שיתוף).</li>
+<li>מפעילים את <bdi dir="ltr">File Sharing</bdi> (שיתוף קבצים), כך שהמתג ירוק.</li>
+<li>לוחצים על כפתור המידע <bdi dir="ltr">(ⓘ)</bdi> מימין ל-<bdi dir="ltr">File Sharing</bdi>, ואז על <bdi dir="ltr">Options…</bdi> (אפשרויות).</li>
+<li>מוודאים שמסומן <bdi dir="ltr">Share files and folders using SMB</bdi>.</li>
+<li>תחת <bdi dir="ltr">Windows File Sharing</bdi>, מסמנים את המשתמש שלכם. המערכת תבקש את סיסמת ה-<bdi dir="ltr">Mac</bdi>, וזה הכרחי.</li>
+<li><bdi dir="ltr">Done</bdi> וסוגרים את ההגדרות.</li>
+</ol>
+<p><strong>יצירת ה-<bdi dir="ltr">VM</bdi>:</strong> יוצרים תיקייה חדשה וריקה, ופותחים בה טרמינל: ב-<bdi dir="ltr">Finder</bdi>, קליק ימני על הנתיב בתחתית החלון ← <bdi dir="ltr">New Terminal at Folder</bdi>. ההתקנה משתמשת ב-<bdi dir="ltr">Homebrew</bdi>; אם הטרמינל עונה <code>brew: command not found</code>, מתקינים אותו קודם לפי ההוראה בעמוד הראשי של <a href="https://brew.sh" target="_blank" rel="noopener"><bdi dir="ltr">brew.sh</bdi></a>.</p>
+<pre><code class="language-bash"># once per computer:
+brew install qemu
+brew install --cask vagrant
+vagrant plugin install vagrant-qemu
+
+# in the new, empty folder: create the Vagrantfile
+cat &lt;&lt;EOF &gt; Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box = "perk/ubuntu-2204-arm64"
+  config.vm.synced_folder ".", "/vagrant"
+  config.vm.provider "qemu" do |qe|
+    qe.ssh_port = "50022" # change ssh port as needed
+  end
+end
+EOF
+
+vagrant up --provider=qemu   # create the VM and install the OS
+vagrant ssh                  # connect to the VM</code></pre>
+<p>את שלוש הפקודות הראשונות מריצים פעם אחת במחשב. ל-<bdi dir="ltr">VM</bdi> נוסף, בתיקייה חדשה, מספיק ה-<bdi dir="ltr">Vagrantfile</bdi> ו-<code>vagrant up</code>. אם רוצים שני <bdi dir="ltr">VM</bdi> שרצים יחד, צריך לתת לשני <code>ssh_port</code> אחר.</p>
+
+<h3 id="vm-intel"><bdi dir="ltr">Windows</bdi> ומחשבי אינטל</h3>
+<p>מורידים ומתקינים את <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="noopener"><bdi dir="ltr">VirtualBox</bdi></a> ואת <a href="https://developer.hashicorp.com/vagrant/install" target="_blank" rel="noopener"><bdi dir="ltr">Vagrant</bdi></a>, יוצרים תיקייה חדשה וריקה ופותחים בה טרמינל. ב-<bdi dir="ltr">Windows</bdi>: מחזיקים <bdi dir="ltr">SHIFT</bdi>, קליק ימני בתיקייה ← <bdi dir="ltr">Open in Terminal</bdi>. ה-<bdi dir="ltr">SHIFT</bdi> חשוב, כדי שהטרמינל ייפתח עם ההרשאות המתאימות.</p>
+<pre><code class="language-bash">vagrant init hashicorp/bionic64
+vagrant up          # create the VM and install the OS
+vagrant ssh         # connect to the VM</code></pre>
+
+<h3>בשני המקרים: הגדרה ראשונה בתוך ה-<bdi dir="ltr">VM</bdi></h3>
+<p>אחרי שה-<bdi dir="ltr">VM</bdi> עלה (בפעם הראשונה זה לוקח זמן) ונכנסתם עם <code>vagrant ssh</code>:</p>
+<pre><code class="language-bash">sudo apt update -y
 sudo apt upgrade -y
 sudo apt install gcc build-essential -y
 sudo apt clean &amp;&amp; sudo apt autoremove -y
 exit
-vagrant reload      # restart the VM, then vagrant ssh again</code></pre>
-<p>במעבדי אפל <bdi dir="ltr">(M1/M2)</bdi> ההנחיות שונות ומפורטות באתר הקורס. וגם אם יש לכם <bdi dir="ltr">mac</bdi> או <bdi dir="ltr">Linux</bdi> – עובדים ב-<bdi dir="ltr">VM</bdi>.</p>
+vagrant reload      # restart the VM (on the host), then vagrant ssh again</code></pre>
+<p><code>vagrant reload</code> שימושי גם בכל פעם שמשהו ב-<bdi dir="ltr">VM</bdi> מתנהג מוזר.</p>
+<div class="box warn"><div class="box-title">רק <bdi dir="ltr">VM</bdi></div><div class="box-body">
+<p>עבודה עם <bdi dir="ltr">WSL</bdi>, עם אמולטור, או ישירות על ה-<bdi dir="ltr">Mac</bdi> או על <bdi dir="ltr">Linux</bdi> – לא תעבוד כמו שצריך, ועלולה להזיק. התרגילים נבדקים בסביבה של ההנחיות האלה בלבד, וערעור על קוד דורש צילום מסך מתוך ה-<bdi dir="ltr">VM</bdi>.</p>
+</div></div>
 
 <h2 id="shell">טרמינל לעומת <bdi dir="ltr">shell</bdi></h2>
 <div class="tbl"><table>
@@ -411,6 +456,21 @@ vagrant reload      # restart the VM, then vagrant ssh again</code></pre>
 <tr><td class="mono">..</td><td>תיקיית האב</td></tr>
 <tr><td class="mono">/vagrant</td><td>תיקייה מסונכרנת עם המחשב המארח – כך מעבירים קבצים פנימה והחוצה</td></tr>
 </table></div>
+
+<h2 id="which">פקודות, סקריפט או <bdi dir="ltr">C</bdi>?</h2>
+<p>בקורס כותבים בשלוש "שפות", והן לא מתחרות – כל אחת היא שכבה מעל הקודמת. <span class="keypoint">ה-<bdi dir="ltr">shell</bdi> עצמו הוא תוכנית <bdi dir="ltr">C</bdi></span>: כשמקלידים <code>ls -la</code>, <code>bash</code> קורא את השורה, מפצל אותה למילים, ומריץ את <code>ls</code> עם <code>fork</code>, <code>exec</code> ו-<code>wait</code> (פרק 3).</p>
+<div class="tbl"><table>
+<tr><th></th><th>פקודה בטרמינל</th><th>סקריפט <bdi dir="ltr">bash</bdi></th><th>תוכנית <bdi dir="ltr">C</bdi></th></tr>
+<tr><td><strong>מה זה</strong></td><td>שורה אחת שמקלידים ומריצים מיד</td><td>קובץ טקסט עם רצף פקודות, אותן פקודות בדיוק</td><td>קוד שמתקמפל לקובץ ריצה ומדבר ישירות עם מערכת ההפעלה</td></tr>
+<tr><td><strong>מי מריץ</strong></td><td><code>bash</code></td><td><code>bash</code>, שורה אחרי שורה</td><td>המעבד, אחרי <code>gcc</code></td></tr>
+<tr><td><strong>איך מריצים</strong></td><td>Enter</td><td class="mono">chmod +x s.sh; ./s.sh a b</td><td class="mono">gcc p.c -Wall -o p; ./p</td></tr>
+<tr><td><strong>מתאים ל</strong></td><td>פעולה חד-פעמית: ליצור תיקייה, לבדוק קובץ</td><td>רצף פעולות על קבצים ותיקיות שחוזר על עצמו: יצירה, העתקה, קומפילציה, הרצה</td><td>שליטה בתהליכים, קבצים וזיכרון: ליצור תהליך, לחכות לו, לטפל בסיגנל</td></tr>
+<tr><td><strong>ארגומנטים</strong></td><td>—</td><td class="mono">$1, $2, $#</td><td class="mono">argv[1], argv[2], argc</td></tr>
+<tr><td><strong>שגיאות</strong></td><td>הודעה על המסך</td><td>קוד יציאה ב-<code>$?</code>, שרשור עם <code>&amp;&amp;</code></td><td>בודקים ערך החזרה של כל קריאת מערכת (<bdi dir="ltr">-1</bdi>) ומדפיסים עם <code>perror</code></td></tr>
+</table></div>
+<div class="box theory"><div class="box-title">כלל אצבע</div><div class="box-body">
+<p>אם המשימה היא <strong>"תעשה את הפעולות האלה על קבצים"</strong> – זה סקריפט: כל שורה היא פקודה שאפשר היה להקליד ידנית. אם המשימה היא <strong>"תממש את ההתנהגות של מערכת ההפעלה"</strong> – ליצור תהליכים, להריץ תוכניות, לחכות, לאסוף זומבים – זה <bdi dir="ltr">C</bdi> עם קריאות מערכת. תרגיל שבו כותבים <bdi dir="ltr">shell</bdi> ב-<bdi dir="ltr">C</bdi> הוא בדיוק המקרה השני: בונים בעצמכם את מה ש-<code>bash</code> עושה בשבילכם בחלק הראשון.</p>
+</div></div>
 
 <h2 id="cmds">פקודות והרצה</h2>
 <div class="tbl"><table>
@@ -439,14 +499,96 @@ vagrant reload      # restart the VM, then vagrant ssh again</code></pre>
 <pre><code class="language-bash">gcc code.c -Wall -o prog    # compile, all warnings, output binary 'prog'
 ./prog                      # run</code></pre>
 
-<h3>קבצי סקריפט</h3>
-<p>סקריפט הוא קובץ עם רצף פקודות, בדיוק כמו בשורת הפקודה. סיומת מקובלת (לא חובה): <code>.sh</code>. השורה הראשונה מציינת את המפרש, ואז נותנים הרשאת ריצה:</p>
-<pre><code class="language-bash">#!/bin/bash
-echo "first arg is $1"
+<h2 id="scripts">סקריפטים: מה שצריך לדעת</h2>
+<p>סקריפט הוא קובץ עם רצף פקודות, בדיוק כמו בשורת הפקודה. סיומת מקובלת (לא חובה): <code>.sh</code>. השורה הראשונה מציינת את המפרש, ואז נותנים הרשאת ריצה. כל הדוגמאות כאן הורצו, והפלט שמוצג הוא הפלט האמיתי.</p>
 
-# run it:
-chmod +x file.sh
-./file.sh hello</code></pre>
+<h3>ארגומנטים</h3>
+<pre><code class="language-bash">#!/bin/bash
+echo "script: $0"
+echo "first:  $1"
+echo "second: $2"
+echo "count:  $#"</code></pre>
+<pre><code>$ chmod +x args.sh
+$ ./args.sh hello "two words" 3
+script: ./args.sh
+first:  hello
+second: two words
+count:  3</code></pre>
+<div class="tbl"><table>
+<tr><th>סימן</th><th>משמעות</th></tr>
+<tr><td class="mono">$0</td><td>שם הסקריפט כפי שהורץ</td></tr>
+<tr><td class="mono">$1 … $9</td><td>הארגומנטים לפי הסדר. ארגומנט שלא נשלח הוא מחרוזת ריקה, לא שגיאה</td></tr>
+<tr><td class="mono">$#</td><td>מספר הארגומנטים (בלי <code>$0</code>)</td></tr>
+<tr><td class="mono">"$@"</td><td>כל הארגומנטים, כל אחד בנפרד</td></tr>
+</table></div>
+<p><code>"two words"</code> הוא ארגומנט <strong>אחד</strong>: המרכאות קובעות איפה מילה מתחילה ונגמרת, וה-<bdi dir="ltr">shell</bdi> מוריד אותן לפני שהוא מעביר את הארגומנט.</p>
+
+<h3>מרכאות: למה תמיד <code>"$1"</code></h3>
+<p>אחרי שמשתנה מוחלף בערך שלו, <bdi dir="ltr">bash</bdi> מפצל את התוצאה לפי רווחים. בלי מרכאות, ערך עם רווח הופך לשני ארגומנטים:</p>
+<pre><code class="language-bash">name="My Docs"
+mkdir $name      # two folders: My, Docs
+mkdir "$name"    # one folder: My Docs</code></pre>
+<div class="tbl"><table>
+<tr><th>כתיבה</th><th>מה יוצא</th></tr>
+<tr><td class="mono">echo "home: $HOME"</td><td>מרכאות כפולות: משתנים מוחלפים. <code>home: /home/vagrant</code></td></tr>
+<tr><td class="mono">echo 'home: $HOME'</td><td>מרכאות בודדות: הכל מילולי. <code>home: $HOME</code></td></tr>
+</table></div>
+
+<h3>החלפת פקודה: <code>$(...)</code></h3>
+<p><code>$(פקודה)</code> מריץ את הפקודה ושם את הפלט שלה במקומו. כך מכניסים תוצאה של פקודה לתוך שורה אחרת:</p>
+<pre><code class="language-bash">echo "today is $(date +%A)"
+lines=$(wc -l &lt; notes.txt)          # save the output in a variable (no spaces around =)
+echo "$(basename /home/vagrant/src/main.c)"   # main.c
+echo "$(dirname /home/vagrant/src/main.c)"    # /home/vagrant/src</code></pre>
+<p><code>basename</code> משאיר רק את שם הקובץ מתוך נתיב מלא, ו-<code>dirname</code> את התיקייה שלו. שימושי כשמקבלים נתיב מלא כארגומנט ורוצים את השם בלבד, למשל כדי ליצור קובץ באותו שם במקום אחר.</p>
+
+<h3>נתיבים בסקריפט</h3>
+<ul>
+<li>הסקריפט רץ ב<strong>תיקיית העבודה של מי שהריץ אותו</strong>, לא בתיקייה שבה הוא שמור. <code>mkdir out</code> ייצור את <code>out</code> איפה שהמשתמש עומד.</li>
+<li><code>cd</code> בתוך סקריפט משנה את התיקייה רק לסקריפט. כשהוא מסתיים, הטרמינל נשאר איפה שהיה.</li>
+<li>אחרי <code>cd</code>, נתיב יחסי שקיבלתם כארגומנט כבר לא מצביע לאותו מקום. לכן עובדים עם נתיבים מלאים, או כותבים את היעד במפורש: <code>"$1/file.txt"</code> במקום <code>cd "$1"</code> ואז <code>file.txt</code>.</li>
+</ul>
+
+<h3>קוד יציאה ושרשור</h3>
+<p>כל פקודה מחזירה מספר: <bdi dir="ltr">0</bdi> = הצליחה, כל דבר אחר = נכשלה. הקוד של הפקודה האחרונה נמצא ב-<code>$?</code>:</p>
+<pre><code>$ ls nofile; echo "exit code: $?"
+ls: cannot access 'nofile': No such file or directory
+exit code: 2
+$ ls / &gt; /dev/null; echo "exit code: $?"
+exit code: 0</code></pre>
+<p>על זה בנוי <code>&amp;&amp;</code>: <code>gcc p.c -Wall -o p &amp;&amp; ./p</code> מריץ את התוכנית רק אם הקומפילציה הצליחה. גם תוכנית <bdi dir="ltr">C</bdi> מחזירה קוד כזה – הערך שהיא מחזירה מ-<code>main</code>.</p>
+
+<h3>ירידות שורה: <bdi dir="ltr">LF</bdi> ולא <bdi dir="ltr">CRLF</bdi></h3>
+<p>ב-<bdi dir="ltr">Windows</bdi> כל שורה נגמרת בשני תווים <bdi dir="ltr">(CRLF, <code>\r\n</code>)</bdi>, וב-<bdi dir="ltr">Linux</bdi> בתו אחד <bdi dir="ltr">(LF, <code>\n</code>)</bdi>. סקריפט שנכתב ב-<bdi dir="ltr">Windows</bdi> נראה תקין בעורך, אבל ה-<code>\r</code> הנסתר נדבק לכל שורה. בשורה הראשונה המפרש נעשה <code>/bin/bash\r</code>, שלא קיים, וההרצה נכשלת בהודעה מבלבלת:</p>
+<pre><code>$ ./script.sh
+bash: ./script.sh: /bin/bash^M: bad interpreter: No such file or directory</code></pre>
+<p>ה-<code>^M</code> הוא ה-<code>\r</code>. בגרסאות חדשות של <bdi dir="ltr">bash</bdi> ההודעה קצרה יותר: <code>./script.sh: cannot execute: required file not found</code>. התיקון:</p>
+<ul>
+<li>ב-<bdi dir="ltr">VSCode</bdi>: ללחוץ על <bdi dir="ltr">CRLF</bdi> בפינה הימנית התחתונה ולבחור <bdi dir="ltr">LF</bdi>. ב-<bdi dir="ltr">Notepad++</bdi>: <bdi dir="ltr">Edit → EOL Conversion → Unix (LF)</bdi>.</li>
+<li>מתוך ה-<bdi dir="ltr">VM</bdi>, בלי עורך: <code>sed -i 's/\r$//' script.sh</code></li>
+</ul>
+<p>אותה בעיה קיימת גם בקבצי <bdi dir="ltr">C</bdi> ובקבצי קלט לבדיקות, אבל שם היא שקטה יותר: התו <code>\r</code> נכנס לנתונים בלי הודעת שגיאה.</p>
+
+<h3>דיבוג: <code>bash -x</code></h3>
+<p>מריץ את הסקריפט ומדפיס כל פקודה, <strong>אחרי</strong> שכל המשתנים כבר הוחלפו, לפני שהיא רצה. כך רואים בדיוק מה הסקריפט עשה:</p>
+<pre><code>$ bash -x ./lines.sh /tmp/notes.txt /tmp/out
+++ wc -l
++ n=3
+++ basename /tmp/notes.txt
++ echo 'notes.txt: 3 lines'
++ cat /tmp/out/summary.txt
+notes.txt: 3 lines</code></pre>
+
+<div class="box exercise"><div class="box-title">תרגיל: סיכום שורות</div><div class="box-body">
+<p>כתבו סקריפט <code>lines.sh</code> שמקבל נתיב מלא לקובץ ונתיב לתיקייה קיימת, וכותב לתוך <code>summary.txt</code> בתיקייה שורה אחת בפורמט <code>&lt;file name&gt;: &lt;N&gt; lines</code> (שם הקובץ בלבד, בלי התיקיות). אחר כך הסקריפט מדפיס את הקובץ שנוצר.</p>
+<details class="sol"><summary>פתרון</summary>
+<pre><code class="language-bash">#!/bin/bash
+n=$(wc -l &lt; "$1")
+echo "$(basename "$1"): $n lines" &gt; "$2/summary.txt"
+cat "$2/summary.txt"</code></pre>
+<p><code>wc -l &lt; "$1"</code> (עם הפניית קלט) מדפיס רק את המספר. <code>wc -l "$1"</code> היה מדפיס גם את שם הקובץ. בדקתי בהרצה על קובץ בן 3 שורות: הפלט <code>notes.txt: 3 lines</code>.</p>
+</details>
+</div></div>
 
 <h3>משתני סביבה</h3>
 <div class="tbl"><table>
@@ -532,6 +674,52 @@ ls -la ~/"$1" &amp;&amp; \
 <p>הנקודה החשובה היא <code>&amp;&amp;</code> לפני <code>rm -r</code>: המחיקה קורית רק אם התוכנית החזירה 0. בדקתי את הסקריפט בהרצה אמיתית, עם תיקייה מדומה שהחליפה את <code>/vagrant</code>. התוצאה: <code>hello</code> נוצר עם <code>-rwx------</code>, הפלט נכתב ל-<code>~/output.out</code>, והתיקייה נמחקה.</p>
 </details>
 </div></div>
+
+<h2 id="check">בדיקה מול פתרון לדוגמה והגשה</h2>
+<p>לתרגילים מצורף לפעמים פתרון מקומפל, ודרכו בודקים שהפלט שלכם זהה <strong>תו-לתו</strong>. כל הפקודות כאן רצות בתוך ה-<bdi dir="ltr">VM</bdi>.</p>
+
+<h3>1 · איזה קובץ ריצה מתאים לכם</h3>
+<p>קובץ ריצה מקומפל למעבד מסוים. ב-<bdi dir="ltr">VM</bdi> על מעבד אפל רץ <bdi dir="ltr">Linux</bdi> של <bdi dir="ltr">ARM</bdi>, וב-<bdi dir="ltr">Windows</bdi> ואינטל של <bdi dir="ltr">x86</bdi>. בודקים מתוך ה-<bdi dir="ltr">VM</bdi>:</p>
+<div class="tbl"><table>
+<tr><th><code>uname -m</code> מחזיר</th><th>משתמשים בקובץ</th></tr>
+<tr><td class="mono">aarch64</td><td>הגרסה עם <code>_aarch64</code> בשם (מעבד אפל)</td></tr>
+<tr><td class="mono">x86_64</td><td>הגרסה הרגילה</td></tr>
+</table></div>
+<p>קובץ שהגיע מבחוץ (דרך <code>/vagrant</code>) מגיע בלי הרשאת ריצה, אז קודם <code>chmod +x</code>. שתי ההודעות שתראו אם משהו לא בסדר:</p>
+<div class="tbl"><table>
+<tr><th>הודעה</th><th>פירוש</th></tr>
+<tr><td class="mono">Permission denied</td><td>חסרה הרשאת ריצה: <code>chmod +x ./prog</code></td></tr>
+<tr><td class="mono">cannot execute binary file: Exec format error</td><td>הקובץ מקומפל למעבד אחר. לקחת את הגרסה השנייה. <code>file ./prog</code> מראה לאיזה מעבד הוא מיועד</td></tr>
+</table></div>
+
+<h3>2 · אותו קלט, השוואת פלטים</h3>
+<p>כותבים קובץ קלט עם כמה מקרי בדיקה, ומריצים עליו את שתי התוכניות עם הפניות (פרק 6). הקלט מקובץ גם מדמה סוף קלט <bdi dir="ltr">(EOF)</bdi> בדיוק כמו <bdi dir="ltr">Ctrl+D</bdi>, כשהקובץ נגמר.</p>
+<pre><code class="language-bash">./ref  &lt; tests.txt &gt; expected.txt   # the provided solution
+./mine &lt; tests.txt &gt; actual.txt     # your program
+diff expected.txt actual.txt</code></pre>
+<p><strong>אין פלט מ-<code>diff</code> = הקבצים זהים.</strong> אם יש הבדל, <code>diff</code> מראה איפה. למשל, כששורה 2 שונה:</p>
+<pre><code>2c2
+&lt; b
+---
+&gt; B</code></pre>
+<p><code>&lt;</code> היא השורה בקובץ הראשון ו-<code>&gt;</code> בשני. הבדלים שלא רואים בעין, כמו רווח בסוף שורה, ירידת שורה חסרה בסוף או <code>\r</code> מ-<bdi dir="ltr">Windows</bdi>, נתפסים כאן.</p>
+<div class="box warn"><div class="box-title">תהליכים ברקע</div><div class="box-body">
+<p>כשתוכנית מריצה תהליכים במקביל, סדר השורות יכול להשתנות בין ריצות, גם של אותה תוכנית בדיוק. במקרה כזה <code>diff</code> יראה הבדל בסדר, וזה תקין. מה שבודקים הוא שאותן שורות מופיעות.</p>
+</div></div>
+
+<h3>3 · קומפילציה כמו בבדיקה</h3>
+<p>הבודק מקמפל עם <code>gcc &lt;files&gt; -Wall -o &lt;exe&gt;</code>. מקמפלים בדיוק כך, ומוודאים ש<strong>אין אף אזהרה</strong>. אזהרה היא לא רק עניין של ניקיון: היא בדרך כלל מצביעה על באג אמיתי, כמו משתנה שלא אותחל או פונקציה בלי <code>#include</code>.</p>
+
+<h3>4 · אריזה ובדיקת הגשה</h3>
+<p>הקבצים צריכים להיות <strong>ישירות</strong> בתוך הארכיון, בלי תיקייה מסביבם. לכן מריצים את <code>tar</code> מתוך התיקייה שבה הקבצים נמצאים, עם שמות הקבצים בלבד:</p>
+<pre><code class="language-bash">tar czf 123456789.tar.gz file1.sh file2.c file3.pdf   # create (c), gzip (z), file name (f)
+tar tzf 123456789.tar.gz                             # list what is inside (t)</code></pre>
+<div class="tbl"><table>
+<tr><th>פקודה</th><th>מה בפנים</th></tr>
+<tr><td class="mono">tar czf x.tar.gz a.sh b.c c.pdf</td><td><code>a.sh</code>, <code>b.c</code>, <code>c.pdf</code> – נכון</td></tr>
+<tr><td class="mono">tar czf x.tar.gz myfolder</td><td><code>myfolder/</code>, <code>myfolder/a.sh</code> … – תיקייה בפנים, הבדיקה תיכשל</td></tr>
+</table></div>
+<p>אחר כך מריצים את סקריפט בדיקת ההגשה שמצורף לתרגיל (<code>python3 &lt;script&gt;.py &lt;file&gt;.tar.gz</code>) ומעתיקים את הארכיון החוצה דרך <code>/vagrant</code>, שמסונכרנת עם התיקייה של ה-<bdi dir="ltr">VM</bdi> במחשב.</p>
 </section>
 <nav class="pager" aria-label="מעבר בין נושאים">
 <a class="prev" href="intro.html"><span class="dir">הנושא הקודם</span><span class="nm">פרק 1 · מבוא</span></a>

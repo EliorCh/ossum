@@ -614,6 +614,159 @@ else if (rc == 0) {                      // child
 <div class="box theory"><div class="box-title">למה <bdi dir="ltr">fork</bdi> ו-<bdi dir="ltr">exec</bdi> נפרדים?</div><div class="box-body">
 <p>כי אפשר להריץ קוד <strong>אחרי <bdi dir="ltr">fork</bdi> ולפני <bdi dir="ltr">exec</bdi></strong> ולשנות את הסביבה של התוכנית החדשה – למשל לסגור את <code>stdout</code> ולפתוח במקומו קובץ. כך ה-<bdi dir="ltr">shell</bdi> מממש <code>&gt;</code> ו-<code>|</code> בלי שהתוכנית המורצת תדע בכלל.</p>
 </div></div>
+
+<h2 id="syscalls">קריאת מערכת או פונקציית ספרייה?</h2>
+<p>כשתרגיל דורש "קריאות מערכת בלבד", צריך לדעת להבדיל. <strong>קריאת מערכת</strong> עוברת לקרנל (<bdi dir="ltr">trap</bdi>), ו<strong>פונקציית ספרייה</strong> היא קוד רגיל של <bdi dir="ltr">C</bdi> שרץ בתוך התהליך, ולפעמים קוראת בעצמה לקריאת מערכת (<code>printf</code> בסוף קורא ל-<code>write</code>). הדרך לבדוק: ה-<code>man</code>. סעיף 2 הוא קריאות מערכת, וסעיף 3 פונקציות ספרייה: <code>man 2 fork</code>, <code>man 3 printf</code>.</p>
+<div class="tbl"><table>
+<tr><th>קריאת מערכת (<bdi dir="ltr">man 2</bdi>)</th><th>מחזירה בכישלון</th><th>פונקציית ספרייה (<bdi dir="ltr">man 3</bdi>)</th></tr>
+<tr><td class="mono">fork</td><td><bdi dir="ltr">-1</bdi> (ואין ילד)</td><td class="mono">printf, perror</td></tr>
+<tr><td class="mono">wait, waitpid</td><td><bdi dir="ltr">-1</bdi>: אין ילדים, או שסיגנל קטע את ההמתנה (פרק 5)</td><td class="mono">fgets, strtok, strcmp</td></tr>
+<tr><td class="mono">read, write</td><td><bdi dir="ltr">-1</bdi></td><td class="mono">malloc, sleep</td></tr>
+<tr><td class="mono">_exit</td><td>לא חוזרת</td><td class="mono">exit (מנקה באפרים ואז קוראת ל-<bdi dir="ltr">_exit</bdi>)</td></tr>
+<tr><td class="mono">execve</td><td>חוזרת רק בכישלון (<bdi dir="ltr">-1</bdi>)</td><td class="mono">execvp (עטיפה ל-<bdi dir="ltr">execve</bdi> שמחפשת את התוכנית ב-<bdi dir="ltr">PATH</bdi>)</td></tr>
+</table></div>
+<p><code>execvp</code> נמצאת טכנית בסעיף 3, אבל היא חלק מה-<bdi dir="ltr">API</bdi> של תהליכים שנלמד, יחד עם <code>fork</code> ו-<code>wait</code>. כשתרגיל מפרט אילו פונקציות ספרייה מותרות, כדאי לבדוק כל פונקציה ב-<code>man</code> ולא לנחש.</p>
+<div class="box theory"><div class="box-title">בודקים כל ערך החזרה</div><div class="box-body">
+<p>קריאת מערכת יכולה להיכשל בכל רגע: נגמרו תהליכים, אין זיכרון, קובץ לא קיים. התבנית קבועה – בודקים את הערך, ובכישלון מדפיסים את הסיבה עם <code>perror</code>, שכותבת ל-<code>stderr</code> את ההודעה שמתאימה ל-<code>errno</code>:</p>
+<pre><code class="language-c">pid_t pid = fork();
+if (pid &lt; 0) {
+    perror("fork");      // e.g. "fork: Resource temporarily unavailable"
+    /* decide: stop, or skip this step */
+}</code></pre>
+<p>הטקסט שמעבירים ל-<code>perror</code> מופיע לפני הנקודתיים, אז כדאי לכתוב בו את שם הקריאה שנכשלה.</p>
+</div></div>
+
+<h2 id="shortc"><bdi dir="ltr">fork</bdi> בתוך <code>&amp;&amp;</code> ו-<code>||</code></h2>
+<p>ב-<bdi dir="ltr">C</bdi> האופרטורים <code>&amp;&amp;</code> ו-<code>||</code> מחשבים <strong>משמאל לימין ועוצרים מוקדם</strong> <bdi dir="ltr">(short-circuit)</bdi>: אם התוצאה כבר ידועה מהאופרנד השמאלי, הימני לא מבוצע בכלל. כשהאופרנדים הם <code>fork()</code>, "לא מבוצע" אומר שתהליך לא נוצר. וכל תהליך מחשב את הביטוי <strong>בעצמו</strong>, עם ערכי ההחזרה שלו.</p>
+<div class="tbl"><table>
+<tr><th>ביטוי</th><th>השמאלי אמת (הורה, <bdi dir="ltr">&gt; 0</bdi>)</th><th>השמאלי שקר (ילד, 0)</th></tr>
+<tr><td class="mono">A &amp;&amp; B</td><td>מחשב את <bdi dir="ltr">B</bdi>, והתוצאה לפי <bdi dir="ltr">B</bdi></td><td><bdi dir="ltr">B</bdi> <strong>לא מבוצע</strong>. התוצאה 0</td></tr>
+<tr><td class="mono">A || B</td><td><bdi dir="ltr">B</bdi> <strong>לא מבוצע</strong>. התוצאה 1</td><td>מחשב את <bdi dir="ltr">B</bdi>, והתוצאה לפי <bdi dir="ltr">B</bdi></td></tr>
+<tr><td class="mono">!fork()</td><td colspan="2">הופך: אמת אצל הילד, שקר אצל ההורה. שימו לב לזה כשמחליטים מי ממשיך לאופרנד הבא</td></tr>
+</table></div>
+<p>התוצאה של <code>&amp;&amp;</code> ו-<code>||</code> היא תמיד 0 או 1, לא ה-<bdi dir="ltr">PID</bdi>. השיטה: עוברים תהליך-תהליך, ולכל אחד שואלים מה החזיר לו כל <code>fork</code> שהוא ביצע, ואם הגיע לאופרנד הבא.</p>
+<pre><code class="language-c">int r = fork() || fork();
+printf("r=%d\n", r);</code></pre>
+<div class="trace" data-trace="orfork"></div>
+
+<div class="box exercise"><div class="box-title">תרגיל: <code>&amp;&amp;</code></div><div class="box-body">
+<pre><code class="language-c">int r = fork() &amp;&amp; fork();
+if (r) printf("A\n");
+else   printf("B\n");</code></pre>
+<p>כמה תהליכים נוצרים, ומה מודפס?</p>
+<details class="sol"><summary>פתרון</summary>
+<p><strong>3 תהליכים</strong>, מודפס <code>A</code> פעם אחת ו-<code>B</code> פעמיים (בסדר כלשהו).</p>
+<ul>
+<li><strong>ההורה:</strong> ה-<code>fork</code> הראשון החזיר לו <bdi dir="ltr">PID</bdi> – אמת, אז הוא ממשיך ל-<code>fork</code> השני. גם הוא מחזיר לו <bdi dir="ltr">PID</bdi>, ולכן <code>r = 1</code> ← <code>A</code>.</li>
+<li><strong>הילד מה-<bdi dir="ltr">fork</bdi> הראשון:</strong> קיבל 0 – שקר, וה-<code>fork</code> השני לא מתבצע אצלו. <code>r = 0</code> ← <code>B</code>.</li>
+<li><strong>הילד מה-<bdi dir="ltr">fork</bdi> השני:</strong> קיבל 0 בשני, ולכן <code>r = 0</code> ← <code>B</code>.</li>
+</ul>
+<div class="tree" data-tree='{"n":"P · A","c":[{"n":"C1 · B"},{"n":"C2 · B"}]}'></div>
+<p>בדקתי בהרצה אמיתית: <code>A</code> פעם אחת ו-<code>B</code> פעמיים.</p>
+</details>
+</div></div>
+
+<h3 id="badexec">כש-<bdi dir="ltr">exec</bdi> נכשל</h3>
+<p><bdi dir="ltr">exec</bdi> שהצליח לא חוזר. אבל אם התוכנית לא נמצאה, <bdi dir="ltr">exec</bdi> <strong>חוזר</strong>, והזיכרון של התהליך לא השתנה – אז הילד ממשיך להריץ את שאר הקוד, שהוא בעצם הקוד של ההורה. בשאלות "מה יודפס אם הפקודה לא קיימת" זה ההבדל כולו.</p>
+<pre><code class="language-c">if (fork() == 0) {
+    char *args[] = { "no_such_prog", NULL };
+    execvp(args[0], args);
+    perror("execvp");
+}
+printf("who am I? %d\n", getpid());</code></pre>
+<p>הפלט בהרצה אמיתית:</p>
+<pre><code>execvp: No such file or directory
+who am I? 4887
+who am I? 4886</code></pre>
+<div class="trace" data-trace="badexec"></div>
+
+<h2 id="shellloop">איך בנוי <bdi dir="ltr">shell</bdi></h2>
+<p>ה-<bdi dir="ltr">shell</bdi> הוא לולאה. בכל סיבוב:</p>
+<ol>
+<li>מדפיס <bdi dir="ltr">prompt</bdi>.</li>
+<li>קורא שורה אחת מהקלט. אם הקלט נגמר – יוצא מהלולאה.</li>
+<li>מפצל את השורה למילים: הראשונה היא שם התוכנית, השאר הארגומנטים.</li>
+<li><code>fork</code>: הילד קורא ל-<code>exec</code> עם המילים, וההורה מחליט אם לחכות לו (חזית) או לא (רקע – <a href="signals.html#bg">פרק 5</a>).</li>
+</ol>
+<p>את שלב 4 כבר ראיתם למעלה. כאן שני השלבים שלפניו.</p>
+
+<h3>קריאת שורות עד סוף הקלט: <code>fgets</code></h3>
+<div class="fn"><div class="fn-sig">char *fgets(char *buf, int size, FILE *stream);</div><div class="fn-body"><dl>
+<dt>מה</dt><dd>קורא שורה אחת לתוך <code>buf</code>, כולל ה-<code>\n</code> בסופה, ומוסיף <code>\0</code>. קורא לכל היותר <code>size - 1</code> תווים.</dd>
+<dt>מחזיר</dt><dd>את <code>buf</code>, או <strong><code>NULL</code> כשהקלט נגמר</strong> <bdi dir="ltr">(EOF)</bdi> או בשגיאה.</dd>
+<dt><bdi dir="ltr">EOF</bdi></dt><dd>בטרמינל: <bdi dir="ltr">Ctrl+D</bdi> בתחילת שורה. מקובץ (<code>./prog &lt; input.txt</code>): כשהקובץ נגמר.</dd>
+</dl></div></div>
+<p>דוגמה: תוכנית שממספרת שורות עד סוף הקלט.</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main() {
+    char line[200];
+    int n = 0;
+    setbuf(stdout, NULL);
+    printf("&gt; ");
+    while (fgets(line, sizeof(line), stdin) != NULL) {
+        n++;
+        printf("line %d: %s", n, line);   // line already ends with \n
+        printf("&gt; ");
+    }
+    printf("\ntotal: %d lines\n", n);
+    return 0;
+}</code></pre>
+<pre><code>$ printf 'ls -la /tmp\nhello\n' | ./numbered
+&gt; line 1: ls -la /tmp
+&gt; line 2: hello
+&gt; 
+total: 2 lines</code></pre>
+<p>כשהקלט מגיע מקובץ או מ-<bdi dir="ltr">pipe</bdi>, מה שהוקלד לא מופיע על המסך, רק מה שהתוכנית מדפיסה. לכן ה-<bdi dir="ltr">prompt</bdi> צמוד לשורה שאחריו. וה-<bdi dir="ltr">prompt</bdi> האחרון מודפס לפני ש-<code>fgets</code> מגלה שהקלט נגמר; ה-<code>\n</code> בתחילת ההודעה האחרונה מעביר את הסיום לשורה חדשה.</p>
+<div class="box warn"><div class="box-title"><code>setbuf(stdout, NULL)</code></div><div class="box-body">
+<p><code>printf</code> שומר טקסט בבאפר ומדפיס אותו בהמשך. <bdi dir="ltr">prompt</bdi> בלי <code>\n</code> עלול לא להופיע בזמן, ואחרי <code>fork</code> מה שנשאר בבאפר מודפס פעמיים – פעם מכל תהליך (פרק 5, <a href="signals.html#buf">באפר ו-<bdi dir="ltr">setbuf</bdi></a>). ביטול הבאפר בתחילת <code>main</code> פותר את שתי הבעיות.</p>
+</div></div>
+
+<h3>פיצול שורה למילים: <code>strtok</code></h3>
+<p><code>strtok</code> לא יוצרת מחרוזות חדשות. היא <strong>כותבת <code>\0</code> בתוך השורה עצמה</strong>, במקום כל מפריד, ומחזירה מצביע לתחילת כל מילה. בקריאה הראשונה מעבירים את השורה, ובכל קריאה הבאה <code>NULL</code> – "תמשיכי מאיפה שעצרת". כשאין עוד מילים היא מחזירה <code>NULL</code>.</p>
+<figure>
+<svg viewBox="0 0 560 130" width="560" role="img" aria-label="strtok כותבת אפס במקום רווחים ומחזירה מצביעים">
+  <text x="20" y="26" font-size="12" fill="var(--muted)" class="mono">line = "ls -la /tmp\n"</text>
+  <g stroke="var(--line)">
+    <rect x="20" y="40" width="30" height="34" fill="var(--surface)"/><rect x="50" y="40" width="30" height="34" fill="var(--surface)"/><rect x="80" y="40" width="30" height="34" fill="var(--warn-bg)"/><rect x="110" y="40" width="30" height="34" fill="var(--surface)"/><rect x="140" y="40" width="30" height="34" fill="var(--surface)"/><rect x="170" y="40" width="30" height="34" fill="var(--surface)"/><rect x="200" y="40" width="30" height="34" fill="var(--warn-bg)"/><rect x="230" y="40" width="30" height="34" fill="var(--surface)"/><rect x="260" y="40" width="30" height="34" fill="var(--surface)"/><rect x="290" y="40" width="30" height="34" fill="var(--surface)"/><rect x="320" y="40" width="30" height="34" fill="var(--surface)"/><rect x="350" y="40" width="30" height="34" fill="var(--warn-bg)"/>
+  </g>
+  <g class="mono" font-size="15" text-anchor="middle" fill="var(--fg)"><text x="35" y="63">l</text><text x="65" y="63">s</text><text x="125" y="63">-</text><text x="155" y="63">l</text><text x="185" y="63">a</text><text x="245" y="63">/</text><text x="275" y="63">t</text><text x="305" y="63">m</text><text x="335" y="63">p</text></g>
+  <g class="mono" font-size="14" text-anchor="middle" fill="var(--warn)"><text x="95" y="63">\0</text><text x="215" y="63">\0</text><text x="365" y="63">\0</text></g>
+  <g stroke="var(--theory)" stroke-width="1.5"><line x1="35" y1="98" x2="35" y2="78"/><line x1="125" y1="98" x2="125" y2="78"/><line x1="245" y1="98" x2="245" y2="78"/></g>
+  <g class="mono" font-size="13" text-anchor="middle" fill="var(--theory)"><text x="35" y="114">w[0]</text><text x="125" y="114">w[1]</text><text x="245" y="114">w[2]</text><text x="470" y="114">w[3] = NULL</text></g>
+</svg>
+<figcaption>אחרי הפיצול: הרווחים וה-<code>\n</code> הפכו ל-<code>\0</code>, וכל <code>w[i]</code> מצביע לתחילת מילה</figcaption>
+</figure>
+<p>מערך שמסתיים ב-<code>NULL</code> הוא בדיוק מה ש-<code>execvp</code> מצפה לקבל. דוגמה שסופרת מילים בכל שורה ועוצרת במילה <code>quit</code>:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#define SEP " \t\n"
+
+int main() {
+    char line[200];
+    while (fgets(line, sizeof(line), stdin) != NULL) {
+        char *w[50];
+        int n = 0;
+        w[0] = strtok(line, SEP);
+        while (w[n] != NULL) {
+            n++;
+            w[n] = strtok(NULL, SEP);
+        }
+        if (n == 0) continue;                  // empty line: no words at all
+        if (strcmp(w[0], "quit") == 0) break;  // strcmp returns 0 when equal
+        printf("%d words, first=[%s], last=[%s]\n", n, w[0], w[n - 1]);
+    }
+    return 0;
+}</code></pre>
+<pre><code>$ printf 'ls   -la\t/tmp\n\n  echo one two three  \nquit\nnever\n' | ./words
+3 words, first=[ls], last=[/tmp]
+4 words, first=[echo], last=[three]</code></pre>
+<ul>
+<li>רווחים כפולים וטאבים לא יוצרים "מילים ריקות": <code>strtok</code> מדלגת על רצף מפרידים.</li>
+<li>השורה הריקה נתנה <code>n == 0</code>, כלומר <code>w[0]</code> הוא <code>NULL</code>. בלי הבדיקה, <code>strcmp(w[0], ...)</code> היה קורס, ו-<bdi dir="ltr">exec</bdi> עם <code>NULL</code> לא היה מריץ כלום. שורה ריקה היא מקרה שחייבים לטפל בו.</li>
+<li><code>n</code> הוא מספר המילים, ולכן המילה האחרונה היא <code>w[n - 1]</code> ו-<code>w[n]</code> הוא ה-<code>NULL</code>.</li>
+<li>אחרי <code>quit</code> הלולאה נעצרה, ולכן <code>never</code> לא נקרא.</li>
+</ul>
 </section>
 <a class="drill" href="https://eliorch.github.io/osque/#t=process" target="_blank" rel="noopener"><span class="dir">סיימת את הפרק?</span><span class="nm">מעבר לתרגול הפרק – שאלות ממבחנים ↗</span></a>
 <nav class="pager" aria-label="מעבר בין נושאים">
@@ -1043,6 +1196,33 @@ const toJobs = p => p.jobs.map(([name, arr, burst]) => ({ name, arr, burst }));
     el._lock = lock;
     lock();
   }
+  /* fork inside || : the second fork runs only where the first returned 0 */
+  traces.orfork = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['int r = fork() || fork();', 'printf("r=%d\\n", r);']);
+    b.proc(5, 1, 1).snap(5, `תהליך אחד, ${E('PID 5')}. בשורה 1 הוא מחשב ביטוי ${C('||')}: קודם האופרנד השמאלי.`);
+    b.st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.st(5, 'running').v(5, 'r', 1).snap(5, `אצל ההורה ה-${C('fork')} הראשון החזיר 6, כלומר "אמת". ב-${C('||')}, אם האופרנד השמאלי אמת התוצאה כבר ידועה, ולכן <strong>ה-${C('fork')} השני לא מתבצע אצלו</strong>. ${C('r')} = 1.`);
+    b.at(5, 2).print(5, 'r=1\n').snap(5, `ההורה מדפיס ${C('r=1')} ומסיים.`);
+    b.st(5, 'reaped').run(6).snap(6, `הילד 6 ממשיך מאותה נקודה, באמצע הביטוי. אצלו ה-${C('fork')} הראשון החזיר 0, "שקר", ולכן התוצאה עוד לא ידועה והוא <strong>כן</strong> מחשב את האופרנד הימני.`);
+    b.st(6, 'kernel').fork(6, 7).snap(6, `הילד 6 קורא ל-${C('fork')} השני ונוצר תהליך 7 – נכד של 5.`);
+    b.st(6, 'running').v(6, 'r', 1).v(7, 'r', 0).snap(6, `אצל 6 ה-${C('fork')} השני החזיר 7 ("אמת"), ולכן ${C('r')} = 1. אצל 7 הוא החזיר 0, ולכן כל הביטוי שקר ו-${C('r')} = 0.`);
+    b.at(6, 2).print(6, 'r=1\n').snap(6, `6 מדפיס ${C('r=1')}.`);
+    b.st(6, 'reaped').run(7).at(7, 2).print(7, 'r=0\n').snap(7, `7 מדפיס ${C('r=0')}.`);
+    b.st(7, 'reaped').snap(null, `סה"כ <strong>3 תהליכים</strong> ושלוש שורות: פעמיים ${C('r=1')} ופעם ${C('r=0')}, בסדר שתלוי במתזמן. בדקתי בהרצה אמיתית: אותן שלוש שורות.`);
+    return b.done(); })() }];
+
+  /* exec that fails: the child keeps running the parent's code */
+  traces.badexec = () => [{ label: 'הרצה אחת אפשרית', t: (() => {
+    const b = B(['if (fork() == 0) {', '    char *args[] = { "no_such_prog", NULL };', '    execvp(args[0], args);', '    perror("execvp");', '}', 'printf("who am I? %d\\n", getpid());']);
+    b.proc(5, 1, 1).st(5, 'kernel').fork(5, 6).snap(5, KF(5, 6));
+    b.st(5, 'ready').run(6).at(6, 2).v(6, 'args', '{no_such_prog}').snap(6, `אצל הילד ${C('fork')} החזיר 0, והוא נכנס לבלוק ובונה את מערך הארגומנטים.`);
+    b.at(6, 3).st(6, 'kernel').snap(6, `${C('execvp')} מחפש תוכנית בשם ${C('no_such_prog')} בתיקיות של ${C('PATH')} – ולא מוצא. אין מה לטעון, אז הזיכרון של הילד <strong>לא נדרס</strong>.`);
+    b.st(6, 'running').at(6, 4).print(6, 'execvp: No such file or directory\n').snap(6, `${C('exec')} שנכשל <strong>חוזר</strong> (עם ${C('-1')}), והילד ממשיך לשורה הבאה. ${C('perror')} מדפיס את הסיבה ל-${C('stderr')}.`);
+    b.at(6, 6).print(6, 'who am I? 6\n').snap(6, `וכאן ההפתעה: הילד יוצא מהבלוק וממשיך להריץ את <strong>הקוד של ההורה</strong>. כל מה שכתוב אחרי ה-${C('if')} ירוץ פעמיים. בתוכנית עם לולאה, הילד היה ממשיך את הלולאה כעותק שני של ההורה.`);
+    b.st(6, 'reaped').run(5).at(5, 6).print(5, 'who am I? 5\n').snap(5, `ההורה דילג על הבלוק (אצלו ${C('fork')} החזיר 6) ומדפיס.`);
+    b.st(5, 'reaped').snap(null, `לכן אחרי ${C('exec')} בילד תמיד כותבים טיפול בכישלון: הודעת שגיאה, ואז <strong>סיום הילד</strong>, כדי שלא ימשיך בקוד של ההורה. בדקתי בהרצה אמיתית: שתי שורות ${C('who am I?')} ושורת ${C('execvp:')} אחת.`);
+    return b.done(); })() }];
+
   window.__traces = traces;
   document.querySelectorAll('.trace[data-trace]').forEach(el => {
     const f = traces[el.dataset.trace]; if (!f) return;

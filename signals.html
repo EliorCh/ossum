@@ -565,11 +565,60 @@ else              printf("Parent %d of child %d\n", getpid(), rc);</code></pre>
 <dt>מה</dt><dd>שולחת את הסיגנל <code>sig</code> לתהליך <code>pid</code>. השם מטעה – אפשר לשלוח <strong>כל</strong> סיגנל, לא רק להרוג.</dd>
 </dl></div></div>
 
+<div class="box example"><div class="box-title">דוגמה מהקורס: ההורה הורג את הילד</div><div class="box-body">
+<pre><code class="language-c">int rc = fork();
+if (rc &lt; 0) { fprintf(stderr, "fork failed\n"); exit(1); }
+else if (rc == 0) {                  // child: runs forever
+    while (1) {
+        sleep(1);
+        printf("Child %d active\n", getpid());
+    }
+}
+else {                               // parent: waits 5 seconds, then kills it
+    printf("Parent %d active\n", getpid());
+    sleep(5);
+    kill(rc, SIGKILL);
+    printf("Parent %d done\n", getpid());
+}</code></pre>
+<p>הפלט בהרצה אמיתית:</p>
+<pre><code>Parent 5576 active
+Child 5577 active
+Child 5577 active
+Child 5577 active
+Child 5577 active
+Parent 5576 done</code></pre>
+<p>ארבע שורות של הילד ולא חמש: הוא מדפיס אחרי כל שנייה, וההורה הורג אותו בסביבות השנייה החמישית, בערך באותו רגע שבו הוא היה מדפיס בפעם החמישית. בהרצה אחרת יכולות לצאת חמש. ההורה לא קורא ל-<code>wait</code>, אז הילד שנהרג נשאר זומבי לרגע, עד שההורה מסיים ו-<code>init</code> אוסף אותו.</p>
+</div></div>
+
 <div class="fn"><div class="fn-sig">int sigaction(int sig, const struct sigaction *act, struct sigaction *oldact);</div><div class="fn-body"><dl>
 <dt>מה</dt><dd>משנה את הטיפול בסוג סיגנל. לכל סיגנל יש טיפול ברירת מחדל, ואפשר להחליף אותו ב-<strong>signal handler</strong> – פונקציה של התהליך שמקבלת את מספר הסיגנל.</dd>
 <dt>act</dt><dd>הטיפול החדש: <code>sa_handler</code> הוא פונקציה, <code>SIG_DFL</code> (ברירת מחדל) או <code>SIG_IGN</code> (התעלמות).</dd>
 <dt>oldact</dt><dd><strong>פרמטר פלט:</strong> לכאן נכתב הטיפול הקודם. שימושי כדי לשחזר או להחליף.</dd>
 </dl></div></div>
+
+<div class="box example"><div class="box-title">דוגמה מהקורס: תוכנית ש-<bdi dir="ltr">Ctrl+C</bdi> לא עוצר</div><div class="box-body">
+<pre><code class="language-c">void sigint_handler(int sig) {
+    printf("SIGINT ignored: %d\n", getpid());
+}
+
+int main() {
+    struct sigaction act;
+    sigemptyset(&amp;act.sa_mask);       // block no other signals while the handler runs
+    act.sa_handler = sigint_handler;
+    act.sa_flags = 0;
+    if (sigaction(SIGINT, &amp;act, NULL) == -1) {
+        fprintf(stderr, "sigaction failed\n");
+        exit(1);
+    }
+    printf("%d ignoring SIGINT\n", getpid());
+    while (1);
+}</code></pre>
+<p>בהרצה אמיתית, עם שתי לחיצות <bdi dir="ltr">Ctrl+C</bdi>:</p>
+<pre><code>5622 ignoring SIGINT
+SIGINT ignored: 5622
+SIGINT ignored: 5622</code></pre>
+<p>ברירת המחדל של <bdi dir="ltr">SIGINT</bdi> היא לסיים את התהליך, אבל כאן היא הוחלפה בפונקציה שרק מדפיסה, ולכן התוכנית ממשיכה. איך עוצרים אותה? <bdi dir="ltr">SIGKILL</bdi>, שאי אפשר לתפוס: מטרמינל אחר, <code>kill -9 5622</code> (ה-<bdi dir="ltr">PID</bdi> מההדפסה הראשונה). ה-<bdi dir="ltr">shell</bdi> ידווח על קוד יציאה 137, כלומר 128 + 9: "נהרג על ידי סיגנל 9".</p>
+</div></div>
 
 <div class="box example"><div class="box-title">מניעת זומבים עם <bdi dir="ltr">SIGCHLD</bdi></div><div class="box-body">
 <pre><code class="language-c">void on_child(int sig) {
@@ -583,8 +632,115 @@ sigaction(SIGCHLD, &amp;sa, NULL);</code></pre>
 <p>שני פרטים חשובים: <code>WNOHANG</code> כדי שה-<bdi dir="ltr">handler</bdi> לא ייחסם, ולולאה – כי סיגנלים מאותו סוג לא נספרים. אם שני ילדים מתו כמעט יחד, ייתכן שיגיע <bdi dir="ltr">SIGCHLD</bdi> אחד בלבד.</p>
 </div></div>
 
+<h2 id="bg">חזית ורקע: איסוף זומבים בלי לחכות</h2>
+<p>ב-<bdi dir="ltr">bash</bdi>, <code>sleep 20</code> תוקע את הטרמינל ל-20 שניות, ו-<code>sleep 20 &amp;</code> מחזיר את ה-<bdi dir="ltr">prompt</bdi> מיד. ההבדל הוא רק בשאלה אם ה-<bdi dir="ltr">shell</bdi> מחכה לילד:</p>
+<div class="tbl"><table>
+<tr><th></th><th>חזית <bdi dir="ltr">(foreground)</bdi></th><th>רקע <bdi dir="ltr">(background)</bdi></th></tr>
+<tr><td><strong>ההורה אחרי <code>fork</code></strong></td><td>מחכה לילד <strong>הזה</strong> עד שהוא מסתיים</td><td>ממשיך מיד, בלי לחכות</td></tr>
+<tr><td><strong>כשהילד מסתיים</strong></td><td>ההמתנה אוספת אותו מיד</td><td>הוא נשאר <strong>זומבי</strong> עד שמישהו יאסוף אותו</td></tr>
+</table></div>
+<p>תהליך שרץ הרבה זמן ומריץ ילדים ברקע, כמו <bdi dir="ltr">shell</bdi>, חייב לאסוף אותם בעצמו, אחרת הזומבים מצטברים. יש כאן שני מוקשים, ושתי דרכים לאסוף.</p>
+
+<h3>מוקש 1: לחכות לילד הנכון</h3>
+<p><code>wait(NULL)</code> אוסף <strong>ילד כלשהו</strong>. אם ילד מהרקע כבר הסתיים ומחכה כזומבי, <code>wait</code> יחזור מיד איתו – וההורה ימשיך בזמן שהילד מהחזית עוד רץ:</p>
+<pre><code class="language-c">pid_t bg = fork();
+if (bg == 0) _exit(0);                 // background child: ends at once
+sleep(1);
+pid_t fg = fork();
+if (fg == 0) { sleep(2); _exit(0); }   // foreground child: 2 seconds
+pid_t got = wait(NULL);                // meant to wait for fg...
+printf("bg=%d fg=%d wait returned %d\n", bg, fg, got);
+printf("waitpid(fg) returned %d\n", waitpid(fg, NULL, 0));</code></pre>
+<pre><code>bg=4951 fg=4953 wait returned 4951
+waitpid(fg) returned 4953</code></pre>
+<p><code>wait</code> החזיר את הילד מהרקע בלי לחכות בכלל. לחזית מחכים עם <code>waitpid(pid, NULL, 0)</code>, ל-<bdi dir="ltr">PID</bdi> המדויק – ורק הוא באמת חיכה שתי שניות.</p>
+
+<h3>איסוף בלי לחסום: <code>WNOHANG</code></h3>
+<p><code>waitpid(-1, NULL, WNOHANG)</code> פירושו: "אם יש ילד כלשהו שכבר הסתיים, תאסוף אותו; אם אין, אל תחכה". הערך שחוזר אומר מה קרה. כל השורות בטבלה נבדקו בהרצה:</p>
+<div class="tbl"><table>
+<tr><th>מחזיר</th><th>פירוש</th></tr>
+<tr><td class="num"><bdi dir="ltr">&gt; 0</bdi></td><td>ילד שהסתיים נאסף, וזה ה-<bdi dir="ltr">PID</bdi> שלו. ייתכן שיש עוד, אז קוראים שוב</td></tr>
+<tr><td class="num">0</td><td>יש ילדים, אבל כולם עדיין רצים. אין מה לאסוף כרגע</td></tr>
+<tr><td class="num"><bdi dir="ltr">-1</bdi></td><td>אין ילדים בכלל (<code>errno</code> = <code>ECHILD</code>), או שגיאה</td></tr>
+</table></div>
+<p>קריאה אחת אוספת ילד <strong>אחד</strong>. כדי לאסוף את כולם קוראים בלולאה, עד שחוזר 0 או <bdi dir="ltr">-1</bdi>.</p>
+
+<h3>מוקש 2: סיגנל קוטע קריאה חוסמת</h3>
+<p>הדרך הראשונה לאסוף היא <bdi dir="ltr">handler</bdi> ל-<bdi dir="ltr">SIGCHLD</bdi>, כמו בדוגמה למעלה. אבל כשמגיע סיגנל ויש לו <bdi dir="ltr">handler</bdi>, קריאת מערכת שהתהליך חסום בה <strong>נקטעת</strong>: אחרי שה-<bdi dir="ltr">handler</bdi> רץ, היא חוזרת מוקדם במקום להמשיך לחכות. רואים את זה בדוגמה מהקורס:</p>
+<pre><code class="language-c">void sigchld_handler(int signal) {
+    int rc = wait(NULL);
+    printf("%d: Child %d terminated\n", getpid(), rc);
+}
+int main() {
+    struct sigaction act;
+    sigemptyset(&amp;act.sa_mask);
+    act.sa_handler = sigchld_handler;
+    act.sa_flags = 0;
+    if (sigaction(SIGCHLD, &amp;act, NULL) == -1) { fprintf(stderr, "sigaction failed\n"); exit(1); }
+
+    while (1) {
+        if (!fork()) {        // child: sleeps 1 second and ends
+            sleep(1);
+            break;
+        }
+        int slp = 5;
+        while (slp) {         // parent: wants to sleep 5 whole seconds
+            slp = sleep(5);
+        }
+    }
+    return 0;
+}</code></pre>
+<p>למה <code>sleep</code> בלולאה? כי אחרי שנייה הילד מסתיים, מגיע <bdi dir="ltr">SIGCHLD</bdi>, וה-<code>sleep(5)</code> של ההורה נקטע. <code>sleep</code> מחזירה את מספר השניות שנשארו, והלולאה ממשיכה לישון את השאר. כשהוספתי הדפסה של הערך שחזר, ההרצה הראתה:</p>
+<pre><code>5590: Child 5591 terminated
+5590: sleep returned 3
+5590: sleep returned 0</code></pre>
+<p>אותו דבר קורה לכל קריאה חוסמת. בדקתי עם הורה שחסום ב-<code>read</code> (מחכה לקלט) ועם הורה שחסום ב-<code>waitpid(fg, NULL, 0)</code> (מחכה לילד מהחזית), כשילד אחר מסתיים באמצע. שתי הקריאות חזרו מיד עם <bdi dir="ltr">-1</bdi>:</p>
+<pre><code>read: Interrupted system call
+waitpid: Interrupted system call</code></pre>
+<p><code>errno</code> שווה ל-<code>EINTR</code>: זו לא שגיאה אמיתית, רק "נקטעתי". מי שמשתמש ב-<bdi dir="ltr">handler</bdi> צריך לצפות לזה בכל קריאה חוסמת בתוכנית, אחרת התוכנית תתנהג כאילו הקלט נגמר או שהילד הסתיים.</p>
+
+<h3>שתי דרכים לאסוף</h3>
+<div class="tbl"><table>
+<tr><th></th><th><bdi dir="ltr">handler</bdi> ל-<bdi dir="ltr">SIGCHLD</bdi></th><th>בדיקה בנקודה קבועה בלולאה</th></tr>
+<tr><td><strong>איך</strong></td><td>ב-<bdi dir="ltr">handler</bdi>: <code>waitpid(-1, NULL, WNOHANG)</code> בלולאה</td><td>בכל סיבוב של הלולאה הראשית: <code>waitpid(-1, NULL, WNOHANG)</code> בלולאה</td></tr>
+<tr><td><strong>מתי זומבי נאסף</strong></td><td>מיד כשהילד מסתיים</td><td>בסיבוב הבא של הלולאה הראשית</td></tr>
+<tr><td><strong>המחיר</strong></td><td>קריאות חוסמות נקטעות (<code>EINTR</code>), וצריך לטפל בזה בכל מקום</td><td>זומבי קיים עד הסיבוב הבא. אין סיגנלים ואין קטיעות</td></tr>
+</table></div>
+<p>דוגמה לדרך השנייה: הורה שמריץ שלושה "עובדים" ברקע (עובד <bdi dir="ltr">i</bdi> רץ <bdi dir="ltr">i</bdi> שניות), ממשיך בעבודה שלו, ובכל סיבוב אוסף את מי שסיים:</p>
+<pre><code class="language-c">int main() {
+    setbuf(stdout, NULL);
+    for (int i = 1; i &lt;= 3; i++) {
+        pid_t pid = fork();
+        if (pid &lt; 0) { perror("fork"); return 1; }
+        if (pid == 0) { sleep(i); _exit(0); }   // worker i runs i seconds
+        printf("started worker %d\n", pid);
+    }
+    int left = 3;
+    while (left &gt; 0) {
+        printf("parent busy...\n");
+        sleep(1);
+        pid_t done;
+        while ((done = waitpid(-1, NULL, WNOHANG)) &gt; 0) {   // collect everyone who finished
+            printf("worker %d finished\n", done);
+            left--;
+        }
+    }
+    return 0;
+}</code></pre>
+<pre><code>started worker 4910
+started worker 4911
+started worker 4912
+parent busy...
+worker 4910 finished
+parent busy...
+worker 4911 finished
+parent busy...
+worker 4912 finished</code></pre>
+<p>ההורה אף פעם לא נחסם בגלל העובדים, ואף עובד לא נשאר זומבי יותר מסיבוב אחד.</p>
+
 <h2 id="errno">ניהול שגיאות</h2>
 <p>כמעט כל קריאת מערכת מחזירה <code>int</code>, ו<span class="keypoint">-1 תמיד מציין כישלון</span>. הסיבה נשמרת במשתנה הגלובלי <code>errno</code>, שמתעדכן אחרי כל קריאת מערכת – לכן בודקים אותו מיד.</p>
+<p>שני ערכים נפוצים בפרק הזה: <code>ECHILD</code> – אין ילדים לחכות להם, ו-<code>EINTR</code> – סיגנל קטע את הקריאה (<a href="#bg">למעלה</a>).</p>
 <pre><code class="language-c">if (fork() == -1) {
     perror("fork");                          // fork: Resource temporarily unavailable
     fprintf(stderr, "%s\n", strerror(errno)); // same text, as a string
