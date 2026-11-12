@@ -494,6 +494,25 @@ fork();
 printf(", good evening");
 fork();
 printf(" and good night\n");</code></pre>
+<details class="sol course-src"><summary>הקוד המלא מהקורס: <code>buffer.c</code></summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(int argc, char *argv[])
+{
+    printf("Good afternoon");
+    fork();
+    printf(", good evening");
+    fork();
+    printf(", and good night\n");
+}</code></pre>
+</details>
+
 <p>באופן מפתיע מודפס <strong>4 פעמים</strong> המשפט המלא – כולל "<bdi dir="ltr">Good afternoon</bdi>" שנכתב לפני כל <code>fork</code>. הסיבה: <code>printf</code> כותב ל<strong>באפר</strong> בזיכרון התהליך, והוא נשלח למסך רק בשורה חדשה, ב-<code>fflush</code> או ביציאה. <code>fork</code> מעתיק את הזיכרון, <span class="keypoint">כולל הבאפר שעוד לא נשלח</span>.</p>
 <div class="tbl"><table>
 <tr><th>גרסה</th><th>מה מודפס</th></tr>
@@ -512,6 +531,36 @@ int rc = fork();
 if (rc &lt; 0)       { fprintf(stderr, "fork failed\n"); exit(1); }
 else if (rc == 0) printf("Child %d of parent %d\n", getpid(), getppid());
 else              printf("Parent %d of child %d\n", getpid(), rc);</code></pre>
+<details class="sol course-src"><summary>הקוד המלא מהקורס: <code>orphan.c</code></summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(int argc, char *argv[])
+{
+    printf("PID: %d\n", getpid());
+    int rc = fork();
+    if (rc &lt; 0) {
+        fprintf(stderr, "fork failed\n");
+        exit(1);
+    }
+    else if (rc == 0) {
+        // child (new process)
+        printf("Child %d of parent %d\n", getpid(), getppid());
+        sleep(1);
+    }
+    else {
+        // parent
+        printf("Parent %d of child %d\n", getpid(), rc);
+    }
+    return 0;
+}</code></pre><p>כאן לילד יש <code>sleep(1)</code>, ולכן בדרך כלל ההורה מסיים קודם והילד הוא שמתייתם. שימו לב גם שאם מפנים את הפלט לקובץ (<code>./orphan &gt; out.txt</code>), השורה <code>PID: …</code> מופיעה <strong>פעמיים</strong>: הפלט לא הולך למסך, אז הוא בבאפר מלא ולא מתרוקן בירידת שורה, והבאפר הועתק ב-<code>fork</code> – בדיוק כמו בדוגמת <a href="#buf">Good afternoon</a>. בדקתי בהרצה.</p>
+</details>
+
 <p>לפעמים הילד מדפיס "<bdi dir="ltr">of parent 1</bdi>". זה קורה כש<strong>ההורה מסתיים לפני הילד.</strong> הילד נעשה <strong>יתום</strong> ומאומץ על ידי <code>init</code> <bdi dir="ltr">(PID 1)</bdi>.</p>
 <figure>
 <svg viewBox="0 0 440 230" width="440" role="img" aria-label="תהליך 5 מסתיים וילדו 7 עובר ל-init">
@@ -566,19 +615,35 @@ else              printf("Parent %d of child %d\n", getpid(), rc);</code></pre>
 </dl></div></div>
 
 <div class="box example"><div class="box-title">דוגמה מהקורס: ההורה הורג את הילד</div><div class="box-body">
-<pre><code class="language-c">int rc = fork();
-if (rc &lt; 0) { fprintf(stderr, "fork failed\n"); exit(1); }
-else if (rc == 0) {                  // child: runs forever
-    while (1) {
-        sleep(1);
-        printf("Child %d active\n", getpid());
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+
+int main(int argc, char *argv[])
+{
+    int rc = fork();
+    if (rc &lt; 0) {
+        fprintf(stderr, "fork failed\n");
+        exit(1);
     }
-}
-else {                               // parent: waits 5 seconds, then kills it
-    printf("Parent %d active\n", getpid());
-    sleep(5);
-    kill(rc, SIGKILL);
-    printf("Parent %d done\n", getpid());
+    else if (rc == 0) {
+        while (1) {
+            sleep(1);
+            printf("Child %d active\n", getpid());
+        }
+    }
+    else {
+        printf("Parent %d active\n", getpid());
+        sleep(5);
+        kill(rc, SIGKILL);
+        printf("Parent %d done\n", getpid());
+    }
+    return 0;
 }</code></pre>
 <p>הפלט בהרצה אמיתית:</p>
 <pre><code>Parent 5576 active
@@ -587,7 +652,7 @@ Child 5577 active
 Child 5577 active
 Child 5577 active
 Parent 5576 done</code></pre>
-<p>ארבע שורות של הילד ולא חמש: הוא מדפיס אחרי כל שנייה, וההורה הורג אותו בסביבות השנייה החמישית, בערך באותו רגע שבו הוא היה מדפיס בפעם החמישית. בהרצה אחרת יכולות לצאת חמש. ההורה לא קורא ל-<code>wait</code>, אז הילד שנהרג נשאר זומבי לרגע, עד שההורה מסיים ו-<code>init</code> אוסף אותו.</p>
+<p>(בהרצה הוספתי <code>setbuf(stdout, NULL)</code> בתחילת <code>main</code>, כדי שהשורות יופיעו מיד גם כשהפלט נשמר לקובץ.) ארבע שורות של הילד ולא חמש: הוא מדפיס אחרי כל שנייה, וההורה הורג אותו בסביבות השנייה החמישית, בערך באותו רגע שבו הוא היה מדפיס בפעם החמישית. בהרצה אחרת יכולות לצאת חמש. ההורה לא קורא ל-<code>wait</code>, אז הילד שנהרג נשאר זומבי לרגע, עד שההורה מסיים ו-<code>init</code> אוסף אותו.</p>
 </div></div>
 
 <div class="fn"><div class="fn-sig">int sigaction(int sig, const struct sigaction *act, struct sigaction *oldact);</div><div class="fn-body"><dl>
@@ -597,21 +662,34 @@ Parent 5576 done</code></pre>
 </dl></div></div>
 
 <div class="box example"><div class="box-title">דוגמה מהקורס: תוכנית ש-<bdi dir="ltr">Ctrl+C</bdi> לא עוצר</div><div class="box-body">
-<pre><code class="language-c">void sigint_handler(int sig) {
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+
+void sigint_handler(int sig) {
     printf("SIGINT ignored: %d\n", getpid());
 }
 
-int main() {
+int main(int argc, char *argv[])
+{
     struct sigaction act;
-    sigemptyset(&amp;act.sa_mask);       // block no other signals while the handler runs
+    sigemptyset(&amp;act.sa_mask);
     act.sa_handler = sigint_handler;
     act.sa_flags = 0;
-    if (sigaction(SIGINT, &amp;act, NULL) == -1) {
+
+    if (sigaction (SIGINT, &amp;act, NULL) == -1) {
         fprintf(stderr, "sigaction failed\n");
         exit(1);
     }
+
     printf("%d ignoring SIGINT\n", getpid());
     while (1);
+    return 0;
 }</code></pre>
 <p>בהרצה אמיתית, עם שתי לחיצות <bdi dir="ltr">Ctrl+C</bdi>:</p>
 <pre><code>5622 ignoring SIGINT
@@ -667,24 +745,39 @@ waitpid(fg) returned 4953</code></pre>
 
 <h3>מוקש 2: סיגנל קוטע קריאה חוסמת</h3>
 <p>הדרך הראשונה לאסוף היא <bdi dir="ltr">handler</bdi> ל-<bdi dir="ltr">SIGCHLD</bdi>, כמו בדוגמה למעלה. אבל כשמגיע סיגנל ויש לו <bdi dir="ltr">handler</bdi>, קריאת מערכת שהתהליך חסום בה <strong>נקטעת</strong>: אחרי שה-<bdi dir="ltr">handler</bdi> רץ, היא חוזרת מוקדם במקום להמשיך לחכות. רואים את זה בדוגמה מהקורס:</p>
-<pre><code class="language-c">void sigchld_handler(int signal) {
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/wait.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+
+void sigchld_handler(int signal) {
     int rc = wait(NULL);
     printf("%d: Child %d terminated\n", getpid(), rc);
 }
-int main() {
+int main(int argc, char *argv[])
+{
     struct sigaction act;
     sigemptyset(&amp;act.sa_mask);
-    act.sa_handler = sigchld_handler;
+    act.sa_handler = sigchld_handler; //or: act.sa_handler = SIG_IGN;
     act.sa_flags = 0;
-    if (sigaction(SIGCHLD, &amp;act, NULL) == -1) { fprintf(stderr, "sigaction failed\n"); exit(1); }
+
+    if (sigaction(SIGCHLD, &amp;act, NULL) == -1) {
+        fprintf(stderr, "sigaction failed\n");
+        exit(1);
+    }
 
     while (1) {
-        if (!fork()) {        // child: sleeps 1 second and ends
+        if (!fork()) {
             sleep(1);
             break;
         }
         int slp = 5;
-        while (slp) {         // parent: wants to sleep 5 whole seconds
+        while (slp) {
             slp = sleep(5);
         }
     }
@@ -820,6 +913,86 @@ int main(void) {
 [parent] created child 3188
 [parent] SIGCHLD mode: reap zombies</code></pre>
 <p>במצב "<bdi dir="ltr">default</bdi>" ילד שמת נשאר זומבי ולא נוצר ילד חדש. הזומבי ייאסף בפעם הבאה שה-<bdi dir="ltr">handler</bdi> ירוץ במצב איסוף, כי <code>waitpid(-1, ...)</code> אוסף כל ילד. הערה: הפונקציה <code>printf</code> אינה בטוחה לשימוש בתוך <bdi dir="ltr">handler</bdi> (היא לא <bdi dir="ltr">async-signal-safe</bdi>), אבל בתרגיל הזה מקובל להשתמש בה לצורך הדגמה.</p>
+</details>
+<details class="sol course-src"><summary>הפתרון שמופיע בקורס</summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/wait.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;time.h&gt;
+
+pid_t last_child = 0;
+struct sigaction act1;
+struct sigaction act2;
+
+void create_child() {
+    last_child = fork();
+    if (!last_child) {
+        // child process
+        printf("%d [%d] Child running\n", getpid(), getppid());
+        sleep(5);
+        exit(0);
+    }
+}
+
+void signal_handler(int signal) {
+    if (signal == SIGINT) {
+        if (last_child) {
+            printf("%d stopping child %d\n", getpid(), last_child);
+            kill(last_child, SIGKILL);
+            last_child = 0;
+        }
+        else {
+            create_child();
+        }
+        struct sigaction tmp = act1;
+        act1 = act2;
+        act2 = act1;
+        if (act1.sa_handler == signal_handler)
+            printf("%d handling SIGCHLD\n", getpid());
+        else
+            printf("%d default SIGCHLD\n", getpid());
+
+        if (sigaction(SIGCHLD, &amp;act1, &amp;act2) == -1) {
+            fprintf(stderr, "sigaction SIGCHLD failed\n");
+            exit(1);
+        }
+    }
+    else if (signal == SIGCHLD) {
+        int rc = wait(NULL);
+        printf("%d: Child %d terminated\n", getpid(), rc);
+        last_child = 0;
+        create_child();
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    sigemptyset(&amp;act1.sa_mask);
+    act1.sa_handler = signal_handler; //or: act.sa_handler = SIG_IGN;
+    act1.sa_flags = 0;
+
+    if (sigaction(SIGCHLD, &amp;act1, &amp;act2) == -1) {
+        fprintf(stderr, "sigaction SIGCHLD failed\n");
+        exit(1);
+    }
+    if (sigaction(SIGINT, &amp;act1, NULL) == -1) {
+        fprintf(stderr, "sigaction SIGINIT failed\n");
+        exit(1);
+    }
+
+    while (1) {
+        sleep(1);
+    }
+    return 0;
+}</code></pre>
+<p>שני דברים שכדאי לשים לב אליהם בפתרון הזה. ההחלפה בין <code>act1</code> ל-<code>act2</code> נעשית דרך הפרמטר השלישי של <code>sigaction</code>: הקריאה מתקינה את <code>act1</code> וכותבת לתוך <code>act2</code> את הטיפול שהיה קודם, כך שבפעם הבאה הם מתחלפים שוב. בגלל זה השורות שלפניה לא באמת נחוצות: <code>tmp</code> לא בשימוש (כנראה הכוונה הייתה <code>act2 = tmp</code>), ו-<code>gcc -Wall</code> מזהיר עליו: <code>unused variable 'tmp'</code>. התוכנית עובדת בכל זאת.</p>
+<p>וב-<bdi dir="ltr">handler</bdi> של <bdi dir="ltr">SIGCHLD</bdi> יש <code>wait</code> רגיל ולא לולאה עם <code>WNOHANG</code>. כאן זה מספיק, כי יש לכל היותר ילד אחד בכל רגע.</p>
 </details>
 </div></div>
 

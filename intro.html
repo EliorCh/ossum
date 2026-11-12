@@ -424,6 +424,41 @@ code.gloss{border-bottom-style:dashed}
         printf("%s\n", argv[1]);
     }
 }</code></pre>
+<details class="sol course-src"><summary>הקוד המלא מהקורס: <code>cpu.c</code></summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+double GetTime() {
+    struct timeval t;
+    int rc = gettimeofday(&amp;t, NULL);
+    assert(rc == 0);
+    return (double) t.tv_sec + (double) t.tv_usec/1e6;
+}
+
+void Spin(int howlong) {
+    double t = GetTime();
+    while ((GetTime() - t) &lt; (double) howlong)
+    ; // do nothing in loop
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2) {
+        fprintf(stderr, "usage: cpu &lt;string&gt;\n");
+        exit(1);
+    }
+    while (1) {
+        Spin(1);
+        printf("%s\n", argv[1]);
+    }
+    return 0;
+}</code></pre>
+</details>
+
 <p>מריצים ארבעה עותקים ברקע עם מעבד אחד בלבד:</p>
 <pre><code class="language-bash">prompt$ ./cpu A &amp; ./cpu B &amp; ./cpu C &amp; ./cpu D &amp;
 A
@@ -442,6 +477,48 @@ B ...</code></pre>
 printf("(%d) addr pointed to by p: %p\n", getpid(), p);
 *p = 0;
 while (1) { Spin(1); *p = *p + 1; printf("(%d) value of p: %d\n", getpid(), *p); }</code></pre>
+<details class="sol course-src"><summary>הקוד המלא מהקורס: <code>mem.c</code></summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+double GetTime() {
+    struct timeval t;
+    int rc = gettimeofday(&amp;t, NULL);
+    assert(rc == 0);
+    return (double) t.tv_sec + (double) t.tv_usec/1e6;
+}
+
+
+void Spin(int howlong) {
+    double t = GetTime();
+    while ((GetTime() - t) &lt; (double) howlong)
+    ; // do nothing in loop
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) { 
+        fprintf(stderr, "usage: mem &lt;value&gt;\n"); 
+        exit(1); 
+    } 
+    
+    int *p; 
+    p = malloc(sizeof(int));
+    assert(p != NULL);
+    printf("(%d) addr pointed to by p: %p\n", (int) getpid(), p);
+    *p = atoi(argv[1]); // assign value to addr stored in p
+    while (1) {
+        Spin(1);
+        *p = *p + 1;
+        printf("(%d) value of p: %d\n", getpid(), *p);
+    }
+    return 0;
+}</code></pre>
+</details>
+
 <pre><code class="language-bash">prompt$ ./mem 0 &amp; ./mem 100 &amp;
 (64) addr pointed to by p: 0x80052a0
 (65) addr pointed to by p: 0x80052a0
@@ -460,6 +537,63 @@ void *worker(void *arg) {
     for (int i = 0; i &lt; loops; i++) counter++;
     return NULL;
 }</code></pre>
+<details class="sol course-src"><summary>הקוד המלא מהקורס: <code>threads.c</code></summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#include &lt;pthread.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;sched.h&gt;
+
+#define Pthread_create(thread, attr, start_routine, arg) assert(pthread_create(thread, attr, start_routine, arg) == 0);
+#define Pthread_join(thread, value_ptr)                  assert(pthread_join(thread, value_ptr) == 0);
+
+double GetTime() {
+    struct timeval t;
+    int rc = gettimeofday(&amp;t, NULL);
+    assert(rc == 0);
+    return (double) t.tv_sec + (double) t.tv_usec/1e6;
+}
+
+
+void Spin(int howlong) {
+    double t = GetTime();
+    while ((GetTime() - t) &lt; (double) howlong)
+    ; // do nothing in loop
+}
+
+volatile int counter = 0; 
+int loops;
+
+void *worker(void *arg) {
+    int i;
+    for (i = 0; i &lt; loops; i++) {
+        counter++;
+    }
+    return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) { 
+    fprintf(stderr, "usage: threads &lt;loops&gt;\n"); 
+    exit(1); 
+    } 
+    loops = atoi(argv[1]);
+    pthread_t p1, p2;
+    printf("Initial value : %d\n", counter);
+    Pthread_create(&amp;p1, NULL, worker, NULL); 
+    Pthread_create(&amp;p2, NULL, worker, NULL);
+    Pthread_join(p1, NULL);
+    Pthread_join(p2, NULL);
+    printf("Final value   : %d\n", counter);
+    return 0;
+}</code></pre><p>מקמפלים עם <code>-pthread</code>: <code>gcc threads.c -Wall -o threads -pthread</code>. בהרצה שלי עם <code>100000</code> התוצאה הייתה <code>Final value : 133841</code> ולא 200000.</p>
+</details>
+
 <div class="tbl"><table>
 <tr><th>קלט</th><th>תוצאה צפויה</th><th>תוצאה בפועל</th></tr>
 <tr><td class="num">loops = 100</td><td class="num">200</td><td class="num">200</td></tr>
@@ -483,6 +617,34 @@ void *worker(void *arg) {
 char buffer[20] = "hello world\n";
 int rc = write(fd, buffer, strlen(buffer));            // write
 close(fd);                                             // close</code></pre>
+<details class="sol course-src"><summary>הקוד המלא מהקורס: <code>io.c</code></summary>
+<pre><code class="language-c">#include &lt;sys/time.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2) {
+        fprintf(stderr, "usage: io &lt;file&gt;\n");
+        exit(1);
+    }
+    
+    int fd = open(argv[1], O_WRONLY|O_CREAT, S_IRWXU);
+    assert(fd &gt;= 0);
+    char buffer[20] = { "hello world\n" };
+    int rc = write(fd, buffer, strlen(buffer));
+    assert(rc == strlen(buffer));
+    close(fd);
+    return 0;
+}</code></pre>
+</details>
+
 <p>כתיבה לדיסק דורשת להחליט איפה יישב המידע ולשלוח בקשות <bdi dir="ltr">I/O</bdi> להתקן – וזה איטי. לכן מערכת ההפעלה בדרך כלל <span class="keypoint">מעכבת כתיבות</span> בתקווה לאגד כמה יחד.</p>
 
 <h2 id="kernel">קרנל, אירועים וקריאות מערכת</h2>

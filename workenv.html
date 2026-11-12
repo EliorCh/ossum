@@ -673,6 +673,18 @@ ls -la ~/"$1" &amp;&amp; \
 ~/"$1"/hello &gt; ~/output.out &amp;&amp; rm -r ~/"$1"</code></pre>
 <p>הנקודה החשובה היא <code>&amp;&amp;</code> לפני <code>rm -r</code>: המחיקה קורית רק אם התוכנית החזירה 0. בדקתי את הסקריפט בהרצה אמיתית, עם תיקייה מדומה שהחליפה את <code>/vagrant</code>. התוצאה: <code>hello</code> נוצר עם <code>-rwx------</code>, הפלט נכתב ל-<code>~/output.out</code>, והתיקייה נמחקה.</p>
 </details>
+<details class="sol course-src"><summary>הפתרון שמופיע בקורס: <code>ex01.sh</code></summary>
+<pre><code class="language-bash">#!/bin/bash
+
+mkdir ~/$1
+cp /vagrant/test.c ~/$1/
+gcc -Wall ~/$1/test.c -o ~/$1/test
+chmod u+rwx ~/$1/test
+chmod o-rwx ~/$1/test
+ls -la ~/$1
+~/$1/test 5 &gt; ~/test.out &amp;&amp; rm -rf ~/$1</code></pre>
+<p>ההבדלים מהפתרון שלמעלה: כאן כל צעד בשורה נפרדת, ורק המחיקה בסוף תלויה בהצלחה (<code>&amp;&amp;</code>), כלומר צעד שנכשל באמצע לא עוצר את השאר. ההרשאות נקבעות בשתי פקודות: הוספה לבעלים והסרה מ-<code>others</code>, בלי לגעת בקבוצה – בעוד ש-<code>chmod 700</code> מסיר גם את הרשאות הקבוצה. ו-<code>$1</code> כתוב בלי מרכאות, אז שם תיקייה עם רווח יישבר (<a href="#scripts">מרכאות</a>).</p>
+</details>
 </div></div>
 
 <h2 id="check">בדיקה מול פתרון לדוגמה והגשה</h2>
