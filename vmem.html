@@ -534,6 +534,7 @@ int main(int argc, char *argv[]) {
 <figcaption>מיפוי כל בית בנפרד אינו מעשי – לכן ממפים יחידות גדולות יותר</figcaption>
 </figure>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 5 (13.11)</div><div class="box-body"><ul><li>מבחינים בין <bdi dir="ltr">kernel space</bdi>, הזיכרון של מערכת ההפעלה, לבין <bdi dir="ltr">user space</bdi>, הזיכרון של התהליכים. החלוקה לא קבועה: הזיכרון כל הזמן משתנה.</li><li>במערכת של 32 ביט לכל תהליך יש מרחב כתובות של 4GB, אבל בפועל תהליכים משתמשים בחלק זעיר ממנו. רוב הכתובות לא בשימוש, וזה מה שמכתיב את הפתרונות בהמשך.</li><li>התרגום קורה בחומרה בכל גישה לזיכרון, ולכן הוא חייב להיות פשוט מאוד.</li><li>להבדיל בין המשתנה לכתובת: <code>z</code> הוא משתנה מקומי שמחזיק כתובת, ו-<code>*z</code> הוא הערך שיושב בכתובת הזאת.</li></ul></div></div>
 <h2 id="vm-bb">Base and Bounds</h2>
 <p>הרעיון הפשוט ביותר: מנקודת המבט של התהליך, מרחב הכתובות מתחיל ב-0. ב-<bdi dir="ltr">MMU</bdi> יש שני אוגרים לכל תהליך רץ – <strong>base</strong> ו-<strong>bounds</strong> – ובכל <bdi dir="ltr">context switch</bdi> מערכת ההפעלה טוענת את הערכים של התהליך הבא.</p>
 <div class="box formula"><div class="box-title">התרגום</div><div class="box-body">
@@ -641,6 +642,7 @@ int main(int argc, char *argv[]) {
 </table></div>
 <p>לדוגמה: דף 2 של <bdi dir="ltr">P1</bdi> נמצא במסגרת 5, ודף 0 של <bdi dir="ltr">P3</bdi> נמצא במסגרת 8.</p>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 5 (13.11)</div><div class="box-body"><ul><li>כלל לכל הקורס: מערכת ההפעלה אף פעם לא משכפלת קוד. כמה תהליכים שמריצים את אותה תוכנית ממופים לאותן מסגרות של הקוד.</li><li>הרשאות לפי אזור: בקוד מותר לקרוא ולהריץ, אבל לא לכתוב. בשאר האזורים מותר לקרוא ולכתוב, אבל לא להריץ.</li></ul></div></div>
 <h2 id="vm-trans">תרגום כתובת</h2>
 <div class="box theory"><div class="box-title">השיטה – תמיד אותם ארבעה צעדים</div><div class="box-body">
 <ol>

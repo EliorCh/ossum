@@ -371,6 +371,7 @@ code.gloss{border-bottom-style:dashed}
 </div></div>
 <p>הנחות התחלתיות: מעבד אחד, וזמן הריצה של כל עבודה <strong>ידוע מראש</strong>. בהמשך נוריד את ההנחה הזאת.</p>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 4 (6.11)</div><div class="box-body"><ul><li><bdi dir="ltr">Turnaround</bdi> נמדד מרגע ההגעה, לא מהרגע שהעבודה התחילה לרוץ. טעות נפוצה: עבודה B הגיעה בזמן 10 והסתיימה בזמן 70. ה-<bdi dir="ltr">turnaround</bdi> שלה הוא 60, לא 70.</li><li>האלגוריתם מחליט בכל רגע רק לפי מה שכבר הגיע. בזמן 0 הוא לא יודע שעבודות נוספות עומדות להגיע.</li><li><bdi dir="ltr">FIFO</bdi> ו-<bdi dir="ltr">FCFS</bdi> הם שני שמות לאותו אלגוריתם, ובמבחני עבר מופיעים שניהם.</li><li>במחשב אינטראקטיבי זמן התגובה חשוב יותר מהזמן הכולל: חשוב שהאות תופיע מיד כשמקלידים. לכן <bdi dir="ltr">Round Robin</bdi>, שגם לא צריך לדעת כמה זמן כל עבודה תרוץ.</li></ul></div></div>
 <h2 id="fcfs">FCFS, SJF, SRTF</h2>
 <div class="tbl"><table>
 <tr><th>אלגוריתם</th><th>כלל</th><th>קוטע (preemptive)</th><th>נכשל כש...</th></tr>
@@ -446,6 +447,7 @@ code.gloss{border-bottom-style:dashed}
 </ol>
 </div></div>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 4 (6.11)</div><div class="box-body"><ul><li>הכלל הראשון תמיד נשאר: מריצים את העדיפות הגבוהה ביותר. אם עבודה בעדיפות גבוהה חוזרת להיות זמינה (למשל כשה-I/O שלה הסתיים), היא עוצרת את העבודה בעדיפות הנמוכה, גם באמצע ה-quantum שלה.</li><li>בלי <bdi dir="ltr">priority boost</bdi>, עדיפות יכולה רק לרדת. ב-<bdi dir="ltr">boost</bdi> מעלים את כל העבודות לתור העליון, ובנוסף מאפסים לכל אחת את הזמן שהיא כבר צברה ברמה.</li></ul></div></div>
 <h2 id="sim">סימולטור תזמון</h2>
 <p>הכניסו עבודות (זמן הגעה ואורך), בחרו אלגוריתם וקבלו <bdi dir="ltr">Gantt</bdi> ומדדים. במקרה של שוויון נבחרת העבודה שהגיעה קודם, ואז לפי סדר השמות. ב-<bdi dir="ltr">RR</bdi> עבודה שהגיעה נכנסת לתור לפני העבודה שזה עתה נקטעה.</p>
 <div class="sim">

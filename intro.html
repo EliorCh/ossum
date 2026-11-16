@@ -664,6 +664,7 @@ int main(int argc, char *argv[])
 </table></div>
 <p><strong>קריאת מערכת <bdi dir="ltr">(system call)</bdi>:</strong> תוכנית משתמש לא יכולה פשוט "לקפוץ" לקוד הקרנל. כשהיא רוצה לפתוח קובץ, להקצות זיכרון או לקרוא מהמקלדת, היא מבצעת <bdi dir="ltr">trap</bdi> מכוון – והמעבד עובר לקרנל באופן מבוקר.</p>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 1 (22.10)</div><div class="box-body"><ul><li>המילה „חריגה” (<bdi dir="ltr">Exception</bdi>) מטעה: היא לא רק שגיאה. גם מעבר מתוכנן לקרנל, כמו קריאת מערכת, עובר דרך אותו מנגנון. בקורס קוראים לו <bdi dir="ltr">trap</bdi>.</li><li><bdi dir="ltr">Context switch</bdi> (החלפת הקשר) הוא „מושג מאוד חשוב”, ויחזור לאורך כל הקורס: מערכת ההפעלה עוצרת תהליך אחרי פרק זמן ומעבירה את המעבד לתהליך אחר.</li><li>כתובת בזיכרון היא פשוט אינדקס במערך גדול של תאים.</li></ul></div></div>
 <h2 id="hist">קצת היסטוריה</h2>
 <div class="tbl"><table>
 <tr><th>תקופה</th><th>מה היה</th><th>מושג מפתח</th></tr>

@@ -432,6 +432,7 @@ printf("hello there\n");</code></pre>
 <p>בדקתי בהרצה: 6 שורות.</p>
 </details></div></div>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · מעבדה 2 (6.11)</div><div class="box-body"><ul><li>בן שנוצר ב-<code>fork</code> מאוחר מקבל עותק של כל המשתנים של ההורה, כולל ערכי ההחזרה של קריאות <code>fork</code> קודמות. לכן משתנה שאצל ההורה מחזיק ערך חיובי מ-<code>fork</code> קודם, חיובי גם אצל הבן, והבן ייכנס לענף של „ההורה”. „זה משהו שיכול מאוד לבלבל”.</li><li>בשאלות עם <code>&amp;&amp;</code> ו-<code>||</code>: אם האופרנד הראשון כבר קובע את התוצאה, השני לא מחושב, וה-<code>fork</code> שבתוכו לא מתבצע.</li><li>בקוד על דף (מבחן או בוחן) מניחים שהכל עובד כצפוי: כל קריאות המערכת מצליחות.</li></ul></div></div>
 <h2 id="examq">שאלות מבחינות</h2>
 
 <div class="box exercise"><div class="box-title"><bdi dir="ltr">SB20</bdi> · מה יכול להיות הפלט?</div><div class="box-body">
@@ -594,6 +595,7 @@ int main(int argc, char *argv[])
 </div></div>
 
 <div class="trace" data-trace="zombie"></div>
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · מעבדה 2 (6.11)</div><div class="box-body"><ul><li>יתום מאומץ על ידי <code>init</code>, ולא על ידי „הסבא”.</li></ul></div></div>
 <h2 id="signals">סיגנלים</h2>
 <p><strong>סיגנל</strong> הוא מנגנון להעברת הודעות לתהליכים – מתהליך לתהליך, או ממערכת ההפעלה לתהליך. נקראים גם "פסיקות תוכנה", אבל לא להתבלבל:</p>
 <div class="tbl"><table>
@@ -710,6 +712,7 @@ sigaction(SIGCHLD, &amp;sa, NULL);</code></pre>
 <p>שני פרטים חשובים: <code>WNOHANG</code> כדי שה-<bdi dir="ltr">handler</bdi> לא ייחסם, ולולאה – כי סיגנלים מאותו סוג לא נספרים. אם שני ילדים מתו כמעט יחד, ייתכן שיגיע <bdi dir="ltr">SIGCHLD</bdi> אחד בלבד.</p>
 </div></div>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · מעבדה 2 (6.11)</div><div class="box-body"><ul><li><code>kill</code> – „השם שלה מאוד מבלבל”: היא שולחת סיגנל, ולא בהכרח הורגת. בפקודה <code>kill</code> בלי מספר נשלח <bdi dir="ltr">SIGTERM</bdi>, שהתהליך יכול לתפוס או להתעלם ממנו. <code>kill -9</code> שולח <bdi dir="ltr">SIGKILL</bdi>, שאי אפשר לתפוס.</li><li><bdi dir="ltr">SIGINT</bdi> (Ctrl+C) הוא מלשון „להפריע”: בקשה מהתהליך לעצור. אל תתבלבלו עם פסיקת חומרה.</li><li>ברישום <bdi dir="ltr">handler</bdi> יש שתי שורות חשובות, וכל השאר מועתק כמו שהוא: איזו פונקציה תיקרא (השדה <code>sa_handler</code>), ועל איזה סיגנל (הקריאה ל-<code>sigaction</code>).</li></ul></div></div>
 <h2 id="bg">חזית ורקע: איסוף זומבים בלי לחכות</h2>
 <p>ב-<bdi dir="ltr">bash</bdi>, <code>sleep 20</code> תוקע את הטרמינל ל-20 שניות, ו-<code>sleep 20 &amp;</code> מחזיר את ה-<bdi dir="ltr">prompt</bdi> מיד. ההבדל הוא רק בשאלה אם ה-<bdi dir="ltr">shell</bdi> מחכה לילד:</p>
 <div class="tbl"><table>

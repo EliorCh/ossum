@@ -567,6 +567,7 @@ r2: FALSE</code></pre>
 <div class="trace" data-trace="ex22bb"></div>
 </details></div></div>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · מעבדה 3 (13.11)</div><div class="box-body"><ul><li>בשאלה שבה התוכנית מדפיסה את ה-PID ואז עושה <code>exec</code> לעצמה, הפלט הוא אותו PID שוב ושוב. היו בה שתי טעויות נפוצות: לחשוב שה-PID עולה (300, 301, 302…), כי „<code>exec</code> לא יוצר תהליך”; ולחשוב שהתוכנית תקרוס כמו רקורסיה, כי <code>exec</code> דורס את הזיכרון ולא מוסיף עליו.</li><li>בגרסה ההפוכה (קודם <code>fork</code>, והבן עושה <code>exec</code> לפני ה-<code>printf</code>) לא מודפס כלום. השאלה הופיעה בשלושה מועדים שונים, והמרצה עצמו טעה בה בשיעור: „אל תניחו ישר כמו שאני עשיתי”.</li></ul></div></div>
 <h2 id="r-files">פעולות על קבצים</h2>
 <p>ברמת מערכת ההפעלה קובץ פתוח מזוהה על ידי מספר שלם – <strong>file descriptor</strong> (<bdi dir="ltr">FD</bdi>). זה המקביל של <code>FILE*</code> בספריית <bdi dir="ltr">C</bdi>, אבל ברמה נמוכה יותר.</p>
 <div class="fn"><div class="fn-sig">int open(const char* pathname, int flags, mode_t mode);</div><div class="fn-body"><dl>
@@ -716,6 +717,7 @@ while (wait(NULL) > 0);</code></pre>
 <p><code>wc</code> מסיים רק כשהוא מקבל <bdi dir="ltr">EOF</bdi>, וזה קורה רק כש<strong>כל</strong> הצדדים הכותבים של הצינור סגורים – גם זה שאצל ההורה. מחקתי מהקוד למעלה את השורה <code>close(fd[0]); close(fd[1]);</code> של ההורה והרצתי: התוכנית <strong>נתקעה</strong> ונעצרה רק אחרי <bdi dir="ltr">timeout</bdi> של שתי שניות.</p>
 </div></div>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · מעבדה 3 (13.11)</div><div class="box-body"><ul><li>סוגרים כל צד שלא משתמשים בו. אם צד הכתיבה נשאר פתוח, <code>read</code> לא יקבל אף פעם <bdi dir="ltr">EOF</bdi>, והתוכנית תיתקע.</li><li><code>pipe</code> הוא חד-כיווני. אחרי <code>fork</code> יש ארבעה קצוות, שניים בכל תהליך. לתקשורת לשני הכיוונים צריך שני <code>pipe</code>-ים, וכל תהליך סוגר את שני הקצוות שהוא לא צריך.</li><li>קובץ <bdi dir="ltr">FIFO</bdi> (<code>mkfifo</code>) אי אפשר ליצור בתיקייה המשותפת עם Windows במכונה הווירטואלית. עובדים בתיקייה של לינוקס.</li></ul></div></div>
 <h2 id="r-ex">תרגיל: הפניה ושרשור</h2>
 <div class="box exercise"><div class="box-title">תרגול נוסף (הרצאה + תרגול 3)</div><div class="box-body">
 <p>כתבו תוכנית ש:</p>

@@ -460,6 +460,7 @@ code.gloss{border-bottom-style:dashed}
 </figure>
 <p><span class="keypoint">התעלול:</span> הקרנל שומר את האוגרים של <bdi dir="ltr">A</bdi> ב-<bdi dir="ltr">PCB</bdi> שלו וטוען ל-<bdi dir="ltr">kernel stack</bdi> את אלה של <bdi dir="ltr">B</bdi>. לכן כשהחומרה מבצעת <bdi dir="ltr">return-from-trap</bdi> ומשחזרת אוגרים, היא "חוזרת" לתהליך <bdi dir="ltr">B</bdi> ולא ל-<bdi dir="ltr">A</bdi>.</p>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 2 (23.10)</div><div class="box-body"><ul><li>המעבד מריץ פקודות רק מהזיכרון הראשי, אף פעם לא ישירות מהדיסק. לכן כדי להריץ תוכנית, מערכת ההפעלה קודם מעתיקה אותה לזיכרון.</li><li>פסיקת טיימר לא מחייבת החלפה. היא רק מחזירה את השליטה לקרנל, והקרנל יכול להחליט להמשיך עם אותו תהליך.</li><li>משהו ש„מתבלבלים בו הרבה”: ההקשר ששמור ב-PCB של תהליך הוא המצב שלו מהפעם האחרונה שהוצא מהמעבד, לא המצב הנוכחי. בזמן שהתהליך רץ, הערכים העדכניים נמצאים באוגרים של המעבד.</li></ul></div></div>
 <h2 id="states">מחזור החיים של תהליך</h2>
 <figure>
 <svg viewBox="0 0 600 260" width="600" role="img" aria-label="דיאגרמת מצבי תהליך">
@@ -615,6 +616,7 @@ else if (rc == 0) {                      // child
 <p>כי אפשר להריץ קוד <strong>אחרי <bdi dir="ltr">fork</bdi> ולפני <bdi dir="ltr">exec</bdi></strong> ולשנות את הסביבה של התוכנית החדשה – למשל לסגור את <code>stdout</code> ולפתוח במקומו קובץ. כך ה-<bdi dir="ltr">shell</bdi> מממש <code>&gt;</code> ו-<code>|</code> בלי שהתוכנית המורצת תדע בכלל.</p>
 </div></div>
 
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 3 (5.11)</div><div class="box-body"><ul><li>ל-<code>fork</code> שלושה שלבים: מוצאים PID פנוי; משכפלים את התהליך כמו שהוא, כולל הנקודה שבה הוא נמצא בריצה; וכותבים ערך החזרה שונה לכל אחד מהשניים.</li><li>השכפול הוא עותק: אם הבן מגדיל את <code>x</code> אחרי ה-<code>fork</code>, אצל ההורה <code>x</code> לא משתנה.</li><li>סדר ההדפסות בין הורה לבן לא מובטח. גם אם אחד מהם עושה <code>sleep</code> ולכן „בדרך כלל” מאחר, „לא לסמוך על זה אף פעם”.</li><li><code>exec</code> לא יוצר תהליך חדש: „חשוב, חשוב, חשוב – תמיד מתבלבלים”. אותו PID ממשיך לרוץ עם קוד אחר. הדפוס הנפוץ הוא <code>fork</code> ואחריו <code>exec</code> בבן.</li><li>על <code>fork</code>, <code>wait</code> ו-<code>exec</code>: „גם אם אתם חושבים שאתם מבינים אותן, כנראה יש פינות שהן לא מאה אחוז”. ההמלצה שלו: לתרגל שאלות ממבחני עבר, ולא לחכות למבחן.</li></ul></div></div>
 <h2 id="syscalls">קריאת מערכת או פונקציית ספרייה?</h2>
 <p>כשתרגיל דורש "קריאות מערכת בלבד", צריך לדעת להבדיל. <strong>קריאת מערכת</strong> עוברת לקרנל (<bdi dir="ltr">trap</bdi>), ו<strong>פונקציית ספרייה</strong> היא קוד רגיל של <bdi dir="ltr">C</bdi> שרץ בתוך התהליך, ולפעמים קוראת בעצמה לקריאת מערכת (<code>printf</code> בסוף קורא ל-<code>write</code>). הדרך לבדוק: ה-<code>man</code>. סעיף 2 הוא קריאות מערכת, וסעיף 3 פונקציות ספרייה: <code>man 2 fork</code>, <code>man 3 printf</code>.</p>
 <div class="tbl"><table>
