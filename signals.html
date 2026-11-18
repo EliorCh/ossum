@@ -527,6 +527,35 @@ int main(int argc, char *argv[])
 </div></div>
 
 <h2 id="zombie">יתומים וזומבים</h2>
+<div class="box theory" id="zombie-def"><div class="box-title">מה זה זומבי, איך הוא נוצר ואיך נמנעים ממנו</div><div class="box-body">
+<p><strong>ההגדרה:</strong> זומבי הוא תהליך שכבר הסתיים, אבל ההורה שלו עוד לא אסף אותו בעזרת <code>wait</code> או <code>waitpid</code>.</p>
+<p><strong>מה נשאר ממנו:</strong> כשתהליך מסתיים, הקרנל משחרר את הזיכרון שלו וסוגר את הקבצים הפתוחים. נשארת רק הרשומה שלו בטבלת התהליכים: ה-<bdi dir="ltr">PID</bdi>, קוד היציאה ונתונים על הריצה. הרשומה נשמרת כי ההורה עשוי לבקש אותם: בדיוק את זה <code>wait</code> מחזיר לו.</p>
+<p><strong>איך זה קורה:</strong> כל ילד שמסתיים הוא זומבי, לפחות לרגע: מהרגע שהוא מסתיים ועד שההורה קורא ל-<code>wait</code>. הבעיה מתחילה כשההורה ממשיך לרוץ ולא אוסף אף פעם. הזומבים מצטברים, וכל אחד מחזיק רשומה ו-<bdi dir="ltr">PID</bdi>, שהמספר שלהם מוגבל.</p>
+<p><strong>מתי הוא נעלם:</strong></p>
+<ul>
+<li>ההורה קורא ל-<code>wait</code> או ל-<code>waitpid</code>, ומקבל את קוד היציאה. רק אז הרשומה נמחקת. לזה קוראים „איסוף” (<bdi dir="ltr">reaping</bdi>).</li>
+<li>ההורה מסתיים. הזומבי מתייתם, <code>init</code> מאמץ אותו, ו-<code>init</code> אוסף את כל הילדים שלו.</li>
+</ul>
+<p><strong>אי אפשר להרוג זומבי.</strong> הוא כבר מת, ולכן גם <code>kill -9</code> לא עושה לו כלום. הדרך להיפטר ממנו היא לגרום להורה לאסוף אותו, או לסיים את ההורה.</p>
+<p>בדקתי בהרצה: ילד שהסתיים בלי שההורה קרא ל-<code>wait</code> נמצא במצב <bdi dir="ltr">Z</bdi>, ו-<code>ps</code> מציג אותו כ-<bdi dir="ltr">&lt;defunct&gt;</bdi>. אחרי <code>kill -9</code> הוא עדיין במצב <bdi dir="ltr">Z</bdi>. אחרי <code>waitpid</code> הרשומה שלו נעלמה, וההורה קיבל את קוד היציאה שלו.</p>
+<div class="tbl"><table>
+<tr><th></th><th>זומבי</th><th>יתום</th></tr>
+<tr><td>מי מת</td><td>הילד, וההורה עוד חי</td><td>ההורה, והילד עוד חי</td></tr>
+<tr><td>מה הוא</td><td>תהליך מת שנשארה ממנו רק רשומה</td><td>תהליך חי שרץ כרגיל</td></tr>
+<tr><td>מה קורה לו</td><td>נשאר עד שההורה אוסף אותו</td><td><code>init</code> מאמץ אותו, ויאסוף אותו כשיסתיים</td></tr>
+</table></div>
+<p><strong>איך נמנעים מזומבים:</strong> אוספים כל ילד. יש לזה ארבע דרכים, וכולן מפורטות בהמשך הפרק:</p>
+<div class="tbl"><table>
+<tr><th>דרך</th><th>מה כותבים</th><th>מתי מתאים</th></tr>
+<tr><td>לחכות לילד</td><td><code>wait(NULL)</code> או <code>waitpid(pid, NULL, 0)</code></td><td>כשההורה ממילא צריך לחכות שהילד יסיים (ילד „בחזית”)</td></tr>
+<tr><td>לבדוק בלי לחכות</td><td><code>waitpid(-1, NULL, WNOHANG)</code> בלולאה, בכל סיבוב של הלולאה הראשית</td><td>הורה שעסוק בעבודה משלו ומריץ ילדים ברקע</td></tr>
+<tr><td><bdi dir="ltr">handler</bdi> ל-<bdi dir="ltr">SIGCHLD</bdi></td><td>ב-<bdi dir="ltr">handler</bdi>: <code>waitpid(-1, NULL, WNOHANG)</code> בלולאה</td><td>איסוף מיד כשילד מסתיים. בלולאה, כי כמה ילדים שמסתיימים יחד יכולים להגיע כסיגנל אחד</td></tr>
+<tr><td>להתעלם מ-<bdi dir="ltr">SIGCHLD</bdi></td><td><code>act.sa_handler = SIG_IGN</code></td><td>כשלא צריך את קוד היציאה: הקרנל לא משאיר זומבים בכלל</td></tr>
+</table></div>
+<p>את הדרך הרביעית בדקתי בהרצה: עם <code>SIG_IGN</code> ל-<bdi dir="ltr">SIGCHLD</bdi> לא נשארה רשומה של הילד שהסתיים, ו-<code>wait</code> החזיר ‎-1 עם <bdi dir="ltr">ECHILD</bdi> („אין ילדים”). כלומר, את קוד היציאה כבר אי אפשר לקבל.</p>
+<p><strong>בשאלות מבחן „האם ייתכנו זומבים?”:</strong> כמעט תמיד כן. כל ילד שמסתיים לפני שההורה שלו קורא ל-<code>wait</code> הוא זומבי לפחות לרגע. על התהליך הראשי אי אפשר לדעת, כי ההורה שלו הוא ה-<bdi dir="ltr">shell</bdi>.</p>
+</div></div>
+
 <pre><code class="language-c">printf("PID: %d\n", getpid());
 int rc = fork();
 if (rc &lt; 0)       { fprintf(stderr, "fork failed\n"); exit(1); }

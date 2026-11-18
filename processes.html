@@ -501,7 +501,7 @@ code.gloss{border-bottom-style:dashed}
 
 <div class="fn"><div class="fn-sig">pid_t wait(int *status);   pid_t waitpid(pid_t pid, int *status, int options);</div><div class="fn-body"><dl>
 <dt>מה</dt><dd>חוסם עד ש<strong>ילד כלשהו</strong> מסתיים (<code>waitpid</code> – ילד ספציפי). מחזיר את ה-<bdi dir="ltr">PID</bdi> שלו, או <bdi dir="ltr">-1</bdi> אם אין ילדים.</dd>
-<dt>מגבלות</dt><dd>רק ילדים ישירים – לא נכד, לא אח, לא הורה. אם ילד כבר הסתיים (זומבי), <code>wait</code> חוזר מיד ואוסף אותו.</dd>
+<dt>מגבלות</dt><dd>רק ילדים ישירים – לא נכד, לא אח, לא הורה. אם ילד כבר הסתיים ונשאר <a href="signals.html#zombie-def">זומבי</a> (תהליך שהסתיים וההורה עוד לא אסף אותו), <code>wait</code> חוזר מיד ואוסף אותו.</dd>
 <dt>לכולם</dt><dd><code>while (wait(NULL) != -1);</code></dd>
 </dl></div></div>
 
