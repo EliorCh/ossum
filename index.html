@@ -526,7 +526,8 @@ code.gloss{border-bottom-style:dashed}
     const r = span.getBoundingClientRect(), vw = window.innerWidth, margin = 8, gap = 9;
     tip.style.maxWidth = Math.min(340, vw - 2 * margin) + 'px';
     const tw = tip.offsetWidth, th = tip.offsetHeight;
-    let left = Math.max(margin, Math.min(r.left + r.width / 2 - tw / 2, vw - tw - margin));
+    const rb = (function(){var m=document.querySelector('.mta-menu'),q=m&&m.getBoundingClientRect();return q&&q.width&&q.left>r.right?Math.min(q.left,vw):vw})();
+    let left = Math.max(margin, Math.min(r.left + r.width / 2 - tw / 2, rb - tw - margin));
     let top = r.top - th - gap;
     if (top < margin) { top = r.bottom + gap; tip.classList.add('below'); } else tip.classList.add('above');
     tip.style.left = left + 'px'; tip.style.top = top + 'px';
