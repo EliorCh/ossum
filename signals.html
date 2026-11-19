@@ -555,6 +555,7 @@ int main(int argc, char *argv[])
 <p>את הדרך הרביעית בדקתי בהרצה: עם <code>SIG_IGN</code> ל-<bdi dir="ltr">SIGCHLD</bdi> לא נשארה רשומה של הילד שהסתיים, ו-<code>wait</code> החזיר ‎-1 עם <bdi dir="ltr">ECHILD</bdi> („אין ילדים”). כלומר, את קוד היציאה כבר אי אפשר לקבל.</p>
 <p><strong>בשאלות מבחן „האם ייתכנו זומבים?”:</strong> כמעט תמיד כן. כל ילד שמסתיים לפני שההורה שלו קורא ל-<code>wait</code> הוא זומבי לפחות לרגע. על התהליך הראשי אי אפשר לדעת, כי ההורה שלו הוא ה-<bdi dir="ltr">shell</bdi>.</p>
 </div></div>
+<p><a href="forklab.html">במעבדת עץ תהליכים</a> אפשר לראות זומבים ויתומים נוצרים ונאספים, צעד אחרי צעד.</p>
 
 <pre><code class="language-c">printf("PID: %d\n", getpid());
 int rc = fork();

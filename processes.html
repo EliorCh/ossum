@@ -348,6 +348,7 @@ code.gloss{border-bottom-style:dashed}
   <a class="sec" href="#cs" data-id="cs">Context Switch</a>
   <a class="sec" href="#states" data-id="states">מצבי תהליך</a>
   <a class="sec" href="#api" data-id="api">fork / wait / exec</a>
+  <a class="sec" href="forklab.html">מעבדת עץ תהליכים</a>
   <a class="ch" href="scheduling.html">4 · תזמון</a>
   <a class="ch" href="signals.html">5 · זומבים וסיגנלים</a>
   <a class="ch" href="redir.html">6 · הפניות וצינורות</a>
@@ -617,6 +618,7 @@ else if (rc == 0) {                      // child
 </div></div>
 
 <div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 3 (5.11)</div><div class="box-body"><ul><li>ל-<code>fork</code> שלושה שלבים: מוצאים PID פנוי; משכפלים את התהליך כמו שהוא, כולל הנקודה שבה הוא נמצא בריצה; וכותבים ערך החזרה שונה לכל אחד מהשניים.</li><li>השכפול הוא עותק: אם הבן מגדיל את <code>x</code> אחרי ה-<code>fork</code>, אצל ההורה <code>x</code> לא משתנה.</li><li>סדר ההדפסות בין הורה לבן לא מובטח. גם אם אחד מהם עושה <code>sleep</code> ולכן „בדרך כלל” מאחר, „לא לסמוך על זה אף פעם”.</li><li><code>exec</code> לא יוצר תהליך חדש: „חשוב, חשוב, חשוב – תמיד מתבלבלים”. אותו PID ממשיך לרוץ עם קוד אחר. הדפוס הנפוץ הוא <code>fork</code> ואחריו <code>exec</code> בבן.</li><li>על <code>fork</code>, <code>wait</code> ו-<code>exec</code>: „גם אם אתם חושבים שאתם מבינים אותן, כנראה יש פינות שהן לא מאה אחוז”. ההמלצה שלו: לתרגל שאלות ממבחני עבר, ולא לחכות למבחן.</li></ul></div></div>
+<a class="mta-enrich" href="forklab.html"><span class="dir">מעבדה אינטראקטיבית</span><span class="nm">מעבדת עץ תהליכים: למה יש fork, exec ו-wait, ומעקב צעד אחרי צעד על 12 תוכניות</span></a>
 <h2 id="syscalls">קריאת מערכת או פונקציית ספרייה?</h2>
 <p>כשתרגיל דורש "קריאות מערכת בלבד", צריך לדעת להבדיל. <strong>קריאת מערכת</strong> עוברת לקרנל (<bdi dir="ltr">trap</bdi>), ו<strong>פונקציית ספרייה</strong> היא קוד רגיל של <bdi dir="ltr">C</bdi> שרץ בתוך התהליך, ולפעמים קוראת בעצמה לקריאת מערכת (<code>printf</code> בסוף קורא ל-<code>write</code>). הדרך לבדוק: ה-<code>man</code>. סעיף 2 הוא קריאות מערכת, וסעיף 3 פונקציות ספרייה: <code>man 2 fork</code>, <code>man 3 printf</code>.</p>
 <div class="tbl"><table>
@@ -682,6 +684,7 @@ who am I? 4887
 who am I? 4886</code></pre>
 <div class="trace" data-trace="badexec"></div>
 
+<a class="mta-enrich" href="forklab.html#lab"><span class="dir">מעבדה אינטראקטיבית</span><span class="nm">לראות fork בתוך <code>&amp;&amp;</code> ו-<code>||</code> קורה: שאלות 25AC-6, 24SA-6 ו-25AB-4 צעד אחרי צעד</span></a>
 <h2 id="shellloop">איך בנוי <bdi dir="ltr">shell</bdi></h2>
 <p>ה-<bdi dir="ltr">shell</bdi> הוא לולאה. בכל סיבוב:</p>
 <ol>
@@ -770,6 +773,7 @@ int main() {
 <li>אחרי <code>quit</code> הלולאה נעצרה, ולכן <code>never</code> לא נקרא.</li>
 </ul>
 </section>
+<a class="mta-enrich" href="forklab.html"><span class="dir">העשרה · מעבדה אינטראקטיבית</span><span class="nm">מעבדת עץ תהליכים – בונים את העץ צעד אחרי צעד, עם שאלות ממבחנים</span></a>
 <a class="mta-enrich" href="codes.html#g-proc"><span class="dir">העשרה · מעבדת קוד</span><span class="nm">fork, exec ו-wait בפועל – כל תוכנית עם הפלט שלה</span></a>
 <a class="mta-enrich" href="codes.html#g-shell"><span class="dir">העשרה · מעבדת קוד</span><span class="nm">לולאת ה-shell: איך בונים shell קטן ב-C</span></a>
 <a class="drill" href="https://eliorch.github.io/osque/#t=process" target="_blank" rel="noopener"><span class="dir">סיימת את הפרק?</span><span class="nm">מעבר לתרגול הפרק – שאלות ממבחנים ↗</span></a>

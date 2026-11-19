@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+<script data-goatcounter="https://eliorch.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<title>מעבדת עץ תהליכים</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Rubik:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column for the "why", then a lab bench: code | tree on top, the step card under them, table | output at the bottom. */
+:root{
+  --bg:#f5f4ef; --panel:#ffffff; --ink:#1c1a2b; --muted:#5f5c70; --line:#dcd9e3;
+  --accent:#4338ca; --accent-soft:#eceefe; --accent-ink:#ffffff;
+  --run:#4338ca; --run-bg:#eceefe;
+  --wait:#a16207; --wait-bg:#fdf4dc;
+  --exec:#0f766e; --exec-bg:#dcf5f0;
+  --zombie:#b91c1c; --zombie-bg:#fde7e7;
+  --gone:#8d8a9c; --gone-bg:#f0eff3;
+  --code-bg:#faf9fc; --kw:#7c2d92; --fn:#1d4ed8; --str:#a3500a; --cm:#8d8a9c;
+  --ok:#15803d; --bad:#b91c1c;
+  --f-body:"Heebo","Arial Hebrew","Segoe UI",Arial,sans-serif;
+  --f-head:"Rubik","Heebo","Segoe UI",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14131b; --panel:#1d1c27; --ink:#ebeaf3; --muted:#a3a0b6; --line:#343247;
+  --accent:#a5b4fc; --accent-soft:#272a4d; --accent-ink:#14131b;
+  --run:#a5b4fc; --run-bg:#272a4d; --wait:#fbbf24; --wait-bg:#3a2e12;
+  --exec:#5eead4; --exec-bg:#103632; --zombie:#fca5a5; --zombie-bg:#3d1717;
+  --gone:#77748a; --gone-bg:#24232f; --code-bg:#181722; --kw:#e9a8f5; --fn:#93c5fd; --str:#fdba74; --cm:#77748a;
+  --ok:#4ade80; --bad:#f87171; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14131b; --panel:#1d1c27; --ink:#ebeaf3; --muted:#a3a0b6; --line:#343247;
+  --accent:#a5b4fc; --accent-soft:#272a4d; --accent-ink:#14131b;
+  --run:#a5b4fc; --run-bg:#272a4d; --wait:#fbbf24; --wait-bg:#3a2e12;
+  --exec:#5eead4; --exec-bg:#103632; --zombie:#fca5a5; --zombie-bg:#3d1717;
+  --gone:#77748a; --gone-bg:#24232f; --code-bg:#181722; --kw:#e9a8f5; --fn:#93c5fd; --str:#fdba74; --cm:#77748a;
+  --ok:#4ade80; --bad:#f87171; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7}
+.page{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:2rem}
+h2{font-size:1.45rem;margin-block:44px 14px}
+h3{font-size:1.08rem}
+p{margin:0 0 12px}
+a{color:var(--accent)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+p code,li code,td code,.say code,.q code{background:var(--accent-soft);padding:1px 5px;border-radius:5px;unicode-bidi:isolate;direction:ltr}
+.read{max-width:68ch}
+header.top{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:16px}
+header.top p{color:var(--muted);margin:6px 0 0}
+nav.jump{display:flex;gap:8px;flex-wrap:wrap}
+nav.jump a{font-size:.9rem;text-decoration:none;border:1px solid var(--line);padding:4px 12px;border-radius:999px;color:var(--ink);background:var(--panel)}
+nav.jump a:hover{border-color:var(--accent)}
+
+/* why section */
+.story{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;max-width:76ch}
+.story ol{margin:8px 0 0;padding-inline-start:22px}
+.calls{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:18px}
+.call{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.call .nm{font-family:var(--f-mono);font-weight:600;font-size:1.1rem;color:var(--accent);direction:ltr;unicode-bidi:isolate}
+.call .tag{font-family:var(--f-head);font-weight:700;margin:2px 0 8px}
+.call ul{margin:0;padding-inline-start:18px}
+.call li{margin-bottom:4px}
+.call .why{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);color:var(--muted);font-size:.95rem}
+.note{border-inline-start:4px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 10px 10px 0;margin-top:16px;max-width:76ch}
+.note.z{border-color:var(--zombie);background:var(--zombie-bg)}
+.note h3{margin-bottom:6px}
+.twocol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start;margin-top:16px}
+pre.snip{direction:ltr;text-align:left;background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-family:var(--f-mono);font-size:.86rem;line-height:1.6;margin:0}
+.k{color:var(--kw)}.f{color:var(--fn)}.s{color:var(--str)}.c{color:var(--cm)}
+
+/* lab */
+.bar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.progs{display:grid;gap:8px;min-width:0}
+.grp{font-family:var(--f-head);font-size:.8rem;color:var(--muted);min-width:7.5em;align-self:center}
+.chip{font:inherit;font-size:.92rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip:focus-visible,.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.toggle{display:flex;gap:8px;align-items:center;font-size:.92rem;color:var(--muted);cursor:pointer}
+.toggle input{accent-color:var(--accent);width:18px;height:18px}
+.blurb{color:var(--muted);margin:-4px 0 14px;max-width:80ch}
+.bench{display:grid;gap:14px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"code tree" "step step" "table out"}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.pane > .ttl{font-family:var(--f-head);font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-bottom:8px}
+.a-code{grid-area:code}.a-tree{grid-area:tree}.a-step{grid-area:step}.a-table{grid-area:table}.a-out{grid-area:out}
+.code{direction:ltr;text-align:left;font-family:var(--f-mono);font-size:.84rem;line-height:1.75;background:var(--code-bg);border-radius:8px;padding:6px 0;overflow-x:auto}
+.ln{display:grid;grid-template-columns:2.6em max-content minmax(0,1fr);align-items:center;gap:10px;padding-inline:6px 10px;white-space:pre;min-height:1.75em}
+.ln .no{color:var(--cm);text-align:right;font-size:.8em;user-select:none}
+.ln.hot{background:var(--accent-soft)}
+.ln .bd{display:flex;gap:4px;justify-content:flex-start;flex-wrap:wrap}
+.pb{font-family:var(--f-mono);font-size:.72rem;font-weight:600;padding:0 6px;border-radius:999px;border:1.5px solid var(--run);color:var(--run);background:var(--run-bg);line-height:1.5}
+.pb.wait{border-color:var(--wait);color:var(--wait);background:var(--wait-bg)}
+.pb.act{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent)}
+.treebox{overflow-x:auto;display:flex;justify-content:safe center;min-height:180px}
+.treebox svg{display:block;max-width:none;flex-shrink:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.78rem;color:var(--muted);margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;border:1.5px solid;display:inline-block}
+.step-head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.counter{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.who{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;color:var(--muted)}
+.say{font-size:1.02rem;max-width:80ch;min-height:3.4em}
+.say p:last-child{margin-bottom:0}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:500;padding:8px 18px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.q{margin-top:12px;border:2px solid var(--accent);border-radius:12px;padding:14px 16px;background:var(--accent-soft)}
+.q .qt{font-weight:700;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:start;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.opt.ok{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.opt.bad{border-color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+.fb{margin-top:10px;font-size:.96rem}
+.fb b.ok{color:var(--ok)}.fb b.bad{color:var(--bad)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:start;white-space:nowrap}
+th{font-family:var(--f-head);font-weight:500;color:var(--muted);font-size:.8rem}
+td.pid{font-family:var(--f-mono);font-weight:600}
+tr.act td{background:var(--accent-soft)}
+.st{display:inline-block;padding:0 8px;border-radius:999px;font-size:.8rem;border:1px solid}
+.st.run{color:var(--run);background:var(--run-bg);border-color:var(--run)}
+.st.wait{color:var(--wait);background:var(--wait-bg);border-color:var(--wait)}
+.st.exec{color:var(--exec);background:var(--exec-bg);border-color:var(--exec)}
+.st.zombie{color:var(--zombie);background:var(--zombie-bg);border-color:var(--zombie)}
+.st.gone{color:var(--gone);background:var(--gone-bg);border-color:var(--gone)}
+.chg{color:var(--zombie);font-weight:700}
+.out{direction:ltr;text-align:left;font-family:var(--f-mono);font-size:.86rem;background:#0f0e16;color:#e6e4ef;border-radius:8px;padding:10px 12px;min-height:150px;overflow-x:auto}
+.out .o{display:flex;gap:10px;align-items:baseline;white-space:pre}
+.out .o .t{font-size:.7rem;color:#9c99b0;min-width:5.5em}
+.out .o.new{color:#fde68a}
+.out .empty{color:#6f6c82;direction:rtl;text-align:right;font-family:var(--f-body)}
+/* rules */
+.rules{display:grid;gap:12px;max-width:80ch;counter-reset:r;margin:0;padding:0;list-style:none}
+.rules li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px 12px 16px;position:relative;padding-inline-start:52px}
+.rules li::before{counter-increment:r;content:counter(r);position:absolute;inset-inline-start:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--f-head);font-weight:700;display:grid;place-items:center;font-size:.85rem}
+.sc{border-collapse:collapse;margin-top:8px;font-size:.9rem}
+.sc td,.sc th{border:1px solid var(--line);padding:4px 10px;white-space:normal}
+footer{margin-top:48px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:14px;display:flex;gap:16px;flex-wrap:wrap}
+@media (max-width:820px){
+  .bench{grid-template-columns:minmax(0,1fr);grid-template-areas:"tree" "step" "code" "table" "out"}
+  .twocol{grid-template-columns:minmax(0,1fr)}
+  h1{font-size:1.6rem}
+}
+@media (prefers-reduced-motion:no-preference){ .node{transition:opacity .25s} }
+</style>
+
+</head>
+<body>
+<div class="page" dir="rtl" lang="he">
+<header class="top">
+  <div>
+    <h1>מעבדת עץ תהליכים</h1>
+    <p>למה יש <code>fork</code>, <code>exec</code> ו-<code>wait</code>, ואיך עוקבים אחרי תוכנית שמשכפלת את עצמה, צעד אחרי צעד.</p>
+  </div>
+  <nav class="jump"><a href="#why">למה צריך את זה</a><a href="#lab">המעבדה</a><a href="#rules">בניית עץ על דף</a><a href="processes.html#api">לאתר הסיכום</a></nav>
+</header>
+
+<h2 id="why">למה צריך את כל זה?</h2>
+<div class="read">
+<p>כל תוכנית שרצה במחשב רצה בתוך <b>תהליך</b>: מבנה של מערכת ההפעלה שמחזיק את הקוד, את המשתנים, את הנקודה שבה התוכנית נמצאת כרגע, ואת הקבצים שהיא פתחה. לכל תהליך יש מספר מזהה, <bdi>PID</bdi>.</p>
+<p>השאלה היא איך נולד תהליך חדש. הכי קל להבין את זה דרך משהו שאתם עושים כל יום.</p>
+</div>
+
+<div class="story">
+  <h3>מה קורה כשמקלידים <code>ls</code> במסוף?</h3>
+  <p style="margin-top:8px">המסוף (ה-<bdi>shell</bdi>, למשל <bdi>bash</bdi>) הוא בעצמו תהליך. כדי להריץ את <code>ls</code> הוא צריך לעשות שלושה דברים:</p>
+  <ol>
+    <li>ליצור תהליך חדש, כי הוא עצמו צריך להישאר בחיים אחרי ש-<code>ls</code> יסתיים. זה <code>fork</code>.</li>
+    <li>לגרום לתהליך החדש להריץ את <code>ls</code> במקום את הקוד של ה-<bdi>shell</bdi>. זה <code>exec</code>.</li>
+    <li>לחכות עד ש-<code>ls</code> יסיים, ורק אז להציג פרומפט חדש. זה <code>wait</code>.</li>
+  </ol>
+  <p style="margin:10px 0 0">בלינוקס אין פקודה אחת שעושה „צור תהליך שמריץ את התוכנית X”. יש שלוש פקודות קטנות, וכל שאלה במבחן על עצי תהליכים בודקת אם הבנתם מה כל אחת עושה בדיוק.</p>
+</div>
+
+<div class="calls">
+  <div class="call">
+    <div class="nm">fork()</div>
+    <div class="tag">„תעשה עותק שלי”</div>
+    <ul>
+      <li>יוצר תהליך חדש (הבן) שהוא עותק של התהליך שקרא לו (ההורה).</li>
+      <li>הבן מקבל <b>עותק</b> של כל המשתנים. שינוי אצל אחד לא משפיע על השני.</li>
+      <li>הבן ממשיך <b>מאותה נקודה</b>, מיד אחרי ה-<code>fork</code>. הוא לא מתחיל את <code>main</code> מההתחלה.</li>
+      <li>ההבדל היחיד הוא מה ש-<code>fork</code> מחזיר: להורה את ה-<bdi>PID</bdi> של הבן, לבן 0. אם נכשל, מחזיר <bdi dir="ltr">-1</bdi> ואין בן.</li>
+    </ul>
+    <div class="why">המשמעות: אחרי השורה הזאת יש שני תהליכים שמריצים את אותו קוד. רק ערך ההחזרה מאפשר להם לדעת מי מהם מי, ולכן כמעט תמיד בא אחריו <code>if</code>.</div>
+  </div>
+  <div class="call">
+    <div class="nm">exec…()</div>
+    <div class="tag">„תחליף את התוכנית שלי”</div>
+    <ul>
+      <li>מוחק מהתהליך את הקוד והמשתנים, וטוען במקומם תוכנית אחרת (למשל <code>echo</code>).</li>
+      <li><b>לא נוצר תהליך חדש.</b> ה-<bdi>PID</bdi> נשאר, ההורה נשאר, והקבצים הפתוחים נשארים.</li>
+      <li>אם הצליח, הוא לא חוזר לעולם: השורות שאחריו כבר לא קיימות בתהליך.</li>
+      <li>שורה אחרי <code>exec</code> רצה רק אם הוא נכשל (למשל, אין תוכנית בשם הזה).</li>
+    </ul>
+    <div class="why">המשמעות: בעץ, תהליך שעשה <code>exec</code> נשאר באותו מקום, אבל מבחינת הקוד שלכם הוא „יצא מהמשחק”. הוא לא יגיע לשום שורה שאחריו.</div>
+  </div>
+  <div class="call">
+    <div class="nm">wait() / waitpid()</div>
+    <div class="tag">„חכה שהבן יסיים ותן לי את התוצאה”</div>
+    <ul>
+      <li><code>wait</code> עוצר את ההורה עד שאחד הבנים שלו מסתיים, ומחזיר את ה-<bdi>PID</bdi> שלו.</li>
+      <li>אם בן כבר הסתיים קודם, חוזר מיד.</li>
+      <li>אם אין לתהליך בנים בכלל, מחזיר <bdi dir="ltr">-1</bdi> מיד. הוא מחכה רק ל<b>בנים</b> שלו, לא לאחים או לנכדים.</li>
+      <li><code>waitpid(pid, …)</code> מחכה לבן מסוים. עם <code>WNOHANG</code> הוא לא מחכה בכלל: רק בודק.</li>
+    </ul>
+    <div class="why">המשמעות: <code>wait</code> הוא הדרך היחידה לקבוע סדר בין הורה לבן. בלעדיו, הסדר שבו ההדפסות מופיעות נקבע לפי מה שמערכת ההפעלה בחרה להריץ.</div>
+  </div>
+  <div class="call">
+    <div class="nm">exit() · getpid() · getppid()</div>
+    <div class="tag">סיום וזהות</div>
+    <ul>
+      <li><code>exit(n)</code> מסיים את התהליך ומשאיר קוד יציאה (0 אומר הצלחה). <code>return</code> מ-<code>main</code> עושה אותו דבר.</li>
+      <li><code>getpid()</code> מחזיר את ה-<bdi>PID</bdi> של התהליך עצמו.</li>
+      <li><code>getppid()</code> מחזיר את ה-<bdi>PID</bdi> של ההורה.</li>
+    </ul>
+    <div class="why">קוד היציאה הוא בדיוק מה שההורה מקבל ב-<code>wait</code>. בגלל זה קיים מצב „זומבי”, בקופסה למטה.</div>
+  </div>
+</div>
+
+<div class="twocol">
+  <div class="note" style="margin-top:0">
+    <h3>אז למה לא פקודה אחת?</h3>
+    <p>כי ברגע שבין <code>fork</code> ל-<code>exec</code> הבן עדיין מריץ את <b>הקוד שלכם</b>, והוא יכול להכין את הסביבה לפני שהתוכנית החדשה מתחילה.</p>
+    <p>לדוגמה, <code>ls &gt; out.txt</code>: הבן פותח את <code>out.txt</code>, מחבר אותו במקום המסך (<code>dup2</code>), ורק אז עושה <code>exec</code> ל-<code>ls</code>. בגלל שקבצים פתוחים שורדים את <code>exec</code>, ה-<code>ls</code> כותב לקובץ בלי לדעת על זה בכלל. ככה עובדים גם צינורות (<code>|</code>) וגם <code>cd</code> לתיקייה לפני הרצה.</p>
+    <p style="margin:0">ול-<code>fork</code> יש גם שימוש לבד: שרת שיוצר עותק של עצמו לכל לקוח שמתחבר.</p>
+  </div>
+  <div>
+    <p style="margin-bottom:8px"><b>הלולאה של כל <bdi>shell</bdi>, בפשטות</b> (זה גם הלב של תרגיל 2):</p>
+<pre class="snip"><span class="k">while</span> (<span class="s">1</span>) {
+    <span class="f">read_command</span>(args);
+    <span class="k">pid_t</span> pid = <span class="f">fork</span>();        <span class="c">// (1)</span>
+    <span class="k">if</span> (pid == <span class="s">0</span>) {
+        <span class="f">execvp</span>(args[<span class="s">0</span>], args); <span class="c">// (2)</span>
+        <span class="f">perror</span>(<span class="s">"exec"</span>);
+        <span class="f">_exit</span>(<span class="s">1</span>);
+    }
+    <span class="f">waitpid</span>(pid, NULL, <span class="s">0</span>);   <span class="c">// (3)</span>
+}</pre>
+    <p style="margin-top:8px;font-size:.95rem;color:var(--muted)">(1) עותק של ה-<bdi>shell</bdi>. (2) הבן הופך לפקודה. (3) ההורה מחכה, ואז חוזר להתחלת הלולאה ומציג פרומפט.</p>
+  </div>
+</div>
+
+<div class="note z">
+  <h3>זומבי ויתום: למה הם בכלל קיימים?</h3>
+  <p>כשתהליך מסתיים, מערכת ההפעלה משחררת את הזיכרון שלו, אבל <b>משאירה רשומה קטנה</b>: ה-<bdi>PID</bdi> וקוד היציאה. היא שומרת אותה כי ההורה עשוי לבקש את התוצאה ב-<code>wait</code>. תהליך שסיים וההורה שלו עוד לא אסף אותו נקרא <b>זומבי</b>: „מת”, אבל עדיין מופיע ברשימת התהליכים. כשההורה קורא ל-<code>wait</code>, הרשומה נמחקת, והבן <b>נאסף</b>.</p>
+  <p>ואם ההורה מסתיים לפני הבן? הבן הופך ל<b>יתום</b>, והתהליך <code>init</code> (<bdi>PID 1</bdi>) מאמץ אותו. <code>init</code> קורא ל-<code>wait</code> כל הזמן, כך שהבן ייאסף כשיסתיים.</p>
+  <p style="margin:0">זומבים בודדים לא מזיקים, אבל הורה שרץ הרבה זמן ולא אוסף אף פעם (כמו <bdi>shell</bdi> שמריץ פקודות ברקע) ממלא את טבלת התהליכים. לכן ב-<bdi>shell</bdi> של תרגיל 2 יש לולאת <code>waitpid(-1, NULL, WNOHANG)</code>.</p>
+</div>
+
+<div class="read" style="margin-top:16px">
+<p><b>דימוי שעוזר:</b> אתם באמצע מילוי דף עבודה, ומישהו מצלם אותו. עכשיו יש שני דפים זהים, מולאו עד אותה שורה, ושני אנשים ממשיכים כל אחד מהדף שלו. על כל דף יש פתק אחד שונה: על המקורי כתוב „העותק שלך הוא 101”, ועל העותק כתוב 0. זה <code>fork</code>. ו-<code>exec</code>? אחד מהם זורק את הדף שלו ומתחיל דף עבודה אחר לגמרי, אבל נשאר אותו אדם.</p>
+</div>
+
+<h2 id="lab">המעבדה: לעקוב צעד אחרי צעד</h2>
+<div class="bar">
+  <div class="progs" id="progs" role="group" aria-label="בחירת תוכנית"></div>
+  <label class="toggle" for="guess"><input type="checkbox" id="guess" checked> לשאול אותי לפני צעדים חשובים</label>
+</div>
+<p class="blurb" id="blurb"></p>
+
+<div class="bench">
+  <section class="pane a-code" aria-label="הקוד">
+    <div class="ttl">הקוד · התגיות מראות איפה כל תהליך נמצא</div>
+    <div class="code" id="code"></div>
+  </section>
+  <section class="pane a-tree" aria-label="עץ התהליכים">
+    <div class="ttl">עץ התהליכים</div>
+    <div class="treebox" id="tree" dir="ltr"></div>
+    <div class="legend">
+      <span><i style="border-color:var(--run);background:var(--run-bg)"></i>רץ את הקוד שלנו</span>
+      <span><i style="border-color:var(--wait);background:var(--wait-bg)"></i>מחכה ב-wait</span>
+      <span><i style="border-color:var(--exec);background:var(--exec-bg)"></i>הפך לתוכנית אחרת (exec)</span>
+      <span><i style="border-color:var(--zombie);background:var(--zombie-bg);border-style:dashed"></i>זומבי</span>
+      <span><i style="border-color:var(--gone);background:var(--gone-bg)"></i>הסתיים ונאסף</span>
+    </div>
+  </section>
+  <section class="pane a-step" aria-live="polite">
+    <div class="step-head">
+      <span class="who" id="who"></span>
+      <span class="counter" id="counter"></span>
+    </div>
+    <div class="say" id="say"></div>
+    <div id="qbox"></div>
+    <div class="ctrls">
+      <button class="btn" id="reset" type="button">מההתחלה</button>
+      <button class="btn" id="prev" type="button">→ הקודם</button>
+      <button class="btn pri" id="next" type="button">הצעד הבא ←</button>
+    </div>
+  </section>
+  <section class="pane a-table" aria-label="טבלת תהליכים">
+    <div class="ttl">טבלת התהליכים</div>
+    <div class="tablewrap"><table id="tbl"></table></div>
+  </section>
+  <section class="pane a-out" aria-label="פלט">
+    <div class="ttl">מה מודפס למסך</div>
+    <div class="out" id="out"></div>
+  </section>
+</div>
+
+<h2 id="rules">איך בונים עץ תהליכים על דף</h2>
+<ol class="rules">
+  <li>מתחילים מתהליך אחד, נותנים לו מספר (למשל 100), ועוברים על הקוד שורה אחרי שורה.</li>
+  <li>בכל <code>fork</code> מציירים בן חדש, וכותבים ליד כל אחד מהשניים מה <code>fork</code> החזיר לו: לבן 0, להורה ה-<bdi>PID</bdi> של הבן.</li>
+  <li>הבן ממשיך <b>מאותה נקודה</b> שבה ההורה היה, עם עותק של כל המשתנים, כולל ערכים שחזרו מ-<code>fork</code> קודמים. לכן בן יכול „להיראות כמו הורה” לפי משתנה ישן.</li>
+  <li><code>fork</code> בלי <code>if</code> אחריו מכפיל: כל תהליך שמגיע אליו יוצר בן. <bdi dir="ltr">n</bdi> קריאות ברצף נותנות <bdi dir="ltr">2^n</bdi> תהליכים.</li>
+  <li>
+    בביטויים עם <code>&amp;&amp;</code> ו-<code>||</code>: אם הצד השמאלי כבר קובע את התוצאה, הצד הימני לא מחושב, וה-<code>fork</code> שבו לא קורה באותו תהליך.
+    <div class="tablewrap"><table class="sc">
+      <tr><th>ביטוי</th><th>מתי הצד הימני לא מחושב</th></tr>
+      <tr><td><code>A || B</code></td><td>כש-A אמת (לא 0)</td></tr>
+      <tr><td><code>A &amp;&amp; B</code></td><td>כש-A שקר (0)</td></tr>
+      <tr><td><code>!fork()</code></td><td>אצל הבן הערך 1, אצל ההורה 0</td></tr>
+    </table></div>
+  </li>
+  <li>תהליך שעשה <code>exec</code> בהצלחה: מסמנים שהוא הפך לתוכנית האחרת ומפסיקים לעקוב אחריו בקוד. הוא לא יגיע לשום שורה שאחרי ה-<code>exec</code>.</li>
+  <li><code>wait</code> מחכה רק לבנים של התהליך עצמו. אין בנים? מחזיר <bdi dir="ltr">-1</bdi> מיד וממשיכים.</li>
+  <li>סדר ההדפסות בין תהליכים שונים לא קבוע. הסדר מובטח רק בתוך אותו תהליך, ובין הורה לבן כשיש <code>wait</code> באמצע. כשנשאלים „מה הפלטים האפשריים”, מחפשים את האילוצים האלה.</li>
+</ol>
+
+<footer>
+  <a href="processes.html">לפרק התהליכים באתר הסיכום</a>
+  <a href="https://eliorch.github.io/osque/">לאתר התרגול</a>
+  <span>הנחה בכל התוכניות: הפלט הולך למסך, וכל קריאות המערכת מצליחות (חוץ ממה שכתוב אחרת).</span>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const STLBL={run:"רץ",wait:"מחכה ב-wait",exec:"הפך ל-",zombie:"זומבי",gone:"נאסף"};
+
+function hl(line){
+  const re=/(\/\/.*$)|("(?:[^"\\]|\\.)*")|\b(int|if|else|return|char|pid_t|NULL|while|for|break)\b|\b(fork|execvp|wait|waitpid|printf|exit|getpid|getppid|setbuf)\b/g;
+  let out="",last=0,m;
+  while((m=re.exec(line))){
+    out+=esc(line.slice(last,m.index));
+    if(m[1])out+='<span class="c">'+esc(m[1])+"</span>";
+    else if(m[2])out+='<span class="s">'+esc(m[2])+"</span>";
+    else if(m[3])out+='<span class="k">'+m[3]+"</span>";
+    else out+='<span class="f">'+m[4]+"</span>";
+    last=re.lastIndex;
+  }
+  return out+esc(line.slice(last));
+}
+
+/* ---------- state helpers ---------- */
+function init(line,root){root=root||100;return {root:root,P:{[root]:{pid:root,ppid:"shell",tp:null,prog:null,line:line,st:"run",vars:{},rets:[],note:""}},order:[root],out:[],lastOut:0};}
+function fk(S,par,ch,lp,lc){
+  const p=S.P[par];
+  const c=JSON.parse(JSON.stringify(p));
+  c.pid=ch;c.ppid=par;c.tp=par;c.rets=["0"];c.note="";
+  p.rets.push(String(ch));
+  if(lp!==undefined)p.line=lp;
+  c.line=(lc!==undefined)?lc:p.line;
+  S.P[ch]=c;S.order.push(ch);
+}
+function say(S,pid,text,via){S.out.push({pid:pid,text:text,via:via||""});S.lastOut++;}
+function set(S,pid,o){Object.assign(S.P[pid],o);}
+function vars(S,pid,o){Object.assign(S.P[pid].vars,o);}
+function orphan(S,pids){pids.forEach(p=>{if(S.P[p])S.P[p].ppid=1;S.P[p].orph=true;});}
+
+/* ---------- programs ---------- */
+const PROGS=[
+{id:"basic",grp:"b",name:"fork ו-wait",
+ blurb:"התוכנית הבסיסית: fork אחד, if שמפריד בין ההורה לבן, ו-wait. כאן רואים את ערכי ההחזרה של fork ואת הזומבי.",
+ code:[
+ "int main() {",
+ "    printf(\"start\\n\");",
+ "    pid_t pid = fork();",
+ "    if (pid == 0) {",
+ "        printf(\"child: %d\\n\", getpid());",
+ "    } else {",
+ "        wait(NULL);",
+ "        printf(\"parent: child was %d\\n\", pid);",
+ "    }",
+ "    printf(\"bye\\n\");",
+ "    return 0;",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>התוכנית מתחילה. יש תהליך אחד בלבד, ונקרא לו 100 (בפועל ה-<bdi>PID</bdi> יכול להיות כל מספר). ההורה שלו הוא ה-<bdi>shell</bdi> שהריץ אותו.</p>"},
+ {act:[100],d:S=>{say(S,100,"start");set(S,100,{line:3});},t:"<p>100 מדפיס <code>start</code>. עד כאן אין שום דבר מיוחד: תהליך אחד שמריץ שורה אחרי שורה.</p>"},
+ {act:[100,101],
+  q:{t:"100 עומד לקרוא ל-fork. אחרי הקריאה יהיו שני תהליכים. מה יהיה ערך המשתנה pid אצל הבן החדש?",o:["0","100","101","-1"],a:0,
+     w:"fork מחזיר לבן 0, ולהורה את ה-PID של הבן (כאן 101). זה ההבדל היחיד ביניהם, וכך כל אחד יודע מי הוא."},
+  d:S=>{fk(S,100,101,4,4);vars(S,100,{pid:101});vars(S,101,{pid:0});},
+  t:"<p><code>fork</code> יצר את 101, עותק של 100. הבן נמצא <b>באותה נקודה</b> בקוד: אחרי ה-<code>fork</code>, לא בתחילת <code>main</code>. לכן <code>start</code> לא יודפס שוב.</p><p>ההבדל היחיד: אצל 100 המשתנה <code>pid</code> שווה 101, ואצל 101 הוא שווה 0. עכשיו שניהם עומדים לפני ה-<code>if</code>.</p>"},
+ {act:[101],d:S=>{say(S,101,"child: 101");set(S,101,{line:10});},
+  t:"<p>מערכת ההפעלה מחליטה מי רץ קודם, ולנו אין שליטה על זה. נניח שהיא בחרה ב-101.</p><p>אצל 101 <code>pid == 0</code>, ולכן הוא נכנס לענף הראשון ומדפיס את ה-<bdi>PID</bdi> שלו, שהוא מקבל מ-<code>getpid()</code>.</p>"},
+ {act:[101],d:S=>{say(S,101,"bye");set(S,101,{line:11});},
+  t:"<p>101 מדלג על ה-<code>else</code>, כי הוא כבר היה בענף של ה-<code>if</code>, וממשיך לשורה שאחרי כל ה-<code>if</code>. גם הבן מדפיס <code>bye</code>: השורה הזאת משותפת לשניהם.</p>"},
+ {act:[101],
+  q:{t:"101 סיים את main. ההורה 100 עוד לא הגיע ל-wait. מה המצב של 101 ברגע זה?",o:["עדיין רץ","זומבי: סיים, אבל עדיין רשום ברשימת התהליכים","נמחק לגמרי מהמערכת","יתום"],a:1,
+     w:"הבן סיים, אבל ההורה עוד לא אסף את קוד היציאה שלו. מערכת ההפעלה שומרת בינתיים רשומה קטנה, וזה בדיוק זומבי."},
+  d:S=>{set(S,101,{st:"zombie",line:null});},
+  t:"<p>101 סיים. הזיכרון שלו שוחרר, אבל נשארה רשומה קטנה: ה-<bdi>PID</bdi> וקוד היציאה (0). היא נשמרת כי ההורה עשוי לבקש את התוצאה ב-<code>wait</code>.</p><p>101 הוא עכשיו <b>זומבי</b>, ויישאר כזה עד ש-100 יאסוף אותו.</p>"},
+ {act:[100],
+  q:{t:"עכשיו 100 רץ: אצלו pid הוא 101, אז הוא הולך ל-else ומגיע ל-wait. הבן שלו כבר סיים. מה יקרה?",o:["wait יחכה לנצח, כי הבן כבר לא ירוץ","wait יחזור מיד עם 101 ויאסוף את הזומבי","wait יחזיר -1","100 יהפוך לזומבי"],a:1,
+     w:"wait מחכה רק אם אף בן לא סיים עדיין. כאן 101 כבר זומבי, אז wait חוזר מיד עם ה-PID שלו ומוחק את הרשומה."},
+  d:S=>{set(S,101,{st:"gone"});set(S,100,{line:8});},
+  t:"<p>אצל 100 <code>pid</code> שווה 101, לא 0, ולכן הוא הולך ל-<code>else</code> וקורא ל-<code>wait</code>. בגלל ש-101 כבר סיים, <code>wait</code> חוזר מיד ומחזיר 101. הרשומה של 101 נמחקת: הוא <b>נאסף</b>.</p><p>אם 101 עדיין היה רץ, 100 היה נעצר כאן ומחכה.</p>"},
+ {act:[100],d:S=>{say(S,100,"parent: child was 101");set(S,100,{line:10});},
+  t:"<p>100 מדפיס את ערך <code>pid</code> שלו, כלומר את ה-<bdi>PID</bdi> של הבן.</p>"},
+ {act:[100],d:S=>{say(S,100,"bye");set(S,100,{line:11});},t:"<p>גם 100 מגיע לשורה המשותפת ומדפיס <code>bye</code>.</p>"},
+ {act:[100],d:S=>{set(S,100,{st:"gone",line:null});},
+  t:"<p>100 מסתיים, וה-<bdi>shell</bdi>, שחיכה לו ב-<code>wait</code>, אוסף אותו ומציג פרומפט חדש.</p><p><b>הסיכום:</b> הפלט כאן תמיד זהה, גם אם 100 היה רץ ראשון. במקרה כזה 100 היה נעצר ב-<code>wait</code> עד ש-101 מסיים. ה-<code>wait</code> מבטיח ששורת ההורה תודפס אחרי כל ההדפסות של הבן.</p>"}
+ ]},
+
+{id:"double",grp:"b",name:"שני fork ברצף",
+ blurb:"שאלה קלאסית: אין כאן if בכלל, אז כל תהליך שמגיע ל-fork משתכפל. כמה פעמים יודפס hi?",
+ code:[
+ "int main() {",
+ "    fork();",
+ "    fork();",
+ "    printf(\"hi from %d\\n\", getpid());",
+ "    return 0;",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100, לפני ה-<code>fork</code> הראשון. אף אחד לא שומר את מה ש-<code>fork</code> מחזיר, ואין <code>if</code>. לכן ההורה והבן ימשיכו בדיוק באותו מסלול.</p>"},
+ {act:[100,101],d:S=>{fk(S,100,101,3,3);},
+  t:"<p>אחרי ה-<code>fork</code> הראשון יש שני תהליכים, ושניהם עומדים לפני שורה 3.</p>"},
+ {act:[100,102],
+  q:{t:"כמה תהליכים יקראו ל-fork שבשורה 3?",o:["1: רק 100","2: גם 100 וגם 101","4"],a:1,
+     w:"101 הוא עותק של 100 מהרגע שלפני שורה 3, אז גם הוא יגיע אליה ויקרא ל-fork."},
+  d:S=>{fk(S,100,102,4,4);},t:"<p>100 קורא ל-<code>fork</code> השני ויוצר את 102. 102 נמצא אחרי שורה 3, ולכן הוא לא יעשה <code>fork</code> נוסף.</p>"},
+ {act:[101,103],d:S=>{fk(S,101,103,4,4);},
+  t:"<p>גם 101 מגיע לשורה 3 וקורא ל-<code>fork</code>. הבן שלו הוא 103.</p><p><b>הכלל:</b> כל <code>fork</code> בלי תנאי מכפיל את מספר התהליכים שמגיעים אליו. שני <code>fork</code> ברצף נותנים 4 תהליכים, ו-<bdi dir=\"ltr\">n</bdi> נותנים <bdi dir=\"ltr\">2^n</bdi>.</p>"},
+ {act:[100,101,102,103],
+  q:{t:"כמה פעמים יודפס hi?",o:["2","3","4","8"],a:2,w:"ארבעה תהליכים מגיעים לשורה 4, וכל אחד מדפיס פעם אחת."},
+  d:S=>{[102,100,103,101].forEach(p=>{say(S,p,"hi from "+p);S.P[p].line=5;});},
+  t:"<p>ארבעתם מדפיסים. הסדר שרואים כאן הוא רק דוגמה: אין <code>wait</code>, ולכן ההדפסות יכולות להופיע בכל סדר.</p>"},
+ {act:[100,101,102,103],d:S=>{S.order.forEach(p=>{S.P[p].st="gone";S.P[p].line=null;});},
+  t:"<p>כולם מסתיימים. אף אחד לא קורא ל-<code>wait</code>. אם הורה מסתיים לפני הבן שלו, הבן הופך ליתום, ו-<code>init</code> (<bdi>PID 1</bdi>) מאמץ אותו ואוסף אותו כשהוא מסתיים. לכן לא נשארים זומבים לתמיד.</p>"}
+ ]},
+
+{id:"exec",grp:"b",name:"fork + exec + wait",
+ blurb:"זה מה שה-shell עושה כשמקלידים echo hi: יוצר עותק, העותק הופך לפקודה, וההורה מחכה.",
+ code:[
+ "int main() {",
+ "    if (fork() == 0) {",
+ "        char *args[] = {\"echo\", \"hi\", NULL};",
+ "        execvp(args[0], args);",
+ "        printf(\"exec failed\\n\");",
+ "        exit(1);",
+ "    }",
+ "    wait(NULL);",
+ "    printf(\"done\\n\");",
+ "    return 0;",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. הוא עומד לקרוא ל-<code>fork</code> ולבדוק מיד אם התוצאה היא 0.</p>"},
+ {act:[100,101],d:S=>{fk(S,100,101,2,2);},
+  t:"<p><code>fork</code> יצר את 101. שניהם עדיין בשורה 2, באמצע ההשוואה: אצל 100 <code>fork()</code> החזיר 101, ואצל 101 הוא החזיר 0.</p>"},
+ {act:[100],d:S=>{set(S,100,{line:8,st:"wait"});},
+  t:"<p>אצל 100 ההשוואה <code>101 == 0</code> לא נכונה, אז הוא מדלג על כל הבלוק ומגיע ל-<code>wait</code>.</p><p>101 עוד לא סיים, ולכן <code>wait</code> <b>חוסם</b>: 100 נעצר עד שהבן יסתיים. זה מה שמונע מה-<bdi>shell</bdi> להציג פרומפט לפני שהפקודה סיימה.</p>"},
+ {act:[101],d:S=>{set(S,101,{line:4});},
+  t:"<p>אצל 101 ההשוואה <code>0 == 0</code> נכונה, והוא נכנס לבלוק. הוא בונה את רשימת הארגומנטים: שם התוכנית, הארגומנטים שלה, ו-<code>NULL</code> שמסמן את סוף הרשימה.</p>"},
+ {act:[101],
+  q:{t:"101 קורא ל-execvp. מה יהיה ה-PID של התהליך שמריץ את echo?",o:["101: אותו תהליך","102: נוצר תהליך חדש","100: ההורה"],a:0,
+     w:"exec לא יוצר תהליך. הוא מחליף את התוכנית שרצה בתוך 101, וה-PID נשאר."},
+  d:S=>{set(S,101,{st:"exec",prog:"echo hi",line:null});},
+  t:"<p><code>execvp</code> מחק מ-101 את הקוד והמשתנים של התוכנית שלנו, וטען במקומם את <code>echo</code>. ה-<bdi>PID</bdi> נשאר 101, ההורה נשאר 100, והמסך עדיין פתוח אצלו.</p><p>שימו לב שהתגית של 101 נעלמה מהקוד. שורות 5–6 לא ירוצו, כי הקוד שלהן כבר לא קיים בתהליך. הן היו רצות רק אם <code>exec</code> היה נכשל.</p>"},
+ {act:[101],d:S=>{say(S,101,"hi","echo");},t:"<p>התוכנית <code>echo</code>, שרצה עכשיו בתוך 101, מדפיסה <code>hi</code>.</p>"},
+ {act:[101],d:S=>{set(S,101,{st:"zombie"});},
+  t:"<p><code>echo</code> סיים, ולכן 101 הסתיים. הוא זומבי לרגע קצר, עד שההורה יאסוף אותו.</p>"},
+ {act:[100],d:S=>{set(S,101,{st:"gone"});set(S,100,{st:"run",line:9});},
+  t:"<p>ה-<code>wait</code> של 100 מתעורר, מחזיר 101 ואוסף אותו. רק עכשיו 100 ממשיך.</p>"},
+ {act:[100],d:S=>{say(S,100,"done");set(S,100,{line:10});},t:"<p>100 מדפיס <code>done</code>.</p>"},
+ {act:[100],d:S=>{set(S,100,{st:"gone",line:null});},
+  t:"<p>הפלט הוא תמיד <code>hi</code> ואחריו <code>done</code>, בזכות ה-<code>wait</code>.</p><p><b>ניסוי מחשבתי:</b> אם היה כתוב <code>\"ehco\"</code> במקום <code>\"echo\"</code>, ה-<code>exec</code> היה נכשל, ו-101 היה ממשיך לשורה 5, מדפיס <code>exec failed</code> ויוצא. בלי ה-<code>exit(1)</code>, 101 היה ממשיך לשורה 8, וגם הוא היה מדפיס <code>done</code>. לכן תמיד שמים <code>exit</code> אחרי <code>exec</code>.</p>"}
+ ]},
+
+{id:"x24ba",grp:"x",name:"24BA-4 · exec לעצמו",root:300,
+ blurb:"תוכנית בשם myexec שמריצה ב-exec את עצמה. התהליך שנוצר קיבל את המזהה 300. מה יודפס?",
+ code:[
+ "int main()",
+ "{",
+ "    char* args[] = {\"myexec\", NULL};",
+ "    printf(\"PID: %d\\n\", getpid());",
+ "    execvp(args[0], args);",
+ "}"],
+ start:3,
+ steps:[
+ {act:[300],t:"<p>התוכנית נקראת <code>myexec</code>, וה-<bdi>shell</bdi> הריץ אותה בתהליך 300. שימו לב לשורה 5: התוכנית עושה <code>exec</code> לתוכנית בשם <code>myexec</code>, כלומר לעצמה.</p>"},
+ {act:[300],d:S=>{say(S,300,"PID: 300");set(S,300,{line:5});},t:"<p>300 מדפיס <code>PID: 300</code>, כמו שנאמר בשאלה.</p>"},
+ {act:[300],
+  q:{t:"300 קורא ל-execvp עם התוכנית myexec, כלומר עם עצמה. מה יקרה?",o:["נוצר תהליך חדש, 301, שמריץ את myexec","אותו תהליך, 300, מתחיל להריץ את myexec מההתחלה","exec נכשל, כי התוכנית כבר רצה","התוכנית קורסת, כי כל exec מוסיף עוד עותק לזיכרון"],a:1,
+     w:"exec לא יוצר תהליך. הוא מוחק את הזיכרון של 300 וטוען אליו את התוכנית מחדש, אז היא מתחילה שוב מ-main."},
+  d:S=>{set(S,300,{line:3});},
+  t:"<p><code>exec</code> מחק את הקוד והמשתנים של 300, וטען לתוכו שוב את <code>myexec</code>. זו אותה תוכנית, אבל היא מתחילה <b>מחדש</b>, מתחילת <code>main</code>. ה-<bdi>PID</bdi> נשאר 300, ולא נוצר אף תהליך. בעץ יש עדיין צומת אחד בלבד.</p>"},
+ {act:[300],d:S=>{say(S,300,"PID: 300");set(S,300,{line:5});},t:"<p>שוב מודפס <code>PID: 300</code>. ה-<bdi>PID</bdi> לא עולה ל-301, כי זה אותו תהליך.</p>"},
+ {act:[300],d:S=>{say(S,300,"PID: 300");},
+  t:"<p>ושוב <code>exec</code>, ושוב מההתחלה, ושוב <code>PID: 300</code>. זה יימשך עד שעוצרים את התוכנית (למשל ב-<bdi>Ctrl+C</bdi>).</p><p>התוכנית <b>לא קורסת</b>: <code>exec</code> מחליף את הזיכרון ולא מוסיף עליו, אז שום דבר לא מצטבר. התשובה במבחן: <code>PID: 300</code> אינסוף פעמים.</p><p><b>הגרסה ההפוכה (24BB-4):</b> <code>if (!fork()) { execvp(\"execme\", args); printf(...); }</code>. שם הבן עושה <code>exec</code> <b>לפני</b> ה-<code>printf</code>, אז ה-<code>printf</code> לא רץ אף פעם, וכל עותק חדש מתחיל שוב ב-<code>fork</code>. התשובה שם: לא יהיה פלט בכלל.</p>"}
+ ]},
+
+{id:"x20sb",grp:"x",name:"20SB-7 · עותק של משתנה",
+ blurb:"שאלה מ-2020: משתנה i שגדל בחלק מהתהליכים. כל תהליך מקבל עותק משלו, אז מה כל אחד ידפיס?",
+ code:[
+ "int main() {",
+ "    int i = 0;",
+ "    if (fork()) {",
+ "        ++i;",
+ "        fork();",
+ "    }",
+ "    else if (fork())",
+ "        ++i;",
+ "    printf(\"%d\", i);",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. בשורה 3 התנאי הוא פשוט <code>fork()</code>: אמת אצל ההורה (ערך חיובי), ושקר אצל הבן (0).</p>"},
+ {act:[100],d:S=>{vars(S,100,{i:0});set(S,100,{line:3});},t:"<p><code>i = 0</code>.</p>"},
+ {act:[100,101],d:S=>{fk(S,100,101,4,7);},
+  t:"<p><code>fork</code> יצר את 101. אצל 100 הוא החזיר 101, כלומר אמת, ולכן 100 נכנס לבלוק של ה-<code>if</code> (שורה 4). אצל 101 הוא החזיר 0, כלומר שקר, ולכן 101 הולך ל-<code>else if</code> בשורה 7.</p><p>לשניהם יש <code>i = 0</code>, אבל לכל אחד <b>עותק משלו</b>.</p>"},
+ {act:[100],
+  q:{t:"100 מגדיל את i ל-1. מה יהיה i אצל 101?",o:["0","1"],a:0,w:"לכל תהליך עותק משלו של המשתנים. שינוי אצל 100 לא משפיע על 101."},
+  d:S=>{vars(S,100,{i:1});set(S,100,{line:5});},t:"<p>100 מגדיל את <code>i</code> שלו ל-1. אצל 101 <code>i</code> נשאר 0.</p>"},
+ {act:[100,102],d:S=>{fk(S,100,102,9,9);},
+  t:"<p>100 קורא ל-<code>fork</code> ויוצר את 102. 102 מקבל עותק של המשתנים <b>מהרגע הזה</b>, כלומר <code>i = 1</code>. אף אחד לא בודק מה ה-<code>fork</code> הזה החזיר, אז שניהם ממשיכים לשורה 9.</p>"},
+ {act:[101,103],
+  q:{t:"101 מבצע את ה-fork שבתנאי של שורה 7 ויוצר את 103. מה יהיה i אצל 103?",o:["0","1","2"],a:0,
+     w:"103 קיבל מ-101 את i = 0. אצלו fork() החזיר 0, אז התנאי שקר והוא לא מגיע ל-++i."},
+  d:S=>{fk(S,101,103,9,9);vars(S,101,{i:1});},
+  t:"<p>101 יוצר את 103. אצל 101 <code>fork()</code> החזיר 103, אמת, ולכן הוא מבצע <code>++i</code> ומגיע ל-<code>i = 1</code>. אצל 103 הוא החזיר 0, שקר, ולכן 103 מדלג על <code>++i</code> ונשאר עם <code>i = 0</code> שקיבל מ-101.</p>"},
+ {act:[100,101,102,103],d:S=>{[100,102,101,103].forEach(p=>{say(S,p,String(S.P[p].vars.i));S.P[p].line=10;});},
+  t:"<p>כל ארבעת התהליכים מדפיסים את ה-<code>i</code> שלהם: שלושה מדפיסים 1 ואחד (103) מדפיס 0. אין ירידות שורה, אז על המסך הכל מופיע ברצף, למשל <code>1110</code>.</p>"},
+ {act:[100,101,102,103],d:S=>{S.order.forEach(p=>{S.P[p].st="gone";S.P[p].line=null;});},
+  t:"<p>כולם מסתיימים. אין <code>wait</code>, אז אין שום סדר מובטח: כל אחד מארבעת הפלטים <code>0111</code>, <code>1011</code>, <code>1101</code>, <code>1110</code> אפשרי. מה שקבוע הוא <b>מה</b> כל תהליך מדפיס, לא <b>מתי</b>.</p>"}
+ ]},
+
+{id:"x20sa",grp:"x",name:"20SA-7 · wait לבן כלשהו",
+ blurb:"שאלה מ-2020 עם מלכודת: <code>wait(NULL)</code> מחכה לבן אחד כלשהו, לא לכל הבנים. אילו פלטים אפשריים?",
+ code:[
+ "int main() {",
+ "    fork();",
+ "    if (fork() == 0) {",
+ "        printf(\"B\");",
+ "    } else {",
+ "        wait(NULL);",
+ "        printf(\"A\");",
+ "    }",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. ה-<code>fork</code> הראשון לא נבדק, אז שני התהליכים שיהיו אחריו יגיעו לשורה 3.</p>"},
+ {act:[100,101],d:S=>{fk(S,100,101,3,3);},t:"<p>ה-<code>fork</code> הראשון יצר את 101. שניהם לפני שורה 3.</p>"},
+ {act:[100,102],d:S=>{fk(S,100,102,6,4);set(S,100,{st:"wait"});},
+  t:"<p>100 קורא ל-<code>fork</code> שבשורה 3 ויוצר את 102. אצל 100 התוצאה היא 102, לא 0, אז הוא הולך ל-<code>else</code> וקורא ל-<code>wait</code>. אף בן שלו עוד לא סיים (101 ו-102 רצים), ולכן 100 נחסם.</p><p>אצל 102 התוצאה 0, אז הוא בשורה 4 ועומד להדפיס <code>B</code>.</p>"},
+ {act:[101,103],
+  q:{t:"101 מגיע ל-fork שבשורה 3. מה יקרה לו?",o:["הוא לא יקרא ל-fork, כי הוא בן","הוא ייצור בן משלו (103), ואז יחכה לו ב-wait","הוא ידפיס B"],a:1,
+     w:"101 הוא עותק של 100 מלפני שורה 3, אז גם הוא מבצע את ה-fork. אצלו התוצאה חיובית, ולכן הוא הולך ל-else ומחכה."},
+  d:S=>{fk(S,101,103,6,4);set(S,101,{st:"wait"});},
+  t:"<p>גם 101 קורא ל-<code>fork</code> ויוצר את 103. 101 מקבל ערך חיובי, הולך ל-<code>else</code> ונחסם ב-<code>wait</code>. 103 קיבל 0 ויגיע ל-<code>printf(\"B\")</code>.</p><p>עכשיו: 100 ו-101 יגיעו להדפיס <code>A</code>, ו-102 ו-103 יגיעו להדפיס <code>B</code>.</p>"},
+ {act:[103],d:S=>{say(S,103,"B");set(S,103,{st:"zombie",line:null});},t:"<p>103 מדפיס <code>B</code> ומסתיים. הוא זומבי לרגע, עד ש-101 יאסוף אותו.</p>"},
+ {act:[101],d:S=>{set(S,103,{st:"gone"});say(S,101,"A");set(S,101,{st:"zombie",line:null});},
+  t:"<p>ה-<code>wait</code> של 101 מחזיר את 103 ואוסף אותו. 101 מדפיס <code>A</code> ומסתיים, ועכשיו הוא זומבי, כי 100 עוד לא אסף אותו.</p>"},
+ {act:[100],
+  q:{t:"100 מחכה ב-wait. הבן 101 הסתיים, אבל הבן 102 עוד לא הדפיס B. מה יקרה?",o:["100 ימשיך לחכות עד ש-102 יסתיים","wait יחזור עם 101, ו-100 ידפיס A עוד לפני ש-102 הדפיס","100 יהפוך לזומבי"],a:1,
+     w:"wait(NULL) מחכה לבן אחד כלשהו, לא לכל הבנים. ברגע ש-101 הסתיים, wait חוזר."},
+  d:S=>{set(S,101,{st:"gone"});say(S,100,"A");set(S,100,{st:"gone",line:null});orphan(S,[102]);},
+  t:"<p><code>wait(NULL)</code> חוזר כשבן <b>אחד כלשהו</b> מסתיים, וכאן זה 101. לכן 100 מדפיס <code>A</code> ומסתיים, למרות ש-102 עוד לא הדפיס. זו המלכודת של השאלה.</p><p>100 הסתיים, ו-102 הופך ליתום ש-<code>init</code> מאמץ.</p>"},
+ {act:[102],d:S=>{say(S,102,"B");set(S,102,{st:"gone",line:null});},
+  t:"<p>102 מדפיס <code>B</code> ומסתיים, ו-<code>init</code> אוסף אותו. על המסך: <code>BAAB</code>.</p><p><b>כל הפלטים האפשריים:</b> <code>BABA</code>, <code>BBAA</code> ו-<code>BAAB</code>. פלט שמתחיל ב-<code>A</code> בלתי אפשרי: כל <code>A</code> מודפס רק אחרי ש-<code>wait</code> חזר, כלומר אחרי שבן כבר סיים, וכל בן כזה הדפיס <code>B</code> או חיכה ל-<code>B</code>. (הורץ 500 פעמים, ויצאו רק שלושת הפלטים האלה.)</p>"}
+ ]},
+
+{id:"x24aa",grp:"x",name:"24AA-6 · שני wait",
+ blurb:"שאלה מ-2024: הורה עם שני בנים ושני wait, ובנים שמשנים משתנה. מה הפלטים האפשריים?",
+ code:[
+ "int main(int argc, char *argv[]) {",
+ "    char *str = \"hello\";",
+ "    if (fork() && fork()) {",
+ "        wait(NULL);",
+ "        printf(\"1: %s\\n\", str);",
+ "        wait(NULL);",
+ "        printf(\"1: %s\\n\", str);",
+ "    }",
+ "    else {",
+ "        wait(NULL);",
+ "        printf(\"0: %s\\n\", str);",
+ "        str = \"goodbye\";",
+ "        wait(NULL);",
+ "        printf(\"0: %s\\n\", str);",
+ "    }",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. מספרי השורות כאן קצת שונים מהמבחן (הורדנו שורות ריקות), הקוד זהה.</p>"},
+ {act:[100],d:S=>{vars(S,100,{str:"\"hello\""});set(S,100,{line:3});},t:"<p><code>str</code> מצביע על <code>\"hello\"</code>.</p>"},
+ {act:[100,101],
+  q:{t:"100 מבצע את ה-fork הראשון בשורה 3 ויוצר את 101. האם 101 יבצע את ה-fork השני?",o:["כן","לא: אצלו fork() החזיר 0 (שקר), ולכן && לא מחשב את הצד הימני"],a:1,
+     w:"ב-&& מספיק שצד אחד יהיה שקר. אצל 101 הצד השמאלי 0, אז התוצאה ידועה והוא לא קורא ל-fork השני."},
+  d:S=>{fk(S,100,101,3,10);},
+  t:"<p>אצל 101 <code>fork()</code> החזיר 0, שקר, ולכן <code>&amp;&amp;</code> עוצר: 101 לא יוצר אף תהליך והולך ל-<code>else</code>. אצל 100 הצד השמאלי אמת, אז הוא ממשיך לצד הימני.</p>"},
+ {act:[100,102],d:S=>{fk(S,100,102,4,10);set(S,100,{st:"wait"});},
+  t:"<p>100 יוצר את 102. אצל 100 שני הצדדים אמת, אז הוא נכנס לבלוק של <code>\"1\"</code> ונחסם ב-<code>wait</code> הראשון. אצל 102 ה-<code>fork</code> החזיר 0, אז גם הוא בבלוק של <code>\"0\"</code>.</p>"},
+ {act:[101],
+  q:{t:"101 קורא ל-wait בשורה 10. מה יקרה?",o:["101 ייחסם עד ש-100 יסתיים","wait יחזיר -1 מיד, כי ל-101 אין בנים","101 יחכה ל-102"],a:1,
+     w:"wait מחכה רק לבנים של מי שקורא לו. ל-101 אין בנים (100 הוא ההורה, 102 הוא אח), אז wait מחזיר -1 מיד."},
+  d:S=>{say(S,101,"0: hello");set(S,101,{line:12});},
+  t:"<p>ל-101 אין בנים, אז <code>wait</code> מחזיר <bdi dir=\"ltr\">-1</bdi> מיד. 101 מדפיס <code>0: hello</code>.</p>"},
+ {act:[101],
+  q:{t:"101 משנה את str ל-\"goodbye\". מה ידפיס 100 אחר כך?",o:["1: hello","1: goodbye"],a:0,w:"לכל תהליך עותק משלו. השינוי אצל 101 לא מגיע ל-100."},
+  d:S=>{vars(S,101,{str:"\"goodbye\""});say(S,101,"0: goodbye");set(S,101,{st:"zombie",line:null});},
+  t:"<p>101 משנה את <code>str</code> שלו, ה-<code>wait</code> השני שלו שוב מחזיר <bdi dir=\"ltr\">-1</bdi>, והוא מדפיס <code>0: goodbye</code> ומסתיים. בטבלה רואים ש-<code>str</code> השתנה רק אצל 101.</p>"},
+ {act:[100],d:S=>{set(S,101,{st:"gone"});say(S,100,"1: hello");set(S,100,{line:6,st:"wait"});},
+  t:"<p>ה-<code>wait</code> הראשון של 100 מחזיר את 101 ואוסף אותו. 100 מדפיס <code>1: hello</code>, עם העותק שלו של <code>str</code>, ומגיע ל-<code>wait</code> השני. 102 עוד לא סיים, אז 100 שוב נחסם.</p>"},
+ {act:[102],d:S=>{say(S,102,"0: hello");vars(S,102,{str:"\"goodbye\""});say(S,102,"0: goodbye");set(S,102,{st:"zombie",line:null});},
+  t:"<p>102 עושה בדיוק מה ש-101 עשה: <code>0: hello</code>, משנה את <code>str</code> שלו, <code>0: goodbye</code>, ומסתיים.</p>"},
+ {act:[100],d:S=>{set(S,102,{st:"gone"});say(S,100,"1: hello");set(S,100,{st:"gone",line:null});},
+  t:"<p>ה-<code>wait</code> השני מחזיר את 102. 100 מדפיס שוב <code>1: hello</code> ומסתיים.</p><p><b>הכללים שקובעים את הפלטים האפשריים:</b> השורה האחרונה היא תמיד <code>1: hello</code>, כי היא אחרי ששני הבנים סיימו. ה-<code>1: hello</code> הראשון מגיע רק אחרי שבן אחד הדפיס את <b>שתי</b> השורות שלו. בתוך כל בן, <code>hello</code> לפני <code>goodbye</code>. יש 5 פלטים שעומדים בכל זה.</p>"}
+ ]},
+
+{id:"exam",grp:"x",name:"25AC-6 · r1 ו-r2",
+ blurb:"שאלה מ-2025 (גרסה דומה הופיעה ב-22BB-6): קריאות fork בתוך ביטויים לוגיים, ו-exec באמצע. מה שתראו כאן הוא סדר ריצה אפשרי אחד מתוך רבים.",
+ code:[
+ "int main() {",
+ "    int r1 = !fork() || fork();",
+ "    if (r1) {",
+ "        char* args[3] = {\"echo\", \"r1: TRUE\", NULL};",
+ "        execvp(args[0], args);",
+ "        printf(\"r1: TRUE\\n\");",
+ "    } else {",
+ "        printf(\"r1: FALSE\\n\");",
+ "    }",
+ "    wait(NULL);",
+ "    int r2 = !fork() && fork();",
+ "    if (r2) {",
+ "        char* args[3] = {\"echo\", \"r2: TRUE\", NULL};",
+ "        execvp(args[0], args);",
+ "    } else {",
+ "        printf(\"r2: FALSE\\n\");",
+ "    }",
+ "    if (r1 || r2) printf(\"END\\n\");",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. בשורה 2 יש שני <code>fork</code> בתוך ביטוי אחד, עם <code>!</code> ועם <code>||</code>. נעבור עליה לאט.</p>"},
+ {act:[100,101],
+  q:{t:"100 מבצע את ה-fork הראשון בשורה 2 ויוצר את 101. מה ערך !fork() אצל 101?",o:["0","1","101"],a:1,w:"אצל הבן fork() החזיר 0, ו-!0 הוא 1, כלומר אמת."},
+  d:S=>{fk(S,100,101,2,2);},
+  t:"<p>ה-<code>fork</code> הראשון יצר את 101. שניהם עדיין באמצע שורה 2.</p><p>אצל 100: <code>fork()</code> החזיר 101, ולכן <code>!fork()</code> הוא <code>!101</code>, כלומר 0 (שקר).<br>אצל 101: <code>fork()</code> החזיר 0, ולכן <code>!fork()</code> הוא <code>!0</code>, כלומר 1 (אמת).</p>"},
+ {act:[101],
+  q:{t:"אצל 101 הביטוי הוא 1 || fork(). האם 101 יקרא ל-fork השני?",o:["כן","לא: הצד השמאלי כבר אמת, ולכן || לא מחשב את הצד הימני"],a:1,
+     w:"ב-|| מספיק שצד אחד יהיה אמת. אם השמאלי אמת, התוצאה ידועה, והצד הימני (עם ה-fork שבו) לא מחושב."},
+  d:S=>{vars(S,101,{r1:1});set(S,101,{line:3});},
+  t:"<p>ב-<code>||</code> מספיק שצד אחד יהיה אמת. אצל 101 הצד השמאלי כבר 1, ולכן הצד הימני לא מחושב, וה-<code>fork</code> שבו <b>לא קורה</b>. התוצאה: <code>r1 = 1</code>.</p>"},
+ {act:[100,102],
+  q:{t:"אצל 100 הצד השמאלי הוא 0. מה יקרה?",o:["r1 יהיה 0, ו-100 ימשיך","100 חייב לחשב את הצד הימני, כלומר לקרוא ל-fork השני","100 ייעצר"],a:1,
+     w:"כשהצד השמאלי של || שקר, התוצאה תלויה בצד הימני, ולכן הוא מחושב: 100 קורא ל-fork."},
+  d:S=>{fk(S,100,102,3,3);vars(S,100,{r1:1});vars(S,102,{r1:0});},
+  t:"<p>אצל 100 הצד השמאלי שקר, אז הוא חייב לחשב את הצד הימני: הוא קורא ל-<code>fork</code> ויוצר את 102.</p><p>אצל 100 <code>fork()</code> החזיר 102. זה לא 0, כלומר אמת, ולכן <code>r1 = 1</code>.<br>אצל 102 <code>fork()</code> החזיר 0, ולכן <code>r1 = 0 || 0 = 0</code>.</p><p>102 הוא היחיד שיוצא מהשורה עם <code>r1 = 0</code>.</p>"},
+ {act:[100],d:S=>{set(S,100,{st:"exec",prog:"echo r1: TRUE",line:null});},
+  t:"<p>אצל 100 <code>r1 = 1</code>, אז הוא נכנס ל-<code>if</code> ועושה <code>execvp</code>. <b>100 עצמו הפך ל-<code>echo</code>.</b></p><p>הוא לא יגיע ל-<code>printf</code> שבשורה 6, ולא ל-<code>wait</code> או לשום שורה אחרת בהמשך.</p>"},
+ {act:[101],d:S=>{set(S,101,{st:"exec",prog:"echo r1: TRUE",line:null});},
+  t:"<p>גם אצל 101 <code>r1 = 1</code>, אז גם הוא הופך ל-<code>echo</code>, עם אותו טקסט.</p>"},
+ {act:[100],d:S=>{say(S,100,"r1: TRUE","echo");set(S,100,{st:"gone"});orphan(S,[101,102]);},
+  t:"<p>ה-<code>echo</code> שרץ ב-100 מדפיס <code>r1: TRUE</code> ומסתיים. ה-<bdi>shell</bdi> אוסף אותו.</p><p>עכשיו ל-101 ול-102 אין הורה: הם <b>יתומים</b>, ו-<code>init</code> (<bdi>PID 1</bdi>) מאמץ אותם. שימו לב לעמודת ההורה בטבלה. בעץ הם נשארים מתחת ל-100, כי העץ מראה מי יצר את מי.</p>"},
+ {act:[102],d:S=>{say(S,102,"r1: FALSE");set(S,102,{line:10});},
+  t:"<p>אצל 102 <code>r1 = 0</code>, אז הוא הולך ל-<code>else</code> ומדפיס <code>r1: FALSE</code>.</p>"},
+ {act:[102],
+  q:{t:"102 מגיע ל-wait(NULL). למי הוא מחכה?",o:["ל-101","ל-100","לאף אחד: אין לו בנים, ולכן wait מחזיר -1 מיד"],a:2,
+     w:"wait מחכה רק לבנים של התהליך שקורא לו. 101 הוא אח של 102, ו-100 הוא ההורה שלו. ל-102 אין בנים."},
+  d:S=>{set(S,102,{line:11});},
+  t:"<p><code>wait</code> מחכה רק ל<b>בנים</b> של מי שקורא לו. 101 הוא אח של 102, לא בן שלו. ל-102 אין בנים, ולכן <code>wait</code> מחזיר <bdi dir=\"ltr\">-1</bdi> מיד, ו-102 ממשיך לשורה 11.</p>"},
+ {act:[102,103],
+  q:{t:"102 מבצע את ה-fork בשורה 11 ויוצר את 103. מה יהיה r2 של 102?",o:["0","1"],a:0,
+     w:"אצל 102 fork() החזיר 103, ולכן !fork() הוא !103, כלומר 0. ב-&& מספיק שצד אחד יהיה שקר: התוצאה 0, וה-fork השני לא מתבצע אצל 102."},
+  d:S=>{fk(S,102,103,12,11);vars(S,102,{r2:0});},
+  t:"<p>102 יוצר את 103.</p><p>אצל 102: <code>!fork()</code> הוא <code>!103</code>, כלומר 0. ב-<code>&amp;&amp;</code> מספיק שצד אחד יהיה שקר, אז הצד הימני לא מחושב: <code>r2 = 0</code>.</p><p>אצל 103: <code>!fork()</code> הוא <code>!0</code>, כלומר 1. הוא עדיין באמצע שורה 11 וצריך לחשב את הצד הימני.</p>"},
+ {act:[103,104],d:S=>{fk(S,103,104,12,12);vars(S,103,{r2:1});vars(S,104,{r2:0});},
+  t:"<p>ב-<code>&amp;&amp;</code> עם צד שמאלי אמת, צריך לבדוק גם את הצד הימני. לכן 103 קורא ל-<code>fork</code> ויוצר את 104.</p><p>אצל 103 <code>fork()</code> החזיר 104, ולכן <code>r2 = 1</code>.<br>אצל 104 <code>fork()</code> החזיר 0, ולכן <code>r2 = 0</code>.</p><p>104 קיבל גם עותק של <code>r1 = 0</code>, שעבר אליו מ-102 דרך 103.</p>"},
+ {act:[101],d:S=>{say(S,101,"r1: TRUE","echo");set(S,101,{st:"gone"});},
+  t:"<p>ה-<code>echo</code> של 101 מדפיס <code>r1: TRUE</code> ומסתיים, ו-<code>init</code> אוסף אותו. זה יכול היה לקרות בכל רגע מאז ש-101 הפך ל-<code>echo</code>: מערכת ההפעלה מחליטה מתי כל תהליך רץ.</p>"},
+ {act:[103],d:S=>{set(S,103,{st:"exec",prog:"echo r2: TRUE",line:null});},
+  t:"<p>אצל 103 <code>r2 = 1</code>, אז הוא הופך ל-<code>echo</code> שידפיס <code>r2: TRUE</code>.</p>"},
+ {act:[102],
+  q:{t:"102 מדפיס r2: FALSE ומגיע לשורה 18. האם הוא ידפיס END?",o:["כן","לא: אצלו r1 = 0 ו-r2 = 0"],a:1,w:"r1 || r2 אצל 102 הוא 0 || 0 = 0, ולכן אין END."},
+  d:S=>{say(S,102,"r2: FALSE");set(S,102,{st:"gone",line:null});orphan(S,[103,104]);},
+  t:"<p>אצל 102 <code>r2 = 0</code>, אז הוא מדפיס <code>r2: FALSE</code>. בשורה 18 התנאי הוא <code>0 || 0</code>, ולכן אין <code>END</code>. 102 מסתיים, ו-103 ו-104 הופכים ליתומים.</p>"},
+ {act:[104],d:S=>{say(S,104,"r2: FALSE");set(S,104,{st:"gone",line:null});},
+  t:"<p>104 מדפיס <code>r2: FALSE</code>. גם אצלו <code>r1 = 0</code> ו-<code>r2 = 0</code>, אז גם הוא לא מדפיס <code>END</code>.</p>"},
+ {act:[103],d:S=>{say(S,103,"r2: TRUE","echo");set(S,103,{st:"gone"});},
+  t:"<p>ה-<code>echo</code> של 103 מדפיס <code>r2: TRUE</code>. כל התהליכים הסתיימו.</p><p><b>הסיכום:</b> יש 6 שורות פלט. <code>END</code> לא מודפס אף פעם: מי שיש לו <code>r1</code> או <code>r2</code> שווה 1 הפך ל-<code>echo</code> לפני שורה 18, ומי שהגיע לשורה 18 (102 ו-104) הוא עם שניהם 0.</p><p>הסדר שראינו הוא רק אחד מהאפשריים. האילוץ היחיד: <code>r1: FALSE</code> מופיע לפני כל שורות ה-<code>r2</code>, כי 103 ו-104 נוצרים רק אחרי ש-102 הדפיס אותו. בסך הכול יש 45 סדרים אפשריים.</p>"}
+ ]},
+
+{id:"x24sa",grp:"x",name:"24SA-6 · עץ של 7",root:42,
+ blurb:"שאלה מ-2024 (חזרה גם ב-26AB-6): תנאים מקוננים עם <code>&amp;&amp;</code> ו-<code>||</code>, לולאת <code>wait</code>, ו-getppid. התהליך הראשון קיבל את המזהה 42, ו-prog2 לא מדפיסה כלום.",
+ code:[
+ "int main()",
+ "{",
+ "    pid_t pid = getpid();",
+ "",
+ "    if (fork() && !fork()) {",
+ "        if (!fork() || fork()) {",
+ "            fork();",
+ "        }",
+ "    }",
+ "",
+ "    while (wait(NULL) != -1);",
+ "    if (pid != getpid()) {",
+ "        char* args[] = { \"prog2\", NULL };",
+ "        printf(\"%d [%d]\\n\", getpid(), getppid());",
+ "        execvp(args[0], args);",
+ "    }",
+ "    printf(\"Done: %d\\n\", getpid());",
+ "}"],
+ start:3,
+ steps:[
+ {act:[42],t:"<p>תהליך אחד, 42. שימו לב לשורה 3: <code>pid</code> נשמר <b>לפני</b> כל ה-<code>fork</code>-ים, ולכן כל העותקים יקבלו בו 42.</p>"},
+ {act:[42],d:S=>{vars(S,42,{pid:42});set(S,42,{line:5});},t:"<p><code>pid = 42</code>.</p>"},
+ {act:[42,43],
+  q:{t:"42 יוצר את 43 ב-fork הראשון של שורה 5. האם 43 יבצע את !fork()?",o:["כן","לא: אצלו fork() החזיר 0, ולכן && עוצר"],a:1,w:"אצל 43 הצד השמאלי של && הוא 0 (שקר), אז הצד הימני לא מחושב. 43 מדלג על כל ה-if."},
+  d:S=>{fk(S,42,43,5,11);},
+  t:"<p>42 יוצר את 43. אצל 43 <code>fork()</code> החזיר 0, ולכן <code>&amp;&amp;</code> עוצר ו-43 מדלג על כל ה-<code>if</code> לשורה 11. אצל 42 הצד השמאלי אמת, אז ממשיכים ל-<code>!fork()</code>.</p>"},
+ {act:[42,44],
+  q:{t:"42 מבצע !fork() ויוצר את 44. מי מהשניים ייכנס ל-if?",o:["42","44","שניהם","אף אחד"],a:1,w:"אצל 42: !44 = 0, שקר. אצל 44: !0 = 1, אמת. רק 44 נכנס."},
+  d:S=>{fk(S,42,44,11,6);},
+  t:"<p>42 יוצר את 44. אצל 42 <code>!fork()</code> הוא <code>!44</code>, כלומר 0: התנאי שקר ו-42 הולך לשורה 11. אצל 44 זה <code>!0</code>, כלומר 1: התנאי אמת, ו-44 הוא <b>היחיד</b> שנכנס ל-<code>if</code>.</p>"},
+ {act:[44,45],d:S=>{fk(S,44,45,6,7);},
+  t:"<p>בשורה 6, 44 יוצר את 45. אצל 45 <code>!fork()</code> הוא <code>!0 = 1</code>, אמת, ולכן <code>||</code> עוצר ו-45 נכנס ישר לשורה 7. אצל 44 זה <code>!45 = 0</code>, שקר, אז הוא חייב לחשב את הצד הימני.</p>"},
+ {act:[44,46],d:S=>{fk(S,44,46,7,11);},
+  t:"<p>44 מבצע את ה-<code>fork()</code> שבצד הימני ויוצר את 46. אצל 44 התוצאה 46, אמת, והוא נכנס לשורה 7. אצל 46 התוצאה 0, שקר, ו-46 מדלג לשורה 11.</p>"},
+ {act:[44,47],d:S=>{fk(S,44,47,11,11);},t:"<p>בשורה 7, 44 קורא ל-<code>fork</code> ויוצר את 47. התוצאה לא נבדקת, ושניהם ממשיכים לשורה 11.</p>"},
+ {act:[45,48],d:S=>{fk(S,45,48,11,11);},
+  t:"<p>גם 45 הגיע לשורה 7, אז גם הוא יוצר בן: 48. עכשיו יש 7 תהליכים. ל-44 יש שלושה בנים (45, 46, 47).</p>"},
+ {act:[42,44,45],
+  q:{t:"שורה 11 היא while (wait(NULL) != -1). מה היא עושה?",o:["מחכה לבן אחד","מחכה לכל הבנים, עד ש-wait מחזיר -1 כי לא נשארו בנים","מחכה לכל הצאצאים, כולל נכדים"],a:1,
+     w:"כל wait מחזיר בן אחד שהסתיים. הלולאה חוזרת עד ש-wait מחזיר -1, כלומר אין יותר בנים. נכדים לא נספרים: מחכים רק לבנים ישירים."},
+  d:S=>{[42,44,45].forEach(p=>set(S,p,{st:"wait",line:11}));[43,46,47,48].forEach(p=>set(S,p,{line:14}));},
+  t:"<p>הלולאה בשורה 11 קוראת ל-<code>wait</code> שוב ושוב עד שהוא מחזיר <bdi dir=\"ltr\">-1</bdi>, כלומר עד שכל הבנים הסתיימו. 42, 44 ו-45 נחסמים בה.</p><p>ל-43, 46, 47 ו-48 אין בנים, אז אצלם <code>wait</code> מחזיר <bdi dir=\"ltr\">-1</bdi> מיד. אצל כולם <code>pid</code> הוא 42, ו-<code>getpid()</code> שונה, אז הם נכנסים ל-<code>if</code> שבשורה 12.</p>"},
+ {act:[48],d:S=>{say(S,48,"48 [45]");set(S,48,{st:"exec",prog:"prog2",line:null});},
+  t:"<p>48 מדפיס את ה-<bdi>PID</bdi> שלו ושל ההורה, ועושה <code>exec</code> ל-<code>prog2</code>. ההורה, 45, עדיין חי (הוא מחכה), ולכן <code>getppid()</code> מחזיר 45.</p>"},
+ {act:[48,45],d:S=>{set(S,48,{st:"gone"});set(S,45,{st:"run",line:14});},
+  t:"<p><code>prog2</code> מסתיים בלי להדפיס. 45 אוסף את 48, ה-<code>wait</code> הבא מחזיר <bdi dir=\"ltr\">-1</bdi>, והלולאה של 45 נגמרת. 45 ממשיך לשורה 14.</p>"},
+ {act:[47],d:S=>{say(S,47,"47 [44]");set(S,47,{st:"gone",line:null});},t:"<p>47 מדפיס <code>47 [44]</code>, עושה <code>exec</code> ל-<code>prog2</code>, ומסתיים. 44 אוסף אותו וממשיך לחכות ל-45 ול-46.</p>"},
+ {act:[46],d:S=>{say(S,46,"46 [44]");set(S,46,{st:"gone",line:null});},t:"<p>אותו דבר עם 46.</p>"},
+ {act:[45],
+  q:{t:"45 מדפיס getpid() ו-getppid(). מה יופיע בסוגריים?",o:["44","1","42"],a:0,w:"44 עדיין חי, כי הוא מחכה בלולאת ה-wait עד שכל הבנים שלו יסתיימו. לכן ההורה של 45 הוא עדיין 44."},
+  d:S=>{say(S,45,"45 [44]");set(S,45,{st:"gone",line:null});set(S,44,{st:"run",line:14});},
+  t:"<p>45 מדפיס <code>45 [44]</code> ומסתיים דרך <code>prog2</code>. 44 אוסף אותו, ועכשיו כל שלושת הבנים של 44 הסתיימו: הלולאה שלו נגמרת.</p>"},
+ {act:[44],d:S=>{say(S,44,"44 [42]");set(S,44,{st:"gone",line:null});},t:"<p>44 מדפיס <code>44 [42]</code> ומסתיים דרך <code>prog2</code>. 42 אוסף אותו וממשיך לחכות ל-43.</p>"},
+ {act:[43,42],d:S=>{say(S,43,"43 [42]");set(S,43,{st:"gone",line:null});set(S,42,{st:"run",line:17});},
+  t:"<p>43 מדפיס <code>43 [42]</code> ומסתיים. 42 אוסף אותו, וללולאה שלו לא נשארו בנים.</p>"},
+ {act:[42],
+  q:{t:"42 מגיע לשורה 12. למה הוא לא ידפיס [..] ולא יעשה exec?",o:["כי pid אצלו שווה ל-getpid(): שניהם 42","כי אין לו הורה","כי wait החזיר -1"],a:0,w:"pid נשמר בשורה 3, לפני כל ה-fork-ים, ולכן הוא 42 אצל כולם. רק אצל 42 הוא שווה ל-getpid()."},
+  d:S=>{say(S,42,"Done: 42");set(S,42,{st:"gone",line:null});},
+  t:"<p>אצל 42 <code>pid == getpid()</code>, אז הוא מדלג על ה-<code>if</code> ומדפיס <code>Done: 42</code>.</p><p><b>סיכום:</b> 7 תהליכים. הלולאה בשורה 11 מבטיחה שכל תהליך מדפיס רק אחרי שכל הבנים שלו סיימו, ולכן <code>Done: 42</code> תמיד אחרון, וכל צומת מודפס אחרי כל הצאצאים שלו. בין ענפים שונים (למשל 43 מול 48) הסדר חופשי.</p>"}
+ ]},
+
+{id:"x24ac",grp:"x",name:"24AC-1 · לולאה עם break",
+ blurb:"שאלה מ-2024: fork בתוך לולאה, שני בנים בכל סיבוב, break להורה, ו-exec בסוף. כל תהליך חדש מקבל את המזהה הבא.",
+ code:[
+ "int main (int argc, char *argv[]) {",
+ "    int N = 2;",
+ "    char* args[] = {\"echo\", \"Done\", NULL};",
+ "    pid_t pid;",
+ "    for (int i = 0; i < N; ++i) {",
+ "        printf (\"%d %d\\n\", getpid(), i);",
+ "        if (!fork())",
+ "            printf (\"1: %d [%d]\\n\", getpid(), getppid());",
+ "        else if (!fork())",
+ "            printf (\"2: %d [%d]\\n\", getpid(), getppid());",
+ "        else",
+ "            break;   // exit for-loop",
+ "    }",
+ "    wait(NULL);",
+ "    wait(NULL);",
+ "    printf (\"pid = %d \", getpid());",
+ "    execvp(args[0], args);",
+ "    printf(\"BYE BYE\\n\");",
+ "    return 0;",
+ "}"],
+ start:2,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. בכל סיבוב של הלולאה תהליך יוצר שני בנים ויוצא מהלולאה, והבנים ממשיכים לסיבוב הבא. נעקוב אחרי סדר הריצה של התשובה הרשמית: כל בן רץ עד הסוף לפני ההורה שלו.</p>"},
+ {act:[100],d:S=>{vars(S,100,{i:0});say(S,100,"100 0");set(S,100,{line:7});},t:"<p><code>i = 0</code>, ו-100 מדפיס <code>100 0</code>.</p>"},
+ {act:[100,101],d:S=>{fk(S,100,101,9,8);},
+  t:"<p>100 יוצר את 101. אצל 101 <code>!fork()</code> הוא <code>!0 = 1</code>, אז הוא בשורה 8. אצל 100 זה <code>!101 = 0</code>, אז הוא עובר ל-<code>else if</code> בשורה 9.</p>"},
+ {act:[101],
+  q:{t:"101 מדפיס את שורת ה-1:. מה הוא עושה אחר כך?",o:["יוצא מהלולאה","ממשיך לסיבוב הבא של הלולאה, עם i = 1","מחכה ב-wait"],a:1,
+     w:"אחרי ה-printf של שורה 8 אין break. ה-break נמצא רק ב-else האחרון, ורק מי שקיבל ערך חיובי משני ה-fork (ההורה) מגיע אליו."},
+  d:S=>{say(S,101,"1: 101 [100]");vars(S,101,{i:1});say(S,101,"101 1");set(S,101,{line:7});},
+  t:"<p>101 מדפיס <code>1: 101 [100]</code>, ממשיך לסיבוב הבא עם <code>i = 1</code>, ומדפיס <code>101 1</code>.</p>"},
+ {act:[101,102],d:S=>{fk(S,101,102,9,8);},t:"<p>101 יוצר את 102, בדיוק כמו ש-100 יצר את 101.</p>"},
+ {act:[102],d:S=>{say(S,102,"1: 102 [101]");vars(S,102,{i:2});set(S,102,{line:14});},
+  t:"<p>102 מדפיס <code>1: 102 [101]</code>. עכשיו <code>i = 2</code>, ו-<code>i &lt; N</code> שקר: הלולאה נגמרת בלי ש-102 יצר אף בן.</p>"},
+ {act:[102],
+  q:{t:"102 קורא ל-wait פעמיים, ואז ל-printf(\"pid = %d \") ול-execvp. מה מודפס בפועל אם מריצים במסוף?",o:["pid = 102 Done","רק Done","pid = 102 ואחר כך BYE BYE"],a:1,
+     w:"ל-102 אין בנים, אז שני ה-wait מחזירים -1 מיד. ה-printf בלי \\n נשאר ב-buffer בזיכרון של התהליך, ו-exec מוחק את הזיכרון לפני שהוא נכתב למסך. נשאר רק ה-Done של echo."},
+  d:S=>{say(S,102,"Done","echo");set(S,102,{st:"zombie",line:null,prog:"echo Done"});},
+  t:"<p>ל-102 אין בנים, אז שני ה-<code>wait</code> מחזירים <bdi dir=\"ltr\">-1</bdi> מיד. אחר כך <code>printf(\"pid = 102 \")</code>, אבל <b>בלי <code>\\n</code></b>: הטקסט נשאר ב-buffer של <code>printf</code>, שנמצא בזיכרון של התהליך. <code>exec</code> מוחק את כל הזיכרון הזה, ולכן הטקסט לא יגיע למסך. <code>echo</code> מדפיס <code>Done</code>, ו-102 מסתיים (זומבי, כי 101 עוד לא מחכה).</p><p><b>למבחן:</b> התשובה הרשמית כוללת <code>pid = 102 Done</code>, כנראה בלי לחשוב על ה-buffer. כדאי לדעת את שתי הגרסאות. כאן מוצג מה שקורה בהרצה אמיתית.</p>"},
+ {act:[101,103],d:S=>{fk(S,101,103,15,10);set(S,102,{st:"gone"});set(S,101,{st:"wait"});},
+  t:"<p>101 ממשיך לשורה 9 ויוצר את 103. אצל 101 <code>!103 = 0</code>, אז הוא מגיע ל-<code>break</code> ויוצא מהלולאה. ה-<code>wait</code> הראשון שלו אוסף מיד את 102, שכבר סיים. ה-<code>wait</code> השני נחסם, כי 103 עוד רץ.</p>"},
+ {act:[103],d:S=>{say(S,103,"2: 103 [101]");vars(S,103,{i:2});say(S,103,"Done","echo");set(S,103,{st:"zombie",line:null,prog:"echo Done"});},
+  t:"<p>103 מדפיס <code>2: 103 [101]</code>. גם אצלו <code>i</code> הופך ל-2 והלולאה נגמרת. אין לו בנים, אז הוא עובר ישר ל-<code>exec</code>, ו-<code>echo</code> מדפיס <code>Done</code>.</p>"},
+ {act:[101],d:S=>{set(S,103,{st:"gone"});say(S,101,"Done","echo");set(S,101,{st:"zombie",line:null,prog:"echo Done"});},
+  t:"<p>ה-<code>wait</code> השני של 101 אוסף את 103. 101 מגיע ל-<code>exec</code>, ו-<code>echo</code> מדפיס <code>Done</code>. 101 מסתיים וממתין ש-100 יאסוף אותו.</p>"},
+ {act:[100,104],d:S=>{fk(S,100,104,15,10);set(S,101,{st:"gone"});set(S,100,{st:"wait"});},
+  t:"<p>רק עכשיו 100 ממשיך: הוא יוצר את 104 בשורה 9, מקבל <code>!104 = 0</code>, ויוצא מהלולאה ב-<code>break</code>. ה-<code>wait</code> הראשון אוסף את 101, והשני נחסם עד ש-104 יסתיים.</p>"},
+ {act:[104],d:S=>{say(S,104,"2: 104 [100]");vars(S,104,{i:1});say(S,104,"104 1");set(S,104,{line:7});},
+  t:"<p>104 מדפיס <code>2: 104 [100]</code>, ממשיך לסיבוב <code>i = 1</code>, ומדפיס <code>104 1</code>. ל-104 יש עכשיו את אותו תפקיד ש-101 היה לו.</p>"},
+ {act:[104,105],d:S=>{fk(S,104,105,9,8);},t:"<p>104 יוצר את 105.</p>"},
+ {act:[105],d:S=>{say(S,105,"1: 105 [104]");vars(S,105,{i:2});say(S,105,"Done","echo");set(S,105,{st:"zombie",line:null,prog:"echo Done"});},
+  t:"<p>105 מדפיס <code>1: 105 [104]</code>, יוצא מהלולאה, ועובר ל-<code>exec</code>: <code>Done</code>.</p>"},
+ {act:[104,106],d:S=>{fk(S,104,106,15,10);set(S,105,{st:"gone"});set(S,104,{st:"wait"});},
+  t:"<p>104 יוצר את 106 ויוצא מהלולאה. ה-<code>wait</code> הראשון אוסף את 105, והשני מחכה ל-106.</p>"},
+ {act:[106],d:S=>{say(S,106,"2: 106 [104]");vars(S,106,{i:2});say(S,106,"Done","echo");set(S,106,{st:"zombie",line:null,prog:"echo Done"});},
+  t:"<p>106 מדפיס <code>2: 106 [104]</code> ו-<code>Done</code>.</p>"},
+ {act:[104],d:S=>{set(S,106,{st:"gone"});say(S,104,"Done","echo");set(S,104,{st:"zombie",line:null,prog:"echo Done"});},t:"<p>104 אוסף את 106, ו-<code>echo</code> שלו מדפיס <code>Done</code>.</p>"},
+ {act:[100],d:S=>{set(S,104,{st:"gone"});say(S,100,"Done","echo");set(S,100,{st:"gone",line:null,prog:"echo Done"});},
+  t:"<p>100 אוסף את 104, ו-<code>echo</code> שלו מדפיס את ה-<code>Done</code> האחרון.</p><p><b>סיכום:</b> 7 תהליכים: 100 יוצר 2, וכל אחד מהם יוצר 2. כל סיבוב מכפיל את מספר התהליכים <b>החדשים</b>: <code>1 + 2 + 4 = 7</code>. עבור <bdi dir=\"ltr\">N</bdi> כללי: <bdi dir=\"ltr\">2^(N+1) − 1</bdi>.</p><p><code>BYE BYE</code> לא מודפס אף פעם, כי <code>exec</code> שהצליח לא חוזר. ובגלל ה-buffer, גם <code>pid = …</code> לא מגיע למסך בהרצה אמיתית.</p>"}
+ ]},
+
+{id:"x23bb",grp:"x",name:"23BB-6 · לולאה ו-FIFO",
+ blurb:"שאלה מ-2023 עם N = 3: כל תהליך שומר במערך את מה ש-fork החזיר לו. מעבד יחיד ותזמון FIFO: כל תהליך רץ עד הסוף, לפי סדר היצירה.",
+ code:[
+ "int main()",
+ "{",
+ "    int arr[N] = {0};   // N = 3",
+ "    char *e[] = {\"echo\", \"hello\", NULL};",
+ "    setbuf(stdout, NULL);",
+ "",
+ "    for (int i = 0; i < N; ++i)",
+ "        arr[i] = (fork() > 0);   // 0 or 1",
+ "",
+ "    for (int i = 0; i < N; ++i)",
+ "        printf(\"%d \", arr[i]);",
+ "",
+ "    if (arr[0])",
+ "        execvp(e[0], e);",
+ "    else",
+ "        printf(\"\\n\");",
+ "}"],
+ start:3,
+ steps:[
+ {act:[100],t:"<p>תהליך אחד, 100. התזמון הוא <bdi>FIFO</bdi> על מעבד יחיד: תהליך רץ עד שהוא מסתיים, ותהליכים חדשים מחכים בתור לפי סדר היצירה. <code>setbuf(stdout, NULL)</code> מבטל את ה-buffer, אז כל <code>printf</code> מגיע למסך מיד.</p>"},
+ {act:[100],d:S=>{vars(S,100,{arr:"[0,0,0]"});set(S,100,{line:8});},t:"<p>המערך מתחיל עם אפסים.</p>"},
+ {act:[100,101],
+  q:{t:"100 מבצע את ה-fork של i = 0. מה יהיה arr[0] אצל 100 ואצל הבן 101?",o:["אצל 100: 1, אצל 101: 0","אצל שניהם 1","אצל 100: 0, אצל 101: 1"],a:0,
+     w:"arr[i] = (fork() > 0): אצל ההורה fork מחזיר את ה-PID של הבן, שגדול מ-0, אז 1. אצל הבן הוא מחזיר 0, אז 0."},
+  d:S=>{fk(S,100,101,8,8);vars(S,100,{arr:"[1,0,0]"});},
+  t:"<p>100 יוצר את 101. אצל 100 <code>arr[0] = 1</code>, ואצל 101 <code>arr[0] = 0</code>. המערך הוא בעצם רישום של „הייתי הורה או בן” בכל סיבוב.</p><p>101 מוכן לריצה, אבל ב-<bdi>FIFO</bdi> הוא מחכה בתור עד ש-100 יסיים.</p>"},
+ {act:[100,102],d:S=>{fk(S,100,102,8,8);vars(S,100,{arr:"[1,1,0]"});vars(S,102,{arr:"[1,0,0]"});},
+  t:"<p><code>i = 1</code>: 100 יוצר את 102. 102 מקבל עותק של המערך של 100 (עם <code>arr[0] = 1</code>), ו-<code>arr[1] = 0</code>.</p>"},
+ {act:[100,103],d:S=>{fk(S,100,103,10,10);vars(S,100,{arr:"[1,1,1]"});vars(S,103,{arr:"[1,1,0]"});},t:"<p><code>i = 2</code>: 100 יוצר את 103.</p>"},
+ {act:[100],d:S=>{say(S,100,"1 1 1 hello","printf+echo");set(S,100,{st:"gone",line:null,prog:"echo hello"});orphan(S,[101,102,103]);},
+  t:"<p>100 מדפיס את המערך שלו, <code>1 1 1 </code>. אצלו <code>arr[0] = 1</code>, אז הוא עושה <code>exec</code>, ו-<code>echo</code> מדפיס <code>hello</code> על אותה שורה. 100 מסתיים, והבנים שלו עוברים ל-<code>init</code>.</p>"},
+ {act:[101,104],d:S=>{fk(S,101,104,8,8);vars(S,101,{arr:"[0,1,0]"});},
+  t:"<p>עכשיו תור 101. הוא נוצר באמצע הלולאה, אחרי <code>i = 0</code>, אז הוא ממשיך מ-<code>i = 1</code> ויוצר את 104.</p>"},
+ {act:[101,105],d:S=>{fk(S,101,105,10,10);vars(S,101,{arr:"[0,1,1]"});vars(S,105,{arr:"[0,1,0]"});},t:"<p><code>i = 2</code>: 101 יוצר את 105.</p>"},
+ {act:[101],
+  q:{t:"101 מדפיס 0 1 1 ומגיע לשורה 13. מה יקרה?",o:["exec ל-echo, ויודפס hello","לא יהיה exec: arr[0] = 0, אז יודפס רק ירידת שורה"],a:1,w:"101 נוצר כבן ב-fork הראשון, לכן arr[0] = 0 אצלו ואצל כל הצאצאים שלו."},
+  d:S=>{say(S,101,"0 1 1");set(S,101,{st:"gone",line:null});orphan(S,[104,105]);},
+  t:"<p>101 מדפיס <code>0 1 1 </code>. אצלו <code>arr[0] = 0</code>, אז במקום <code>exec</code> הוא מדפיס ירידת שורה.</p>"},
+ {act:[102,106],d:S=>{fk(S,102,106,10,10);vars(S,102,{arr:"[1,0,1]"});},t:"<p>תור 102. הוא ממשיך מ-<code>i = 2</code> ויוצר את 106.</p>"},
+ {act:[102],d:S=>{say(S,102,"1 0 1 hello","printf+echo");set(S,102,{st:"gone",line:null,prog:"echo hello"});orphan(S,[106]);},t:"<p>102 מדפיס <code>1 0 1 </code>, ואצלו <code>arr[0] = 1</code>, אז גם <code>hello</code>.</p>"},
+ {act:[103],d:S=>{say(S,103,"1 1 0 hello","printf+echo");set(S,103,{st:"gone",line:null,prog:"echo hello"});},t:"<p>103 נוצר בסיבוב האחרון, אז הוא לא יוצר אף בן. הוא מדפיס <code>1 1 0 hello</code>.</p>"},
+ {act:[104,107],d:S=>{fk(S,104,107,10,10);vars(S,104,{arr:"[0,0,1]"});say(S,104,"0 0 1");set(S,104,{st:"gone",line:null});orphan(S,[107]);},
+  t:"<p>104 ממשיך מ-<code>i = 2</code>, יוצר את 107, ומדפיס <code>0 0 1</code>.</p>"},
+ {act:[105,106,107],d:S=>{say(S,105,"0 1 0");say(S,106,"1 0 0 hello","printf+echo");say(S,107,"0 0 0");[105,106,107].forEach(p=>set(S,p,{st:"gone",line:null}));S.P[106].prog="echo hello";},
+  t:"<p>105, 106 ו-107 רצים לפי הסדר ומדפיסים.</p><p><b>סיכום:</b> 8 תהליכים, כלומר <bdi dir=\"ltr\">2^N</bdi>. כל תהליך מדפיס צירוף אחר של 0 ו-1, ובדיוק חצי מהם (אלה עם <code>arr[0] = 1</code>, שאינם בתת-העץ של 101) מדפיסים גם <code>hello</code>. ב-<bdi>FIFO</bdi> הסדר נקבע לגמרי: לפי סדר היצירה.</p><p>שאלת ההמשך במבחן: עם <bdi>MLFQ</bdi> כל תהליך היה מדפיס אותו דבר, אבל בכל סדר, ואפילו מעורבב באמצע שורה.</p>"}
+ ]},
+
+{id:"x25ab",grp:"x",name:"25AB-4 · כמה תהליכים?",
+ blurb:"שאלה אמריקאית מ-2025: לולאה של 3 סיבובים, עם שני <code>fork</code> בתוך תנאי ו-<code>break</code>. כמה תהליכים נוצרים, כולל הראשי?",
+ code:[
+ "int main()",
+ "{",
+ "    for (int i = 0; i < 3; ++i) {",
+ "        if (!fork() && !fork()) {",
+ "            break;",
+ "        }",
+ "    }",
+ "}"],
+ start:3,
+ steps:[
+ {act:[100],d:S=>{vars(S,100,{i:0});},t:"<p>תהליך אחד, 100, בסיבוב <code>i = 0</code>. מי שהתנאי אצלו אמת יוצא מהלולאה (ומסתיים). כל השאר ממשיכים לסיבוב הבא.</p>"},
+ {act:[100,101],
+  q:{t:"100 מבצע את ה-fork הראשון ויוצר את 101. אצל 100 !fork() הוא !101 = 0. האם 100 יקרא ל-fork השני?",o:["כן","לא: הצד השמאלי של && שקר, אז הצד הימני לא מחושב"],a:1,w:"ב-&& עם צד שמאלי שקר, התוצאה כבר 0. לכן 100 לא נכנס ל-if וממשיך לסיבוב הבא."},
+  d:S=>{fk(S,100,101,3,4);},
+  t:"<p>אצל 100 הצד השמאלי שקר, אז התנאי שקר: 100 ממשיך לסיבוב הבא. אצל 101 הצד השמאלי הוא <code>!0 = 1</code>, אז הוא צריך לחשב גם את הצד הימני.</p>"},
+ {act:[101,102],d:S=>{fk(S,101,102,3,5);set(S,102,{st:"zombie",line:null});},
+  t:"<p>101 מבצע את ה-<code>fork</code> השני ויוצר את 102. אצל 101 <code>!102 = 0</code>: התנאי שקר, ו-101 ממשיך בלולאה. אצל 102 <code>!0 = 1</code>: התנאי אמת, ו-102 עושה <code>break</code> ומסתיים. הוא זומבי, כי 101 לא קורא ל-<code>wait</code>.</p><p><b>התבנית של כל סיבוב:</b> כל תהליך שבלולאה יוצר בן שממשיך בלולאה, והבן הזה יוצר נכד שיוצא.</p>"},
+ {act:[100,101,103,104,105,106],d:S=>{let n=103;[100,101].forEach(p=>{vars(S,p,{i:1});const c=n++,g=n++;fk(S,p,c,3,3);fk(S,c,g,3,5);set(S,g,{st:"zombie",line:null});});},
+  t:"<p>סיבוב <code>i = 1</code>: בלולאה יש 2 תהליכים (100 ו-101). כל אחד יוצר בן שנשאר בלולאה (103, 105), וכל בן כזה יוצר נכד שיוצא (104, 106).</p>"},
+ {act:[100,101,103,105,107,109,111,113],
+  q:{t:"בסיבוב האחרון (i = 2) יש 4 תהליכים בלולאה. כמה תהליכים יהיו בסך הכול בסוף, כולל הראשי?",o:["7","8","15","18","31"],a:2,w:"בסוף 3 סיבובים יש 8 תהליכים שעברו את כל הלולאה, ועוד נכד אחד שיצא בכל פעם שתהליך בלולאה יצר בן: 1 + 2 + 4 = 7. סך הכול 8 + 7 = 15."},
+  d:S=>{let n=107;[100,101,103,105].forEach(p=>{vars(S,p,{i:2});const c=n++,g=n++;fk(S,p,c,3,3);fk(S,c,g,3,5);set(S,g,{st:"zombie",line:null});});},
+  t:"<p>סיבוב <code>i = 2</code>: ארבעת התהליכים שבלולאה יוצרים כל אחד בן ונכד. נוספים 8 תהליכים.</p>"},
+ {act:[],d:S=>{S.order.forEach(p=>{set(S,p,{st:"gone",line:null});});},
+  t:"<p>הלולאה נגמרת אצל כולם, וכל התהליכים מסתיימים.</p><p><b>הספירה:</b> 8 תהליכים עברו את כל 3 הסיבובים (המספר מוכפל בכל סיבוב: 1, 2, 4, 8), ועוד 7 יצאו ב-<code>break</code> (אחד לכל תהליך שהיה בלולאה בתחילת סיבוב: 1 + 2 + 4). סך הכול <code>8 + 7 = 15</code>. התשובה: 15.</p>"}
+ ]}
+];
+
+/* ---------- runtime ---------- */
+let prog=PROGS[0],cur=0,pendingQ=false,answered={};
+const snap=k=>{const S=init(prog.start,prog.root);for(let i=0;i<=k;i++){if(prog.steps[i].d)prog.steps[i].d(S);if(i<k)S.lastOut=0;}return S;};
+
+function stateOf(p){
+  if(p.st==="exec")return {cls:"exec",txt:"הפך ל-"+p.prog.split(" ")[0]};
+  if(p.st==="gone")return {cls:"gone",txt:p.orph?"הסתיים, init אסף":(p.tp===null?"הסתיים":"נאסף")};
+  return {cls:p.st,txt:STLBL[p.st]};
+}
+
+function renderCode(S,act){
+  const html=prog.code.map((ln,i)=>{
+    const n=i+1;
+    const here=S.order.filter(id=>{const p=S.P[id];return p.line===n&&(p.st==="run"||p.st==="wait");});
+    const b=here.map(id=>'<span class="pb'+(S.P[id].st==="wait"?" wait":"")+(act.includes(id)?" act":"")+'">'+id+"</span>").join("");
+    return '<div class="ln'+(here.some(id=>act.includes(id))?" hot":"")+'"><span class="no">'+n+'</span><span>'+hl(ln)+'</span><span class="bd">'+b+"</span></div>";
+  }).join("");
+  $("code").innerHTML=html;
+}
+
+function renderTree(S,act){
+  const kids={};S.order.forEach(id=>kids[id]=[]);
+  S.order.forEach(id=>{const t=S.P[id].tp;if(t!==null&&kids[t])kids[t].push(id);});
+  const pos={};let x=0,maxD=0;
+  (function lay(id,d){maxD=Math.max(maxD,d);const k=kids[id];
+    if(!k.length){pos[id]={x:x++,d:d};}
+    else{k.forEach(c=>lay(c,d+1));const xs=k.map(c=>pos[c].x);pos[id]={x:(Math.min(...xs)+Math.max(...xs))/2,d:d};}
+  })(S.root,0);
+  const n=x,CW=118,NW=96,NH=52,RH=92,TOP=34;
+  const W=Math.max(n*CW,240),H=TOP+(maxD+1)*RH;
+  const off=(W-n*CW)/2;
+  const cx=id=>off+(n-1-pos[id].x)*CW+CW/2; // first child on the right (RTL)
+  const cy=id=>TOP+pos[id].d*RH+NH/2;
+  let s='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="עץ תהליכים">';
+  // shell stub
+  s+='<text x="'+cx(S.root)+'" y="12" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-mono)">shell</text>';
+  s+='<line x1="'+cx(S.root)+'" y1="16" x2="'+cx(S.root)+'" y2="'+(TOP)+'" stroke="var(--line)" stroke-width="2" stroke-dasharray="3 3"/>';
+  S.order.forEach(id=>{const t=S.P[id].tp;if(t===null)return;
+    s+='<path d="M'+cx(t)+','+(cy(t)+NH/2)+' C'+cx(t)+','+(cy(t)+NH/2+30)+' '+cx(id)+','+(cy(id)-NH/2-30)+' '+cx(id)+','+(cy(id)-NH/2)+'" fill="none" stroke="var(--muted)" stroke-width="1.6"/>';
+    // fork return label for the child
+    s+='<text x="'+(cx(id)+7)+'" y="'+(cy(id)-NH/2-8)+'" text-anchor="start" font-size="10" fill="var(--muted)" font-family="var(--f-mono)">fork→0</text>';
+  });
+  S.order.forEach(id=>{
+    const p=S.P[id],st=stateOf(p),c=st.cls;
+    const X=cx(id)-NW/2,Y=cy(id)-NH/2,isA=act.includes(id);
+    const col={run:"run",wait:"wait",exec:"exec",zombie:"zombie",gone:"gone"}[c];
+    s+='<g class="node" opacity="'+(c==="gone"?0.55:1)+'">';
+    if(isA)s+='<rect x="'+(X-5)+'" y="'+(Y-5)+'" width="'+(NW+10)+'" height="'+(NH+10)+'" rx="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>';
+    s+='<rect x="'+X+'" y="'+Y+'" width="'+NW+'" height="'+NH+'" rx="10" fill="var(--'+col+'-bg)" stroke="var(--'+col+')" stroke-width="2"'+(c==="zombie"?' stroke-dasharray="5 4"':"")+'/>';
+    s+='<text x="'+cx(id)+'" y="'+(Y+21)+'" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)" font-family="var(--f-mono)">'+id+'</text>';
+    s+='<text x="'+cx(id)+'" y="'+(Y+40)+'" text-anchor="middle" font-size="11" fill="var(--'+col+')" font-family="var(--f-body)" direction="rtl">'+esc(st.txt)+'</text>';
+    s+="</g>";
+  });
+  s+="</svg>";
+  const tb=$("tree");tb.innerHTML=s;tb.scrollLeft=Math.max(0,(tb.scrollWidth-tb.clientWidth)/2);
+}
+
+function renderTable(S,act){
+  const hasVars=S.order.some(id=>Object.keys(S.P[id].vars).length);
+  let h='<tr><th>PID</th><th>הורה</th><th>fork החזיר לו</th>'+(hasVars?"<th>משתנים</th>":"")+"<th>מצב</th><th>שורה</th></tr>";
+  S.order.forEach(id=>{
+    const p=S.P[id],st=stateOf(p);
+    const v=Object.entries(p.vars).map(([k,val])=>k+"="+val).join(", ");
+    const par=p.orph?'<span class="chg" title="אומץ על ידי init">1 (init)</span>':(p.ppid==="shell"?"shell":p.ppid);
+    h+='<tr'+(act.includes(id)?' class="act"':"")+'><td class="pid">'+id+"</td><td>"+par+'</td><td><bdi dir="ltr">'+(p.rets.join(", ")||"–")+"</bdi></td>"+
+      (hasVars?'<td><bdi dir="ltr" class="mono">'+(v||"–")+"</bdi></td>":"")+
+      '<td><span class="st '+st.cls+'">'+esc(st.txt)+"</span></td><td>"+(p.line||"–")+"</td></tr>";
+  });
+  $("tbl").innerHTML=h;
+}
+
+function renderOut(S){
+  if(!S.out.length){$("out").innerHTML='<div class="empty">עוד לא הודפס כלום.</div>';return;}
+  const k=S.out.length-S.lastOut;
+  $("out").innerHTML=S.out.map((o,i)=>'<div class="o'+(i>=k?" new":"")+'"><span class="t">'+(o.via?o.via+" ":"")+"["+o.pid+"]</span><span>"+esc(o.text)+"</span></div>").join("");
+}
+
+function renderQ(){
+  const box=$("qbox");
+  if(!pendingQ){box.innerHTML="";return;}
+  const st=prog.steps[cur+1],q=st.q,ans=answered[cur+1];
+  let h='<div class="q"><div class="qt">לפני שממשיכים: '+esc(q.t)+'</div><div class="opts">';
+  q.o.forEach((o,i)=>{let c="";if(ans!==undefined){if(i===q.a)c=" ok";else if(i===ans)c=" bad";}
+    h+='<button type="button" class="opt'+c+'" data-i="'+i+'"'+(ans!==undefined?" disabled":"")+'><bdi>'+esc(o)+"</bdi></button>";});
+  h+="</div>";
+  if(ans!==undefined)h+='<div class="fb">'+(ans===q.a?'<b class="ok">נכון.</b> ':'<b class="bad">לא בדיוק.</b> ')+esc(q.w)+" לחצו על „הצעד הבא” כדי לראות את זה קורה.</div>";
+  h+="</div>";
+  box.innerHTML=h;
+  box.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>{answered[cur+1]=+b.dataset.i;renderQ();}));
+}
+
+function render(){
+  const st=prog.steps[cur],S=snap(cur),act=st.act||[];
+  renderCode(S,act);renderTree(S,act);renderTable(S,act);renderOut(S);
+  $("say").innerHTML=st.t;
+  $("who").innerHTML=act.length?"פועל בצעד הזה: "+act.map(a=>'<span class="pb act">'+a+"</span>").join(" "):"";
+  $("counter").textContent="צעד "+(cur+1)+" מתוך "+prog.steps.length;
+  $("prev").disabled=cur===0&&!pendingQ;
+  $("next").disabled=cur===prog.steps.length-1;
+  $("next").textContent=pendingQ&&answered[cur+1]===undefined?"דלגו על השאלה ←":"הצעד הבא ←";
+  renderQ();
+}
+
+function next(){
+  if(cur>=prog.steps.length-1)return;
+  const nx=prog.steps[cur+1];
+  if(!pendingQ&&nx.q&&$("guess").checked&&answered[cur+1]===undefined){pendingQ=true;render();return;}
+  pendingQ=false;cur++;render();
+}
+function prev(){if(pendingQ){pendingQ=false;render();return;}if(cur>0){cur--;render();}}
+function pick(i){prog=PROGS[i];cur=0;pendingQ=false;answered={};
+  document.querySelectorAll("#progs .chip").forEach((c,j)=>c.setAttribute("aria-pressed",j===i?"true":"false"));
+  $("blurb").innerHTML=prog.blurb;
+  try{localStorage.setItem("forklab-prog",prog.id);}catch(e){}
+  render();}
+
+const grpHTML=(g,lbl)=>'<div class="chips"><span class="grp">'+lbl+"</span>"+PROGS.map((p,i)=>p.grp===g?'<button type="button" class="chip" aria-pressed="false" data-i="'+i+'">'+esc(p.name)+"</button>":"").join("")+"</div>";
+$("progs").innerHTML=grpHTML("b","הבסיס")+grpHTML("x","שאלות ממבחנים");
+document.querySelectorAll("#progs .chip").forEach(c=>c.addEventListener("click",()=>pick(+c.dataset.i)));
+$("next").addEventListener("click",next);
+$("prev").addEventListener("click",prev);
+$("reset").addEventListener("click",()=>{cur=0;pendingQ=false;answered={};render();});
+document.addEventListener("keydown",e=>{
+  if(e.target.closest&&e.target.closest("input,textarea"))return;
+  if(e.key==="ArrowLeft"){next();e.preventDefault();}
+  else if(e.key==="ArrowRight"){prev();e.preventDefault();}
+});
+let start=0;
+try{const s=localStorage.getItem("forklab-prog");const j=PROGS.findIndex(p=>p.id===s);if(j>=0)start=j;}catch(e){}
+pick(start);
+})();
+</script>
+
+</body>
+</html>
