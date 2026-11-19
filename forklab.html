@@ -693,7 +693,7 @@ const PROGS=[
  {act:[104],d:S=>{say(S,104,"r2: FALSE");set(S,104,{st:"gone",line:null});},
   t:"<p>104 מדפיס <code>r2: FALSE</code>. גם אצלו <code>r1 = 0</code> ו-<code>r2 = 0</code>, אז גם הוא לא מדפיס <code>END</code>.</p>"},
  {act:[103],d:S=>{say(S,103,"r2: TRUE","echo");set(S,103,{st:"gone"});},
-  t:"<p>ה-<code>echo</code> של 103 מדפיס <code>r2: TRUE</code>. כל התהליכים הסתיימו.</p><p><b>הסיכום:</b> יש 6 שורות פלט. <code>END</code> לא מודפס אף פעם: מי שיש לו <code>r1</code> או <code>r2</code> שווה 1 הפך ל-<code>echo</code> לפני שורה 18, ומי שהגיע לשורה 18 (102 ו-104) הוא עם שניהם 0.</p><p>הסדר שראינו הוא רק אחד מהאפשריים. האילוץ היחיד: <code>r1: FALSE</code> מופיע לפני כל שורות ה-<code>r2</code>, כי 103 ו-104 נוצרים רק אחרי ש-102 הדפיס אותו. בסך הכול יש 45 סדרים אפשריים.</p><p><b>סעיף 6.2 (זומבים):</b> ייתכנו, וכל תהליך יכול להיות זומבי חוץ מ-100 (ההורה שלו הוא ה-<bdi>shell</bdi>, ואין לנו מידע עליו). אף אחד לא מחכה לבנים שלו: ה-<code>wait</code> היחיד שמתבצע הוא של 102, שאין לו בנים באותו רגע. לכן כל בן שמסתיים לפני ההורה שלו נשאר זומבי עד שההורה מסתיים ו-<code>init</code> אוסף אותו.</p><p><b>סעיף 6.3 (אין <code>echo</code>):</b> בתוכנית הבאה, „25AC-6 · ואם אין echo?”.</p>"}
+  t:"<p>ה-<code>echo</code> של 103 מדפיס <code>r2: TRUE</code>. כל התהליכים הסתיימו.</p><p><b>הסיכום:</b> יש 6 שורות פלט. <code>END</code> לא מודפס אף פעם: מי שיש לו <code>r1</code> או <code>r2</code> שווה 1 הפך ל-<code>echo</code> לפני שורה 18, ומי שהגיע לשורה 18 (102 ו-104) הוא עם שניהם 0.</p><p>הסדר שראינו הוא רק אחד מהאפשריים. האילוץ היחיד: <code>r1: FALSE</code> מופיע לפני כל שורות ה-<code>r2</code>, כי 103 ו-104 נוצרים רק אחרי ש-102 הדפיס אותו. בסך הכול יש 45 סדרים אפשריים.</p><p><b>סעיף 6.2 (זומבים):</b> ייתכנו, וכל תהליך יכול להיות זומבי חוץ מ-100 (ההורה שלו הוא ה-<bdi>shell</bdi>, ואין לנו מידע עליו). אף אחד לא מחכה לבנים שלו: ה-<code>wait</code> היחיד שמתבצע הוא של 102, שאין לו בנים באותו רגע. לכן כל בן שמסתיים לפני ההורה שלו נשאר זומבי עד שההורה מסתיים ו-<code>init</code> אוסף אותו.</p><p><b>סעיף 6.3 (אין <code>echo</code>):</b> <a href=\"#x25acno\">לחצו כאן למעבר לגרסה בלי <code>echo</code></a> (גם הכפתור „25AC-6 · ואם אין echo?” בשורת השאלות ממבחנים).</p>"}
  ]},
 
 {id:"x25acno",grp:"x",name:"25AC-6 · ואם אין echo?",
@@ -1100,7 +1100,10 @@ document.addEventListener("keydown",e=>{
 });
 let start=0;
 try{const s=localStorage.getItem("forklab-prog");const j=PROGS.findIndex(p=>p.id===s);if(j>=0)start=j;}catch(e){}
-pick(start);
+function fromHash(){const h=location.hash.slice(1);const j=PROGS.findIndex(p=>p.id===h);if(j>=0){pick(j);document.getElementById("lab").scrollIntoView();return true;}return false;}
+if(!fromHash())pick(start);
+window.addEventListener("hashchange",fromHash);
+document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest('a[href^="#x"]');if(a){e.preventDefault();const id=a.getAttribute("href").slice(1);try{history.replaceState(null,"","#"+id);}catch(_){}const j=PROGS.findIndex(p=>p.id===id);if(j>=0){pick(j);document.getElementById("lab").scrollIntoView();}}});
 })();
 </script>
 
