@@ -430,7 +430,7 @@ code.gloss{border-bottom-style:dashed}
 <div class="wrap" dir="rtl" lang="he">
 <nav class="side" aria-label="תוכן העניינים">
   <a class="brand" href="index.html">מערכות הפעלה</a>
-  <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
+  <div class="sub">מדריך לימוד · הרצאות 1–7 ומעבדות 1–4</div>
   <a class="ch" href="intro.html">1 · מבוא</a>
   <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
   <a class="ch" href="processes.html">3 · תהליכים</a>
@@ -683,6 +683,9 @@ int main(int argc, char *argv[]) {
 <span class="fline">5 + 13 = 18</span>
 </div></div>
 
+<div class="box theory"><div class="box-title">„המחשב תומך עד X GB” (מעבדה 4)</div><div class="box-body"><p>מספר הביטים בכתובת הפיזית נקבע לפי <strong>הזיכרון המקסימלי שהמחשב תומך בו</strong>, לא לפי מה שמותקן בו. אם מותקן פחות, חלק ממספרי המסגרת פשוט לא חוקיים. לפי המתרגל, זה ההבדל היחיד בין הצד הפיזי לצד הווירטואלי.</p><p>דוגמה: המחשב תומך עד <bdi dir="ltr">16GB</bdi>, מותקנים <bdi dir="ltr">8GB</bdi>, ודף של <bdi dir="ltr">4KB</bdi>.</p><span class="fline">PA bits = log2(16GB) = 34</span><span class="fline">PFN bits = 34 − 12 = 22</span><span class="fline">valid PFNs = 8GB / 16GB = 1/2</span><p>גם הדוגמה של <bdi dir="ltr">192KB</bdi> בשקף 29 היא מקרה כזה: 32 מספרי מסגרת אפשריים, ורק 24 מהם קיימים, כלומר 8 לא חוקיים. זיכרון פיזי הוא הגודל היחיד שלא חייב להיות חזקה של 2 („נכון אך ורק לזיכרון פיזי”).</p></div></div>
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 6 (17.11)</div><div class="box-body"><ul><li><strong>ה-<bdi dir="ltr">MMU</bdi> לא מחלק ולא כופל.</strong> הוא רק מפצל את הכתובת לביטים. זה הנימוק לכך שכל הגדלים הם חזקות של 2. האנלוגיה שלו: בבסיס עשרוני, לחלק ב-100 זה פשוט להוריד את שתי הספרות האחרונות.</li><li><strong>צריך לדעת להמיר מעשרוני לבינארי ובחזרה</strong>, ברמה בסיסית. המרצה אמר את זה במפורש.</li><li>במבחן לא יבקשו רק תרגום מכני: „המטרה היא להבין למה זה ככה”.</li><li>גישה לכתובת לא חוקית: במבחן מספיק לכתוב „שגיאת זיכרון”, בלי <bdi dir="ltr">segmentation fault</bdi>.</li></ul></div></div>
+
 <div class="box exercise"><div class="box-title">תרגול (שקף 30) · השלימו את הטבלה</div><div class="box-body">
 <div class="tbl"><table>
 <tr><th>גודל דף</th><th class="num">ביטים בכתובת</th><th class="num">offset</th><th class="num">VPN</th><th class="num">מספר דפים</th></tr>
@@ -715,6 +718,9 @@ int main(int argc, char *argv[]) {
 <tr><td><strong>Reference (A)</strong></td><td>האם ניגשו לדף לאחרונה</td></tr>
 </table></div>
 
+<div class="box warn"><div class="box-title">טעויות נפוצות על טבלת הדפים (הרצאה 6 ומעבדה 4)</div><div class="box-body"><ul><li><strong>טבלת הדפים לא מכילה דפים.</strong> למרות השם, יש בה רק מיפוי: לכל דף, מספר מסגרת וביטים. התוכן עצמו נמצא במסגרות.</li><li><strong>ב-<bdi dir="ltr">PTE</bdi> יש מספר מסגרת (<bdi dir="ltr">PFN</bdi>), לא כתובת פיזית מלאה.</strong> ההיסט לא נשמר בטבלה בכלל: הוא תמיד מגיע מהכתובת הווירטואלית, ועובר בתרגום בלי שינוי. משתנה רק הבלוק, כלומר מספר הדף שהופך למספר מסגרת.</li><li><strong>דף ומסגרת תמיד באותו גודל</strong> („תמיד תמיד תמיד זהים”). הדף הוא יחידה לוגית בלבד: „הזיכרון הווירטואלי לא קיים”.</li><li><strong>„הטבלה תופסת דף אחד”</strong> פירושו שגודל הטבלה שווה לגודל דף, לא שיש בה רשומה אחת. המתרגל: „תתרגלו”, כי הניסוח הזה חוזר הרבה.</li><li><strong>ביטים מול בתים:</strong> גודל ה-PTE נתון בדרך כלל בבתים, ומספר הביטים בכתובת בביטים. כדאי לכתוב את היחידה ליד כל מספר.</li></ul></div></div>
+<div class="box lect" data-lect="1"><div class="box-title">המרצה הדגיש · הרצאה 6 (17.11)</div><div class="box-body"><ul><li><strong>למה יש ריפוד ב-<bdi dir="ltr">PTE</bdi>:</strong> יישור לזיכרון. המעבד קורא מהר יותר נתונים שמתחילים בגבול של חזקה של 2. בדוגמה של המרצה: 12 ביטים למסגרת ו-12 ביטים לסטטוס הם 24, ולכן מוסיפים 8 ביטים מבוזבזים עד 32.</li><li><strong>טבלת הדפים נמצאת בזיכרון של הקרנל</strong>, ובנתוני התהליך (<bdi dir="ltr">PCB</bdi>) שמור איפה נמצא ה-<bdi dir="ltr">page directory</bdi> שלו.</li><li>בהרשאות יש גם הרצה, ולכן לפחות 2 ביטים. ה-MMU בודק לא רק שיש מיפוי, אלא גם שמותר לבצע את סוג הגישה שהתבקש.</li></ul></div></div>
+
 <h2 id="vm-tlb">הבעיות של טבלת דפים, ו-<bdi dir="ltr">TLB</bdi></h2>
 <div class="box warn"><div class="box-title">בעיה 1: גדול מדי</div><div class="box-body">
 <p>32 ביט עם דפים של <bdi dir="ltr">4KB</bdi>: <bdi dir="ltr">VPN</bdi> של 20 ביט ו-<bdi dir="ltr">offset</bdi> של 12, ו-4 בתים לכל <bdi dir="ltr">PTE</bdi>.</p>
@@ -722,13 +728,15 @@ int main(int argc, char *argv[]) {
 <p>לכל תהליך. ועם 100 תהליכים:</p>
 <span class="fline">100 × 4MB = 400MB</span>
 <p><bdi dir="ltr">400MB</bdi> רק בשביל תרגומים – ובנוסף הטבלה צריכה להיות רציפה בזיכרון.</p>
+<p>בהרצאה 6 (17.11) המספרים היו 200 תהליכים, כלומר כ-5% מזיכרון של <bdi dir="ltr">16GB</bdi> רק לטבלאות. וכל טבלה צריכה 1024 מסגרות רצופות.</p>
+<span class="fline">200 × 4MB = 800MB ≈ 5% of 16GB</span>
 </div></div>
 <div class="box warn"><div class="box-title">בעיה 2: איטי מדי</div><div class="box-body">
 <p>הטבלה גדולה מכדי לשבת ב-<bdi dir="ltr">MMU</bdi>, אז היא בזיכרון. כדי למצוא <bdi dir="ltr">PTE</bdi> צריך את כתובת התחלת הטבלה, וכל גישה לזיכרון דורשת <strong>גישה נוספת</strong> – לטבלה. כלומר פי 2 גישות.</p>
 </div></div>
 
 <h3>TLB</h3>
-<p>ה-<strong>TLB</strong> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) הוא מטמון חומרה קטן בתוך ה-<bdi dir="ltr">MMU</bdi> של תרגומים פופולריים. המפתח: הדף הווירטואלי. הערך: ה-<bdi dir="ltr">PTE</bdi>.</p>
+<p>ה-<strong>TLB</strong> (<bdi dir="ltr">Translation Lookaside Buffer</bdi>) הוא מטמון חומרה קטן של תרגומים פופולריים, שצמוד ל-<bdi dir="ltr">MMU</bdi>. בספר כתוב שהוא בתוך ה-<bdi dir="ltr">MMU</bdi>. המרצה דייק שזה רכיב נפרד על אותו שבב („הוא לא חלק מהם, אבל הוא צמוד”). המפתח: הדף הווירטואלי. הערך: ה-<bdi dir="ltr">PTE</bdi>.</p>
 <div class="tbl"><table>
 <tr><th>מקרה</th><th>מה קורה</th></tr>
 <tr><td><strong>TLB hit</strong></td><td>התרגום נמצא – מוציאים את ה-<bdi dir="ltr">PFN</bdi> בחומרה, מהר.</td></tr>
@@ -736,6 +744,7 @@ int main(int argc, char *argv[]) {
 </table></div>
 <p>הדוגמה של שקף 38: לולאה שכותבת <code>a[i] = i</code> על 10 איברים, שמתפרסים על 3 דפים. בכל דף רק הגישה הראשונה היא <bdi dir="ltr">miss</bdi>. שנו את הפרמטרים כדי לראות איך גודל הדף ומיקום המערך משפיעים:</p>
 <div class="vmw" data-vm="tlb"></div>
+<div class="box example"><div class="box-title">המספרים של הדוגמה (הרצאה 6)</div><div class="box-body"><p>10 איברי <bdi dir="ltr">int</bdi> על 3 דפים, וה-<bdi dir="ltr">TLB</bdi> ריק בהתחלה. החטאות יש רק בגישה הראשונה לכל דף: <code>a[0]</code>, <code>a[3]</code>, <code>a[7]</code>.</p><p>בלי <bdi dir="ltr">TLB</bdi> כל גישה ל-<code>a[i]</code> היא שתי גישות לזיכרון, לטבלה ולנתון:</p><span class="fline">2 × 10 = 20</span><p>עם <bdi dir="ltr">TLB</bdi>: 10 גישות לנתונים, ועוד גישה לטבלה בכל אחת מ-3 ההחטאות:</p><span class="fline">10 + 3 = 13</span><p>אחוז הפגיעה:</p><span class="fline">hit rate = 7 / 10 = 70%</span></div></div>
 <div class="box theory"><div class="box-title">למה זה עובד: לוקליות</div><div class="box-body">
 <div class="tbl"><table>
 <tr><th>סוג</th><th>משמעות</th><th>בדוגמה</th></tr>
@@ -751,6 +760,7 @@ int main(int argc, char *argv[]) {
 <tr><td class="num">3</td><td class="num">6</td><td class="num">2</td></tr>
 </table></div>
 <p>שתי השורות מצביעות למסגרת 6: דף 1 של <bdi dir="ltr">P1</bdi> ודף 3 של <bdi dir="ltr">P2</bdi> <strong>משתפים</strong> דף. כך משתפים קוד – בקריאה בלבד, ולכן הבידוד נשמר.</p>
+<p><strong>יש <bdi dir="ltr">TLB</bdi> אחד לכל המחשב</strong> (לכל ליבה), לא אחד לכל תהליך. התוכן שלו נשאר גם אחרי <bdi dir="ltr">context switch</bdi>, אלא אם מערכת ההפעלה מוחקת אותו. בגלל זה צריך את ה-<bdi dir="ltr">ASID</bdi>. וכשה-<bdi dir="ltr">TLB</bdi> מלא, צריך לבחור איזה תרגום לפנות. זה בדיוק אותו סוג של אלגוריתם כמו בפינוי דפים מה-<bdi dir="ltr">RAM</bdi> (<a href="#vm-repl">מדיניות החלפה</a>), כי שניהם מטמונים.</p>
 </div></div>
 
 <h2 id="vm-ml">דפים גדולים יותר וטבלה רב-שלבית</h2>
@@ -806,6 +816,7 @@ int main(int argc, char *argv[]) {
 </div></div>
 <p>המחשבון מחשב לכל גודל כמה רמות צריך ואיך הכתובת מתחלקת:</p>
 <div class="vmw" data-vm="splitter"></div>
+<div class="box warn"><div class="box-title">ה-<bdi dir="ltr">TLB</bdi> לא היררכי (הרצאה 6: „דגש חשוב מאוד מאוד מאוד”)</div><div class="box-body"><p>גם כשטבלת הדפים רב-שלבית, ב-<bdi dir="ltr">TLB</bdi> יש רק שורות שטוחות: מספר דף מלא, מספר מסגרת, מזהה תהליך וביטים. הרמות קיימות רק בטבלה שבזיכרון, ועוברים עליהן רק ב-<bdi dir="ltr">TLB miss</bdi>. המרצה אמר שבזה מתבלבלים הרבה.</p><p>ועוד כלל: כל חלק בכל רמה צריך להיכנס בדף אחד בדיוק. ממשיכים להוסיף רמות „עד שגם טבלת העל נכנסת למסגרת אחת”.</p></div></div>
 
 <div class="box exercise"><div class="box-title"><bdi dir="ltr">Peculiar</bdi> (שקפים 51–52) · למה זה מאט פי 5?</div><div class="box-body">
 <pre><code class="language-c">mytype *arr = (mytype*) malloc(sizeof(mytype) * len);
@@ -829,6 +840,7 @@ for (int t = 0; t &lt; 1000; ++t)
 <tr><td class="num">1,000,000</td><td class="num">4,000,000</td><td class="num">977</td><td class="num">400,000,000</td><td class="num">97,657</td></tr>
 </table></div>
 <p>עם <code>int</code> יש 1024 איברים בכל דף, אז כל תרגום ב-<bdi dir="ltr">TLB</bdi> משמש להרבה גישות (לוקליות מרחבית). עם <code>int[100]</code> יש רק כ-10 איברים בדף, כך שהלולאה עוברת לדף חדש כל 10 גישות. כשמספר הדפים שהלולאה נוגעת בהם גדול בהרבה ממה שה-<bdi dir="ltr">TLB</bdi> (ומטמוני המעבד) מחזיקים, כמעט כל מעבר דף הוא <bdi dir="ltr">miss</bdi> ודורש הליכה בטבלת הדפים. לכן הזמן גדל הרבה יותר מפי 10.</p>
+<p><strong>בהרצאה 7 המרצה חזר לדוגמה הזו:</strong> זו לולאה על יותר זיכרון ממה שהמטמון מחזיק. במצב כזה <bdi dir="ltr">LRU</bdi> מפנה תמיד בדיוק את מה שיידרש הבא (ראו את העומס <bdi dir="ltr">Looping</bdi> ב<a href="#vm-work">גרפים</a>). מערכת ההפעלה לא פותרת את זה: <strong>האחריות על המתכנת</strong>, לפצל את הלולאה או לשנות את סדר הגישות.</p>
 <p>המספרים בטבלה חושבו לפי דף של <bdi dir="ltr">4KB</bdi>, שהוא הגודל הנפוץ. ה-<bdi dir="ltr">TLB</bdi> המדויק תלוי במעבד.</p>
 </details></div></div>
 
@@ -856,6 +868,7 @@ for (int t = 0; t &lt; 1000; ++t)
 <div class="box warn"><div class="box-title">גודל ה-<bdi dir="ltr">PTE</bdi></div><div class="box-body">
 <p>ברירת המחדל: מספר הביטים הדרוש (<bdi dir="ltr">PFN</bdi> וביטי סטטוס) <strong>מרופד לחזקה של 2</strong> בבתים – בית, 2 בתים, 4 בתים. בשקף של התרגול: "<bdi dir="ltr">PTE</bdi> תמיד חזקה של 2".</p>
 <p>אבל כשהשאלה אומרת במפורש "בלי ריפוד" או נותנת את הגודל – משתמשים בנתון. ב-22AA שאלה 6.1 ה-<bdi dir="ltr">PTE</bdi> יוצא 3 בתים, וב-23SA שאלה 6 נתון 3 בתים "ואף ביט לא משמש לריפוד".</p>
+<p>לפי המתרגל (מעבדה 4, 18.11), <bdi dir="ltr">PTE</bdi> של 3 בתים הוא חריג ממבחן ישן ולא צפוי בבוחן. אם הוא יופיע במבחן, יהיה כתוב במפורש שאין ריפוד.</p>
 </div></div>
 
 <div class="box exercise"><div class="box-title">20SA שאלה 9 · גדלים בסיסיים</div><div class="box-body">
@@ -876,6 +889,9 @@ for (int t = 0; t &lt; 1000; ++t)
 <div class="box exercise"><div class="box-title">22AA שאלה 6.1 · מגודל הטבלה לזיכרון הפיזי</div><div class="box-body">
 <p>זיכרון וירטואלי של <bdi dir="ltr">32GB</bdi> ודף של <bdi dir="ltr">4KB</bdi>. טבלת דפים לינארית תופסת <bdi dir="ltr">24MB</bdi>, וכל <bdi dir="ltr">PTE</bdi> מכיל מספר מסגרת ועוד 3 ביטים בלבד (בלי ריפוד). מה גודל הזיכרון הפיזי המקסימלי?</p>
 <details class="sol"><summary>פתרון</summary>
+<p><strong>קודם חיצים, בלי מספרים</strong> (השיטה מהמעבדה). מתחילים ממה שמבקשים והולכים אחורה עד לנתונים:</p>
+<span class="fline">physical memory ← PA bits ← PFN bits ← PTE size ← (table size, #PTE) ← #pages ← (VM, page)</span>
+<p>עכשיו ממלאים מספרים, מהסוף להתחלה.</p>
 <p>מספר הדפים, כלומר מספר הרשומות:</p>
 <span class="fline">32GB / 4KB = 2^35 / 2^12 = 2^23 = 8M</span>
 <p>גודל רשומה:</p>
@@ -1063,6 +1079,7 @@ for (int i = 0; i &lt; N; i += step)
 </svg>
 </figure>
 <p><strong>Swap space</strong> הוא מקום שמור בדיסק לדפים. מוציאים אליו דפים מהזיכרון (<bdi dir="ltr">page out</bdi>) ומחזירים ממנו (<bdi dir="ltr">page in</bdi>). ביט ה-<strong>Present</strong> ב-<bdi dir="ltr">PTE</bdi> אומר אם הדף ב-<bdi dir="ltr">RAM</bdi> (1) או בדיסק (0).</p>
+<div class="box theory"><div class="box-title"><bdi dir="ltr">Demand paging</bdi>: טוענים רק כשצריך (הרצאה 7)</div><div class="box-body"><p>כשתהליך נוצר, מערכת ההפעלה <strong>לא</strong> טוענת את הקוד שלו לזיכרון. היא מסמנת את הדפים <bdi dir="ltr">Present = 0</bdi>, וכל דף נטען רק כשניגשים אליו בפעם הראשונה, ב-<bdi dir="ltr">page fault</bdi>. בלשון המרצה: מערכת ההפעלה „עושה מינימום עבודה ודוחה למתי שבאמת צריך”.</p><div class="tbl"><table><tr><th>סוג הדף</th><th>מאיפה מגיע</th><th>Dirty בהתחלה</th><th>פינוי</th></tr><tr><td>דף קוד</td><td>נטען מקובץ התוכנית בדיסק ב-<bdi dir="ltr">page fault</bdi></td><td class="num">0</td><td>בחינם: העותק בדיסק עדכני</td></tr><tr><td>דף חדש מ-<code>malloc</code></td><td>מוקצה בזיכרון, ואין לו שום עותק בדיסק</td><td class="num">1</td><td>חייבים לכתוב אותו קודם ל-<bdi dir="ltr">swap</bdi></td></tr></table></div><p><strong>אחרי <bdi dir="ltr">page in</bdi> העותק בדיסק לא נמחק.</strong> הוא נשאר שם. לכן דף שלא השתנה (<bdi dir="ltr">Dirty = 0</bdi>) אפשר לפנות בלי לכתוב אותו, וזה חוסך בערך חצי מהזמן, כי כתיבה לדיסק איטית אף יותר מקריאה. דף חדש שהוקצה הוא <bdi dir="ltr">dirty</bdi> אוטומטית, ולכן הוא יפונה אחרון.</p><p style="color:var(--muted)">בפועל: בווינדוס <bdi dir="ltr">swap</bdi> הוא הקובץ <bdi dir="ltr">pagefile</bdi> בכונן C, ובלינוקס זו מחיצה. הגודל יכול להשתנות. בקורס מניחים שהדיסק כמעט אינסופי.</p></div></div>
 
 <div class="box theory"><div class="box-title">מה קורה בכל גישה לזיכרון</div><div class="box-body">
 <ol>
@@ -1074,6 +1091,7 @@ for (int i = 0; i &lt; N; i += step)
   </ul></li>
 </ol>
 </div></div>
+<div class="box warn"><div class="box-title"><bdi dir="ltr">Page fault</bdi> הוא לא שגיאה</div><div class="box-body"><ul><li><strong><bdi dir="ltr">Invalid</bdi></strong> (✗): גישה לכתובת שלא שייכת לתהליך. זו שגיאת זיכרון, והתהליך נהרג.</li><li><strong><bdi dir="ltr">Valid</bdi> אבל <bdi dir="ltr">Present = 0</bdi>:</strong> הדף שייך לתהליך, רק נמצא כרגע בדיסק. זה <bdi dir="ltr">page fault</bdi>, ו„התהליך לא עושה שום דבר לא חוקי”.</li><li>ב-<bdi dir="ltr">TLB</bdi> יש תרגומים <strong>רק לדפים שנמצאים ב-<bdi dir="ltr">RAM</bdi></strong>. מערכת ההפעלה דואגת שלא יישאר בו תרגום לדף שעבר לדיסק. לכן <bdi dir="ltr">TLB hit</bdi> אומר שהדף בזיכרון.</li></ul></div></div>
 <figure>
 <svg viewBox="0 0 600 270" width="600" role="img" aria-label="זרימת page fault">
   <defs><marker id="pfa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--warn)"/></marker><marker id="pfb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
@@ -1115,28 +1133,32 @@ for (int i = 0; i &lt; N; i += step)
 <tr><td class="num">2</td><td>ה-<bdi dir="ltr">MMU</bdi> מחפש ב-<bdi dir="ltr">TLB</bdi> ← <bdi dir="ltr">miss</bdi>.</td></tr>
 <tr><td class="num">3</td><td>ה-<bdi dir="ltr">MMU</bdi> מוצא את ה-<bdi dir="ltr">PTE</bdi> בטבלת הדפים: <bdi dir="ltr">Present = 0</bdi>.</td></tr>
 <tr><td class="num">4</td><td><bdi dir="ltr">Page fault</bdi> ← <bdi dir="ltr">trap</bdi> למערכת ההפעלה.</td></tr>
-<tr><td class="num">5</td><td>אם הזיכרון מלא – מערכת ההפעלה מפנה דף (<bdi dir="ltr">evict</bdi>), לפי מדיניות ההחלפה.</td></tr>
+<tr><td class="num">5</td><td>אם הזיכרון מלא – מערכת ההפעלה מפנה דף (<bdi dir="ltr">evict</bdi>), לפי מדיניות ההחלפה. הפינוי כולל שלושה דברים: כתיבה של הדף לדיסק, אם הוא <bdi dir="ltr">dirty</bdi>; עדכון ה-<bdi dir="ltr">PTE</bdi> של הדף שפונה (<bdi dir="ltr">Present</bdi> מ-1 ל-0), גם אם הוא שייך לתהליך אחר; ומחיקת התרגום שלו מה-<bdi dir="ltr">TLB</bdi>, אם הוא שם.</td></tr>
 <tr><td class="num">6</td><td>מערכת ההפעלה מביאה את הדף מה-<bdi dir="ltr">swap</bdi> למסגרת פנויה. בזמן הקריאה מהדיסק התהליך <strong>חסום</strong>, ותהליך אחר רץ.</td></tr>
-<tr><td class="num">7</td><td>מערכת ההפעלה מעדכנת את טבלת הדפים: <bdi dir="ltr">PFN</bdi> חדש, <bdi dir="ltr">Present = 1</bdi>.</td></tr>
-<tr><td class="num">8</td><td>התהליך מריץ שוב את הפקודה (<bdi dir="ltr">Retry</bdi>). עכשיו יהיה <bdi dir="ltr">TLB miss</bdi> אחד נוסף, ואחריו הכל עובד.</td></tr>
+<tr><td class="num">7</td><td>מערכת ההפעלה מעדכנת את טבלת הדפים: <bdi dir="ltr">PFN</bdi> חדש, <bdi dir="ltr">Present = 1</bdi>. לפי המרצה היא מעדכנת <strong>גם את ה-<bdi dir="ltr">TLB</bdi></strong>.</td></tr>
+<tr><td class="num">8</td><td>התהליך מריץ שוב את הפקודה (<bdi dir="ltr">Retry</bdi>). ה-<bdi dir="ltr">PC</bdi> לא קודם, ולכן המעבד פשוט מבצע אותה פקודה שוב. לפי המרצה תהיה עכשיו <bdi dir="ltr">TLB hit</bdi>, כי ה-<bdi dir="ltr">TLB</bdi> כבר עודכן בשלב 7.</td></tr>
 </table></div>
+<div class="box warn"><div class="box-title">סתירה בין המרצה לספר: מה קורה אחרי ה-<bdi dir="ltr">retry</bdi></div><div class="box-body"><p><strong>המרצה (הרצאה 7, 19.11):</strong> בסוף הטיפול ב-<bdi dir="ltr">page fault</bdi> מעדכנים „גם ב-<bdi dir="ltr">TLB</bdi> וגם בטבלת הדפים”, ולכן ב-<bdi dir="ltr">retry</bdi> תהיה פגיעה ב-<bdi dir="ltr">TLB</bdi> בוודאות.</p><p><strong>הספר (OSTEP) והגרסה הקודמת של האתר:</strong> מערכת ההפעלה מעדכנת רק את טבלת הדפים. ה-<bdi dir="ltr">retry</bdi> נותן <bdi dir="ltr">TLB miss</bdi>, החומרה טוענת את התרגום ל-<bdi dir="ltr">TLB</bdi>, ורק ההרצה שאחריה היא <bdi dir="ltr">hit</bdi>.</p><p>זו שאלה שיכולה להופיע כאמריקאית. בבוחן ובמבחן של הקורס כדאי לענות לפי המרצה.</p></div></div>
 <div class="box theory"><div class="box-title">מתי באמת מפנים: <bdi dir="ltr">Swap daemon</bdi></div><div class="box-body">
-<p>מערכת ההפעלה לא מחכה שהזיכרון יתמלא. תהליך רקע – <bdi dir="ltr">swap daemon</bdi> (או <bdi dir="ltr">page daemon</bdi>) – מתעורר כשיש פחות מ-<strong>LW</strong> (<bdi dir="ltr">low watermark</bdi>) דפים פנויים, ומפנה דפים עד שיש <strong>HW</strong> (<bdi dir="ltr">high watermark</bdi>) דפים פנויים.</p>
+<p>מערכת ההפעלה לא מחכה שהזיכרון יתמלא. תהליך רקע – <bdi dir="ltr">swap daemon</bdi> (או <bdi dir="ltr">page daemon</bdi>) – מתעורר כשיש פחות מ-<strong>LW</strong> (<bdi dir="ltr">low watermark</bdi>) דפים פנויים, ומפנה דפים עד שיש <strong>HW</strong> (<bdi dir="ltr">high watermark</bdi>) דפים פנויים.</p><p>בדוגמה של המרצה <bdi dir="ltr">LW = 50</bdi> ו-<bdi dir="ltr">HW = 100</bdi>. אם נשארו 49 מסגרות פנויות, ה-<bdi dir="ltr">daemon</bdi> מתחיל לעבוד ומפנה 51 דפים. הפער בין שני הסימנים מונע „פינג-פונג”: אחרי שהוא מסיים, לוקח זמן עד שהזיכרון שוב יורד מתחת ל-<bdi dir="ltr">LW</bdi>, ולכן הוא לא רץ כל הזמן. הוא רץ ברקע, בעיקר כשהמחשב פנוי.</p><span class="fline">pages evicted = 100 − 49 = 51</span>
 </div></div>
 
+<div class="box summary"><div class="box-title">גבול בוחן 1</div><div class="box-body"><p>לפי המרצה (סוף הרצאה 7), בוחן 1 כולל את הפרק <strong>עד כאן:</strong> <bdi dir="ltr">Swapping</bdi> ו-<bdi dir="ltr">page fault</bdi> כולל. מדיניות ההחלפה שבהמשך (<bdi dir="ltr">OPT, FIFO, LRU, Clock</bdi>) <strong>לא בבוחן 1</strong>, אבל היא חלק מהחומר למבחן. „סיימנו עם החישובים”: מכאן והלאה הפרק עוסק בעקרונות.</p></div></div>
+
 <h2 id="vm-repl">מדיניות החלפת דפים</h2>
-<p>כשהזיכרון מלא וצריך להביא דף, צריך לבחור <strong>איזה דף לפנות</strong>. ה-<bdi dir="ltr">RAM</bdi> משמש כאן כמטמון של הדיסק, והמטרה היא כמה שפחות <bdi dir="ltr">miss</bdi>.</p>
+<p>כשהזיכרון מלא וצריך להביא דף, צריך לבחור <strong>איזה דף לפנות</strong>. ה-<bdi dir="ltr">RAM</bdi> משמש כאן כמטמון של הדיסק, והמטרה היא כמה שפחות <bdi dir="ltr">miss</bdi>. אלה אלגוריתמים כלליים של מטמון, שמתאימים גם ל-<bdi dir="ltr">TLB</bdi>.</p>
+<p style="color:var(--muted)">לא בבוחן 1. כן במבחן.</p>
 <div class="tbl"><table>
 <tr><th>מדיניות</th><th>מפנה את</th><th>הערות</th></tr>
-<tr><td><strong>OPT</strong> (Optimal)</td><td>הדף שהגישה הבאה אליו <strong>הכי רחוקה בעתיד</strong></td><td>הכי מעט <bdi dir="ltr">miss</bdi> שאפשר. אי אפשר לממש – לא יודעים את העתיד. משמש רק כנקודת השוואה.</td></tr>
-<tr><td><strong>FIFO</strong></td><td>הדף שנכנס <strong>הכי מוקדם</strong></td><td>פשוט. לא מתחשב בכלל בשימוש. סובל מ-<bdi dir="ltr">Belady’s anomaly</bdi>.</td></tr>
-<tr><td><strong>LRU</strong></td><td>הדף שהשתמשו בו <strong>הכי מזמן</strong></td><td>מנצל לוקליות זמנית. יקר לממש במדויק.</td></tr>
+<tr><td><strong>OPT</strong> (Optimal)</td><td>הדף שהגישה הבאה אליו <strong>הכי רחוקה בעתיד</strong></td><td>הכי מעט <bdi dir="ltr">miss</bdi> שאפשר. אי אפשר לממש – לא יודעים את העתיד. המרצה: אם היינו יודעים מראש את כל הגישות לזיכרון, היינו פותרים את בעיית העצירה. אפשר לנחש, אבל הניתוח עולה יותר ממה שהוא חוסך. משמש רק כנקודת השוואה.</td></tr>
+<tr><td><strong>FIFO</strong></td><td>הדף שנכנס <strong>הכי מוקדם</strong></td><td>פשוט. לא מתחשב בכלל בשימוש. סובל מ-<bdi dir="ltr">Belady’s anomaly</bdi>. המרצה: FIFO הוא „קו תחתון”, ומדיניות שלא טובה ממנו לא שווה כלום.</td></tr>
+<tr><td><strong>LRU</strong></td><td>הדף שהשתמשו בו <strong>הכי מזמן</strong></td><td>מנצל לוקליות זמנית. יקר לממש במדויק: בחומרה צריך היסטוריה של כל הגישות (רשימה מקושרת), וזה לא מעשי.</td></tr>
 <tr><td><strong>Clock</strong></td><td>הדף הראשון עם <bdi dir="ltr">use bit = 0</bdi> שהמחוג מגיע אליו</td><td>קירוב זול ל-<bdi dir="ltr">LRU</bdi>.</td></tr>
 </table></div>
 
 <div class="box formula"><div class="box-title">שיעור פגיעה</div><div class="box-body">
 <span class="fline">hit rate = hits / accesses</span>
-<p><strong>בלי <bdi dir="ltr">cold-start</bdi>:</strong> לא סופרים את ה-<bdi dir="ltr">miss</bdi> הראשון של כל דף, כי אותו אף מדיניות לא יכולה למנוע.</p>
+<p><strong>בלי <bdi dir="ltr">cold-start</bdi>:</strong> לא סופרים את ה-<bdi dir="ltr">miss</bdi> הראשון של כל דף, כי אותו אף מדיניות לא יכולה למנוע. ההחטאה הראשונה של כל דף היא החטאה בטוחה, ומקובל לחשב את שיעור הפגיעה גם בלעדיה.</p>
 <span class="fline">hit rate (no cold start) = hits / (accesses − distinct pages)</span>
 <p>בשקפים 61–63: 11 גישות ל-4 דפים שונים, ולכן המכנה הוא 7.</p>
 <span class="fline">OPT: 6 / 11 = <bdi dir="ltr">54.5%</bdi>,   6 / 7 = <bdi dir="ltr">85.7%</bdi></span>
@@ -1167,7 +1189,7 @@ for (int i = 0; i &lt; N; i += step)
 <tr><th>עומס</th><th>מה הוא</th><th>מה רואים</th></tr>
 <tr><td><strong>No-locality</strong></td><td>גישות אקראיות ל-100 דפים</td><td>כל המדיניות המעשיות שוות – שיעור הפגיעה פשוט גודל המטמון חלקי 100. אין לוקליות לנצל.</td></tr>
 <tr><td><strong>80-20</strong></td><td><bdi dir="ltr">80%</bdi> מהגישות ל-<bdi dir="ltr">20%</bdi> מהדפים</td><td><bdi dir="ltr">LRU</bdi> ו-<bdi dir="ltr">Clock</bdi> טובים מ-<bdi dir="ltr">FIFO</bdi> ו-<bdi dir="ltr">RAND</bdi>, כי הם שומרים את הדפים ה"חמים".</td></tr>
-<tr><td><strong>Looping</strong></td><td>מעבר על 50 דפים בלולאה</td><td>המקרה הגרוע של <bdi dir="ltr">LRU</bdi> ו-<bdi dir="ltr">FIFO</bdi>: עד מטמון של 50 שיעור הפגיעה הוא 0, כי תמיד מפנים בדיוק את הדף שיידרש הבא. <bdi dir="ltr">RAND</bdi> דווקא טוב יותר כאן.</td></tr>
+<tr><td><strong>Looping</strong></td><td>מעבר על 50 דפים בלולאה</td><td>המקרה הגרוע של <bdi dir="ltr">LRU</bdi> ו-<bdi dir="ltr">FIFO</bdi>: עד מטמון של 50 שיעור הפגיעה הוא 0, כי תמיד מפנים בדיוק את הדף שיידרש הבא. <bdi dir="ltr">RAND</bdi> דווקא טוב יותר כאן. דוגמה קטנה מההרצאה: 3 מסגרות והרצף <bdi dir="ltr">0 1 2 3 0 1 2 3</bdi>. עם <bdi dir="ltr">LRU</bdi> כל גישה היא <bdi dir="ltr">miss</bdi> (יש כפתור בסימולטור). לפי המרצה „שום פתרון במחשבים שלנו” לא מטפל בזה, וזו האחריות של המתכנת.</td></tr>
 </table></div>
 <div class="vmw charts" data-vm="charts"></div>
 
@@ -1185,9 +1207,9 @@ for (int i = 0; i &lt; N; i += step)
 <div class="box theory"><div class="box-title">שיפורים נוספים</div><div class="box-body">
 <div class="tbl"><table>
 <tr><th>שיפור</th><th>הרעיון</th></tr>
-<tr><td><strong>Dirty bit</strong></td><td>דף ששונה חייב להיכתב לדיסק לפני שמפנים אותו. דף נקי – הפינוי בחינם. לכן <bdi dir="ltr">Clock</bdi> מחפש קודם דף שגם לא בשימוש וגם נקי.</td></tr>
+<tr><td><strong>Dirty bit</strong></td><td>דף ששונה חייב להיכתב לדיסק לפני שמפנים אותו. דף נקי – הפינוי בחינם, כי העותק שלו נשאר בדיסק. לכן <bdi dir="ltr">Clock</bdi> מחפש קודם דף שגם לא בשימוש וגם נקי. כשהוא מגיע לדף <bdi dir="ltr">dirty</bdi>, הוא יכול להתחיל לכתוב אותו לדיסק ברקע ולהמשיך לחפש. המחוג לא מתאפס בין הפעלות.</td></tr>
 <tr><td><strong>Prefetching</strong></td><td>אם הבאנו את דף הקוד <bdi dir="ltr">P</bdi>, כנראה נצטרך בקרוב את <bdi dir="ltr">P+1</bdi> – מביאים אותו מראש.</td></tr>
-<tr><td><strong>Clustering</strong></td><td>מקבצים כמה כתיבות לדיסק יחד, כי כך הדיסק עובד הכי יעיל.</td></tr>
+<tr><td><strong>Clustering</strong></td><td>מקבצים כמה כתיבות לדיסק יחד, כי כך הדיסק עובד הכי יעיל. מערכת ההפעלה צוברת כתיבות וכותבת אותן מאוחר יותר. זו גם אחת הסיבות שכשתוכנית קורסת, נתונים שכבר „נכתבו” לקובץ יכולים ללכת לאיבוד (המרצה קישר את זה לנושא הבא, מקביליות).</td></tr>
 </table></div>
 </div></div>
 
@@ -1893,7 +1915,8 @@ document.querySelectorAll('.tree').forEach(el => {
     { label: 'שקפים 61–63', refs: '0 1 2 0 1 3 0 3 1 2 1', n: 3, pol: 'OPT' },
     { label: 'Belady · 3 מסגרות', refs: '1 2 3 4 1 2 5 1 2 3 4 5', n: 3, pol: 'FIFO' },
     { label: 'Belady · 4 מסגרות', refs: '1 2 3 4 1 2 5 1 2 3 4 5', n: 4, pol: 'FIFO' },
-    { label: 'Clock', refs: 'A B C D A D E C A F', n: 4, pol: 'CLOCK' }
+    { label: 'Clock', refs: 'A B C D A D E C A F', n: 4, pol: 'CLOCK' },
+    { label: 'Looping · הרצאה 7', refs: '0 1 2 3 0 1 2 3', n: 3, pol: 'LRU' }
   ];
   function simulate(refs, n, pol) {
     const rows = []; let cache = [], hits = 0;
@@ -2202,7 +2225,7 @@ document.querySelectorAll('.tree').forEach(el => {
         }
         continue;
       }
-      if (n.parentElement && n.parentElement.closest('code')) continue;
+      if (n.parentElement && n.parentElement.closest('code, .fline')) continue;
       const text = n.nodeValue, hits = [];
       RE.lastIndex = 0; let m;
       while ((m = RE.exec(text)) !== null) {

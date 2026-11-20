@@ -2503,7 +2503,7 @@ document.querySelectorAll('.tree').forEach(el => {
         }
         continue;
       }
-      if (n.parentElement && n.parentElement.closest('code')) continue;
+      if (n.parentElement && n.parentElement.closest('code, .fline')) continue;
       const text = n.nodeValue, hits = [];
       RE.lastIndex = 0; let m;
       while ((m = RE.exec(text)) !== null) {

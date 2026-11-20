@@ -436,6 +436,8 @@ code.gloss{border-bottom-style:dashed}
 <figcaption>הכתובת הווירטואלית והפיזית חולקות את אותו היסט, כי דף ומסגרת באותו גודל. ה-<bdi dir="ltr">VPN</bdi> קובע כמה רשומות יש בטבלה, וה-<bdi dir="ltr">PFN</bdi> קובע כמה ביטים יש בכל רשומה.</figcaption>
 </figure>
 <div class="fline">VA bits = VPN bits + offset bits &nbsp;&nbsp;·&nbsp;&nbsp; PA bits = PFN bits + offset bits</div>
+<div class="box theory"><div class="box-title">השיטה מהמעבדה: קודם חיצים, ואז מהסוף (מעבדה 4, 18.11)</div><div class="box-body"><ol><li><strong>„עזבו חישובים, רק ציורים”:</strong> על המפה מסמנים מה נתון ומה מבקשים, ומציירים חיצים בלי מספרים.</li><li><strong>אם נתקעים, מתחילים מהסוף:</strong> מהגודל שמבקשים, ושואלים „מה אני צריך כדי לחשב אותו?”, עד שמגיעים לנתונים.</li><li>רק אז ממלאים מספרים.</li></ol><p>דוגמה, 22AA שאלה 6.1: זיכרון וירטואלי של <bdi dir="ltr">32GB</bdi>, דף של <bdi dir="ltr">4KB</bdi>, טבלה לינארית של <bdi dir="ltr">24MB</bdi>, וב-<bdi dir="ltr">PTE</bdi> מספר מסגרת ועוד 3 ביטים בלי ריפוד. מה הזיכרון הפיזי המקסימלי?</p><span class="fline">physical memory ← PA bits ← PFN bits ← PTE size ← (table size, #PTE) ← #pages ← (VM, page)</span><span class="fline">#pages = 2^35 / 2^12 = 2^23</span><span class="fline">PTE = 24MB / 2^23 = 3B = 24 bits</span><span class="fline">PFN = 24 − 3 = 21 bits</span><span class="fline">PM = 2^21 × 2^12 = 2^33 = 8GB</span><p>ההמלצה של המתרגל לתרגול: לפתור את 4–5 הסעיפים בשקפים לפי סדר הקושי, ורק אחר כך לעבור למבחנים.</p></div></div>
+<div class="box warn"><div class="box-title">שלוש טעויות שהמתרגל הזהיר מהן</div><div class="box-body"><ul><li><strong>ביטים מול בתים.</strong> לכתוב את היחידה ליד כל מספר.</li><li><strong>ב-<bdi dir="ltr">PTE</bdi> יש מספר מסגרת, לא כתובת פיזית מלאה.</strong> ההיסט לא חלק מהטבלה, הוא חלק מהכתובת.</li><li><strong>„תומך עד X GB”</strong> קובע את מספר הביטים בכתובת הפיזית, גם אם מותקן פחות. אז חלק ממספרי המסגרת לא חוקיים. למשל: תומך עד <bdi dir="ltr">16GB</bdi>, מותקנים <bdi dir="ltr">8GB</bdi>, דף של <bdi dir="ltr">4KB</bdi>: <bdi dir="ltr">PFN</bdi> של 22 ביטים, וחצי מהערכים לא חוקיים.</li></ul></div></div>
 
 <h2 id="vmc-split">פירוק כתובת ותרגום (בעשרוני ובבינארי)</h2>
 <div class="box example"><div class="box-title">דוגמה 1 · התהליך <bdi dir="ltr">P1</bdi> מהשקפים</div><div class="box-body">
@@ -1393,7 +1395,7 @@ document.querySelectorAll('.tree').forEach(el => {
         }
         continue;
       }
-      if (n.parentElement && n.parentElement.closest('code')) continue;
+      if (n.parentElement && n.parentElement.closest('code, .fline')) continue;
       const text = n.nodeValue, hits = [];
       RE.lastIndex = 0; let m;
       while ((m = RE.exec(text)) !== null) {

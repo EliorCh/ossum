@@ -339,7 +339,7 @@ code.gloss{border-bottom-style:dashed}
 <div class="wrap" dir="rtl" lang="he">
 <nav class="side" aria-label="תוכן העניינים">
   <a class="brand" href="index.html">מערכות הפעלה</a>
-  <div class="sub">מדריך לימוד · הרצאות 1–5 ותרגולים 1–5</div>
+  <div class="sub">מדריך לימוד · הרצאות 1–7 ומעבדות 1–4</div>
   <a class="ch" href="intro.html">1 · מבוא</a>
   <a class="ch" href="workenv.html">2 · סביבת העבודה</a>
   <a class="ch" href="processes.html">3 · תהליכים</a>
@@ -1127,7 +1127,7 @@ document.querySelectorAll('.tree').forEach(el => {
         }
         continue;
       }
-      if (n.parentElement && n.parentElement.closest('code')) continue;
+      if (n.parentElement && n.parentElement.closest('code, .fline')) continue;
       const text = n.nodeValue, hits = [];
       RE.lastIndex = 0; let m;
       while ((m = RE.exec(text)) !== null) {
