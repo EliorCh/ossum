@@ -194,7 +194,7 @@ details.sol summary:focus-visible, button:focus-visible, select:focus-visible, i
 .tr-ctrl button{font:inherit;font-size:14px;padding:6px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--surface);cursor:pointer}
 .tr-ctrl button.ghost{background:transparent;color:var(--ink)}
 .tr-ctrl button:disabled{opacity:.4;cursor:default}
-.tr-count{font-size:13px;color:var(--muted);margin-inline:auto}
+.tr-count{font-size:13px;color:var(--muted);margin-inline-start:auto}
 
 @media (max-width:860px){
   .wrap{flex-direction:column;gap:8px}
@@ -1203,7 +1203,7 @@ const toJobs = p => p.jobs.map(([name, arr, burst]) => ({ name, arr, burst }));
         <div class="tr-vis">
           <div class="tr-grid"><div class="tr-code"></div><div class="tr-side"><div class="tr-procs"></div><div class="tr-tree"></div></div></div>
           <div class="tr-outwrap"><div class="tr-label">פלט על המסך</div><pre class="tr-out"></pre></div>
-          <div class="tr-ctrl"><button type="button" class="ghost tr-reset">מההתחלה</button><button type="button" class="ghost tr-prev">הקודם</button><span class="tr-count"></span><button type="button" class="tr-next">הבא</button></div>
+          <div class="tr-ctrl"><button type="button" class="ghost tr-reset">מההתחלה</button><button type="button" class="ghost tr-prev">הקודם</button><button type="button" class="tr-next">הבא</button><span class="tr-count"></span></div>
         </div>
         <div class="tr-note" aria-live="polite"></div>
       </div>`;
