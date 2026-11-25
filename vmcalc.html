@@ -478,9 +478,13 @@ code.gloss{border-bottom-style:dashed}
 .an-hint{font-size:13px;color:var(--muted)}
 /* worked examples: split screen */
 main > section > .vmex{max-width:none}
-.vmex{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;max-height:calc(100vh - 32px);min-height:0}
+.vmex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px;align-items:start;max-height:calc(100vh - 32px);min-height:0}
 .vx-vis{display:grid;gap:8px;align-content:start;min-width:0;overflow:auto;max-height:calc(100vh - 64px)}
-.vx-txt{display:flex;flex-direction:column;gap:10px;min-width:0;overflow:auto;max-height:calc(100vh - 64px);padding-inline-end:2px}
+.vx-txt{display:flex;flex-direction:column;gap:10px;min-width:0;max-height:calc(100vh - 64px)}
+.vx-steps{display:flex;flex-direction:column;gap:8px;overflow:auto;min-height:0;flex:1 1 auto;position:relative;padding-inline-end:2px}
+.vx-step.done{opacity:.62;background:var(--sunk);border-inline-start-color:var(--line)}
+.vx-step.done .vx-sh{color:var(--muted)}
+.vx-step.cur{box-shadow:0 0 0 2px var(--example) inset}
 .vx-step{background:var(--example-bg);border-inline-start:4px solid var(--example);border-radius:6px;padding:8px 12px;font-size:15px}
 .vx-step p{margin:4px 0}
 .vx-step .fline{margin:4px 0;font-size:14px}
@@ -507,7 +511,7 @@ main > section > .vmex{max-width:none}
 .vmex .an-rlab small{font-size:9.5px}
 .an-row.blk .an-cells{outline:1.5px solid var(--theory);outline-offset:1px;border-radius:2px}
 .vmex .an-h{margin-bottom:3px}
-@media (max-width:900px){.vmex{grid-template-columns:minmax(0,1fr);max-height:none}.vx-vis,.vx-txt{max-height:none;overflow:visible}.vx-txt{order:-1}}
+@media (max-width:900px){.vmex{grid-template-columns:minmax(0,1fr);max-height:none}.vx-vis,.vx-txt,.vx-steps{max-height:none;overflow:visible}}
 </style>
 </head>
 <body>
@@ -574,7 +578,7 @@ main > section > .vmex{max-width:none}
 <tr><td><bdi dir="ltr">PTE</bdi></td><td>שורה בטבלת הדפים. גם היא יושבת בזיכרון, בבתים.</td><td>בית אחד לכל דף, במסגרת 0</td></tr>
 </table></div>
 <h3 id="vmc-anat-ex">שאלות לדוגמה, עם פירוק</h3>
-<p>כל שאלה במסך אחד: בצד אחד הנתונים מצוירים, ובצד השני השאלה והפתרון, שלב אחרי שלב. „הבא” מתקדם בפתרון, והציור מסמן מה השתנה בכל שלב. אפשר גם להקליד כתובת אחרת או ללחוץ על ריבוע.</p>
+<p>כל שאלה במסך אחד: מימין השאלה והפתרון, שלב אחרי שלב (כל שלב נפתח מתחת לקודם), ומשמאל הנתונים מצוירים. „הבא” מתקדם בפתרון, והציור מסמן מה השתנה בכל שלב. אפשר גם להקליד כתובת אחרת או ללחוץ על ריבוע.</p>
 <div class="vmex" data-card="ex1">
  <div class="vmex-q"><b>שאלה 1 · תרגום כתובת</b><p>זיכרון וירטואלי של 64 בתים, דף של 16 בתים, וזיכרון פיזי של 128 בתים. טבלת הדפים של התהליך: דף 0 במסגרת 3, דף 1 במסגרת 2, דף 2 במסגרת 6, ודף 3 לא חוקי. התהליך ניגש לכתובת הווירטואלית 37. מה הכתובת הפיזית?</p></div>
  <div class="vmex-how"><b>איך חושבים</b><p>שואלים „באיזה דף נמצא בית 37, ואיפה בתוך הדף?”. 16 בתים בדף, אז דף 0 הוא בתים 0–15, דף 1 הוא 16–31, ודף 2 הוא 32–47. בית 37 הוא בדף 2, במקום 5. הטבלה אומרת שדף 2 נמצא במסגרת 6, ושם לוקחים את אותו מקום 5: מסגרת 6 מתחילה ב-96, אז הכתובת הפיזית היא 101.</p></div>
@@ -1052,9 +1056,9 @@ for (j = 0; j &lt; 1024; j++)         // by columns
     var vis = document.createElement('div'); vis.className = 'vx-vis';
     var txt = document.createElement('div'); txt.className = 'vx-txt';
     txt.appendChild(qEl);
-    txt.insertAdjacentHTML('beforeend', '<div class="vx-step"></div><div class="vx-nav"><button type="button" class="btn ghost vx-prev">הקודם</button><button type="button" class="btn vx-next">הבא</button><span class="vx-count"></span></div>' +
+    txt.insertAdjacentHTML('beforeend', '<div class="vx-steps"></div><div class="vx-nav"><button type="button" class="btn ghost vx-prev">הקודם</button><button type="button" class="btn vx-next">הבא</button><span class="vx-count"></span></div>' +
       '<div class="vx-try"><label>נסו כתובת אחרת: <input type="number" min="0" inputmode="numeric" class="vx-va"></label><button type="button" class="btn ghost vx-reset">לכתובת שבשאלה</button></div>');
-    root.appendChild(vis); root.appendChild(txt);
+    root.appendChild(txt); root.appendChild(vis);   /* RTL: the solution steps on the right, the drawing on the left */
     var q = function (c) { return root.querySelector('.' + c); };
     var vaB = lg(cfg.vm), offB = lg(cfg.pg), vpnB = vaB - offB, paB = lg(cfg.pm), pfnB = paB - offB, per = Math.min(cfg.pg, 16), unit = cfg.pg / per;
     function bitsRow(val, w, cls, lbl) {
@@ -1108,7 +1112,12 @@ for (j = 0; j &lt; 1024; j++)         // by columns
           : '<p>בשורה ' + vpn + ' כתוב שהדף נמצא במסגרת ' + pfn + '. ב-RAM יש ' + (cfg.pm / cfg.pg) + ' מסגרות, ולכן ל-PFN יש ' + pfnB + ' ביטים.</p><span class="fline">PT[' + vpn + '] = ' + pfn + '</span><p>שימו לב שגם הטבלה יושבת ב-RAM, במסגרת 0' + (unit === 1 ? ': השורה שקראנו היא הבית P' + vpn + '.' : '.') + '</p>'],
         ['4. הכתובת הפיזית', '<p>מחליפים רק את מספר הבלוק: VPN ' + vpn + ' הופך ל-PFN ' + pfn + '. ה-offset נשאר כמו שהוא.</p><span class="fline">PA = ' + pfn + ' × ' + cfg.pg + ' + ' + off + ' = ' + pa + '</span><p>זה הבית הכתום במסגרת ' + pfn + ': אותו מקום, ' + off + ', בתוך בלוק אחר.</p>']
       ];
-      q('vx-step').innerHTML = '<div class="vx-sh">' + st[step][0] + '</div>' + st[step][1];
+      var box = q('vx-steps'), sh = '';
+      for (var i = 0; i <= step; i++) sh += '<div class="vx-step' + (i === step ? ' cur' : ' done') + '"><div class="vx-sh">' + st[i][0] + '</div>' + st[i][1] + '</div>';
+      box.innerHTML = sh;
+      var cur = box.lastElementChild;   /* keep the newest step in view, inside the steps column only */
+      if (cur.offsetTop + cur.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = cur.offsetTop + cur.offsetHeight - box.clientHeight;
+      if (cur.offsetTop < box.scrollTop) box.scrollTop = cur.offsetTop;
       q('vx-count').textContent = 'שלב ' + (step + 1) + ' מתוך ' + (last + 1);
       q('vx-prev').disabled = step === 0; q('vx-next').disabled = step === last;
       if (!keep) q('vx-va').value = S.va;
