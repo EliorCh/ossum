@@ -479,7 +479,7 @@ code.gloss{border-bottom-style:dashed}
 /* worked examples: split screen */
 main > section > .vmex{max-width:none}
 .vmex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px;align-items:start;max-height:calc(100vh - 32px);min-height:0}
-.vx-vis{display:grid;gap:8px;align-content:start;min-width:0;overflow:auto;max-height:calc(100vh - 64px)}
+.vx-vis{display:grid;gap:6px;align-content:start;min-width:0;overflow:auto;max-height:calc(100vh - 64px)}
 .vx-txt{display:flex;flex-direction:column;gap:10px;min-width:0;max-height:calc(100vh - 64px)}
 .vx-steps{display:flex;flex-direction:column;gap:8px;overflow:auto;min-height:0;flex:1 1 auto;position:relative;padding-inline-end:2px}
 .vx-step.done{opacity:.62;background:var(--sunk);border-inline-start-color:var(--line)}
@@ -502,13 +502,15 @@ main > section > .vmex{max-width:none}
 .vx-strip .an-bits{margin:0;gap:10px}
 .vx-strip .an-bitgrp{min-width:112px}
 .vx-strip .an-bitlbl{white-space:nowrap}
-.vx-strip .an-bit{width:20px;height:24px;font-size:13px}
+.vx-strip .an-bit{width:19px;height:21px;font-size:12px}
+.vx-strip .an-bitlbl{font-size:11px;line-height:1.25}
+.vx-strips{grid-template-columns:1fr 1fr;align-items:start}
 .an-bit.q{opacity:.5;border-style:dashed}
 .vx-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}
 .vx-ptc .an-pt table{font-size:12px}
 .vmex .an-pt table th,.vmex .an-pt table td{padding:2px 8px!important;font-size:12px!important;line-height:1.35!important}
 .vmex .an-row{margin-bottom:1px;padding:1px 2px}
-.vmex .an-cell{height:15px;font-size:8px}
+.vmex .an-cell{height:13px;font-size:8px;line-height:1}
 .vmex .an-rlab{font-size:11px}
 .vmex .an-rlab small{font-size:9.5px}
 .an-row.blk .an-cells{outline:1.5px solid var(--theory);outline-offset:1px;border-radius:2px}
