@@ -500,6 +500,8 @@ main > section > .vmex{max-width:none}
 .vx-strip{display:flex;flex-direction:column;align-items:center;gap:2px}
 .vx-sl{font-size:12px;font-weight:700;color:var(--muted)}
 .vx-strip .an-bits{margin:0;gap:10px}
+.vx-strip .an-bitgrp{min-width:112px}
+.vx-strip .an-bitlbl{white-space:nowrap}
 .vx-strip .an-bit{width:20px;height:24px;font-size:13px}
 .an-bit.q{opacity:.5;border-style:dashed}
 .vx-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}
@@ -517,8 +519,8 @@ main > section > .vmex{max-width:none}
 .vmex .lit{outline:3px solid var(--ink)!important;outline-offset:2px;border-radius:4px;position:relative;z-index:1;animation:vxpulse .8s ease-in-out infinite alternate}
 @keyframes vxpulse{from{outline-color:var(--ink)}to{outline-color:color-mix(in srgb,var(--ink) 35%,transparent)}}
 @media (prefers-reduced-motion:reduce){.vmex .lit{animation:none}}
-.vx-exp{min-height:58px;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px}
-.vx-exp .fline{margin:4px 0 0;font-size:13.5px}
+.vx-exp{height:88px;overflow:hidden;box-sizing:border-box;line-height:1.45;display:flex;flex-direction:column;justify-content:center;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px}
+.vx-exp .fline{margin:3px 0 0;padding:3px 6px;font-size:13.5px}
 .vx-ehint{color:var(--muted)}
 </style>
 </head>
@@ -1137,8 +1139,8 @@ for (j = 0; j &lt; 1024; j++)         // by columns
       /* the visual */
       var t = '<table><tr><th>VPN</th><th>PFN</th><th>V</th></tr>';
       cfg.pt.forEach(function (f, p) { t += '<tr' + (step >= 3 && p === vpn ? ' class="on"' : '') + (p === vpn ? ' data-k="pt pfn"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
-      var va = step >= 1 ? '<div class="vx-strip" data-k="va"><span class="vx-sl">כתובת וירטואלית' + (step >= 2 ? ' ' + S.va : '') + '</span><div class="an-bits">' + bitsRow(step >= 2 ? vpn : null, vpnB, 'v', B('VPN' + (step >= 2 ? ' = ' + vpn : '')) + '<br>' + vpnB + ' ביטים', 'vpn') + bitsRow(step >= 2 ? off : null, offB, 'o', B('offset' + (step >= 2 ? ' = ' + off : '')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>' : '';
-      var paS = step >= 3 && !bad ? '<div class="vx-strip" data-k="pa"><span class="vx-sl">כתובת פיזית' + (step >= 4 ? ' ' + pa : '') + '</span><div class="an-bits">' + bitsRow(pfn, pfnB, 'p', B('PFN = ' + pfn) + '<br>' + pfnB + ' ביטים', 'pfn') + bitsRow(step >= 4 ? off : null, offB, 'o', B('offset' + (step >= 4 ? ' = ' + off : '')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>' : '';
+      var va = '<div class="vx-strip" data-k="va"><span class="vx-sl">כתובת וירטואלית' + (step >= 2 ? ' ' + S.va : '') + '</span><div class="an-bits">' + bitsRow(step >= 2 ? vpn : null, vpnB, 'v', B('VPN = ' + (step >= 2 ? vpn : '?')) + '<br>' + vpnB + ' ביטים', 'vpn') + bitsRow(step >= 2 ? off : null, offB, 'o', B('offset = ' + (step >= 2 ? off : '?')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>';
+      var paS = '<div class="vx-strip" data-k="pa"><span class="vx-sl">כתובת פיזית' + (step >= 4 && !bad ? ' ' + pa : step >= 3 && bad ? ': אין' : '') + '</span><div class="an-bits">' + bitsRow(step >= 3 && !bad ? pfn : null, pfnB, 'p', B('PFN = ' + (step >= 3 && !bad ? pfn : '?')) + '<br>' + pfnB + ' ביטים', 'pfn') + bitsRow(step >= 4 && !bad ? off : null, offB, 'o', B('offset = ' + (step >= 4 && !bad ? off : '?')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>';
       vis.innerHTML = '<div class="vx-exp">' + expl(curK, vpn, off, pfn, bad, pa) + '</div><div class="vx-strips">' + va + paS + '</div>' +
         '<div class="vx-top"><div class="an-col" data-k="vm"><div class="an-h">זיכרון וירטואלי</div>' + grid('v', vpn, off, pfn) + '</div><div class="an-col vx-ptc"><div class="an-h">טבלת הדפים</div><div class="an-pt">' + t + '</table></div></div></div>' +
         '<div class="an-col" data-k="pm"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')' + (unit > 1 ? ' · כל ריבוע = ' + unit + ' בתים' : '') + '</div>' + grid('p', vpn, off, pfn) + '</div>';
