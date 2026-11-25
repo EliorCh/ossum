@@ -404,7 +404,7 @@ code.gloss{border-bottom-style:dashed}
 .an-rlab{font-size:12px;line-height:1.25;color:var(--fg)}
 .an-rlab small{display:block;color:var(--muted);font-family:var(--f-mono);direction:ltr;text-align:right}
 .an-cells{display:grid;gap:1px;direction:ltr}
-.an-cell{height:22px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-mono);font-size:10px;color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0;border-radius:2px;min-width:0}
+.an-cell{height:22px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-mono);font-size:9px;letter-spacing:-.04em;color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0;border-radius:2px;min-width:0}
 .an-cell:hover{border-color:var(--ink)}
 .an-cell.inv{background:var(--sunk);cursor:pointer}
 .an-cell.pt{background:var(--formula-bg);color:var(--formula);border-color:var(--formula)}
@@ -419,6 +419,51 @@ code.gloss{border-bottom-style:dashed}
 .an-note{font-size:13.5px;color:var(--muted)}
 .an-bad{color:var(--warn);font-weight:700}
 @media (max-width:900px){.an-grids{grid-template-columns:minmax(0,1fr)}}
+/* zoom into memory */
+.zoomw{padding:12px 14px;display:grid;gap:10px}
+.zm-top{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:space-between;align-items:center}
+.zm-btns{display:flex;gap:8px}
+.zoomw .btn.ghost{background:transparent;color:var(--ink)}
+.zoomw .btn:disabled{opacity:.4;cursor:default}
+.zm-crumbs{font-size:14px;color:var(--muted)}
+.zm-crumbs b{color:var(--fg)}
+.zm-stage{display:flex;justify-content:center}
+.zm-box{position:relative;width:min(100%,460px);aspect-ratio:1;max-width:100%}
+.zm-t{position:absolute;box-sizing:border-box;border:2px solid var(--c);background:var(--cb);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:2px;overflow:hidden;text-align:center;
+  transition:left .38s ease,top .38s ease,width .38s ease,height .38s ease,opacity .3s ease,transform .3s ease;font-family:var(--f-body);color:var(--fg)}
+.zm-t:hover{box-shadow:0 0 0 2px var(--ink) inset}
+.zm-t .n{font-weight:700;font-size:clamp(11px,2.2vw,17px);line-height:1.2}
+.zm-t .r{font-family:var(--f-mono);font-size:clamp(9px,1.6vw,12px);color:var(--muted);direction:ltr}
+.zm-t.tiny{border-width:1px;border-radius:1px;padding:0}
+.zm-t.bit{cursor:default}
+.zm-t.bit .n{font-family:var(--f-mono);font-size:clamp(16px,4vw,26px)}
+.zm-t.l0{--c:var(--summary);--cb:var(--summary-bg)}
+.zm-t.l1{--c:var(--theory);--cb:var(--theory-bg)}
+.zm-t.l2{--c:var(--formula);--cb:var(--formula-bg)}
+.zm-t.l3{--c:var(--exercise);--cb:var(--exercise-bg)}
+.zm-t.l4{--c:var(--example);--cb:var(--example-bg)}
+.zm-t.pre{opacity:0;transform:scale(.8)}
+.zm-t.gone{opacity:0;pointer-events:none}
+.zm-all{position:absolute;inset:0;display:grid;gap:4px}
+.zm-allpg{border:2px solid var(--theory);border-radius:5px;display:grid;gap:1px;padding:2px;background:var(--theory-bg);position:relative}
+.zm-allpg > span.pl{position:absolute;top:-1px;inset-inline-start:2px;font-size:10px;font-weight:700;color:var(--theory);background:var(--surface);padding:0 3px;border-radius:3px;z-index:1}
+.zm-allb{border:1px solid var(--exercise);background:var(--exercise-bg);border-radius:2px;font-family:var(--f-mono);font-size:clamp(8px,1.5vw,11px);display:grid;place-items:center;color:var(--fg)}
+.zm-addr{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;direction:ltr}
+.zm-seg{display:flex;flex-direction:column;align-items:center;gap:3px}
+.zm-bits{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}
+.zm-bit{min-width:18px;height:26px;padding:0 2px;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:14px;border:1.5px solid var(--c);color:var(--c);background:var(--cb);border-radius:4px}
+.zm-bit.q{opacity:.45;border-style:dashed}
+.zm-seg .lb{font-size:12px;color:var(--muted);direction:rtl;text-align:center}
+.zm-say{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.zm-say p{margin:0 0 6px} .zm-say p:last-child{margin:0}
+@media (prefers-reduced-motion:reduce){.zm-t{transition:none}}
+.vmex{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px 16px;margin:18px 0;display:grid;gap:10px}
+.vmex-q,.vmex-how{border-inline-start:4px solid var(--c);background:var(--cb);border-radius:6px;padding:8px 12px}
+.vmex-q{--c:var(--theory);--cb:var(--theory-bg)} .vmex-how{--c:var(--example);--cb:var(--example-bg)}
+.vmex-q b,.vmex-how b{color:var(--c);font-size:14px}
+.vmex-q p,.vmex-how p{margin:4px 0 0}
+.vmex .vmw{margin:0}
+.an-hint{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -451,6 +496,18 @@ code.gloss{border-bottom-style:dashed}
 
 <h2 id="vmc-anatomy">מה זה דף, בפועל: בתים, דפים ומסגרות</h2>
 <p>לפני הנוסחאות, כדאי לראות את הדברים עצמם. הזיכרון הוא שורה ארוכה של <strong>בתים</strong>. לכל בית יש מספר, והמספר הזה הוא <strong>הכתובת</strong> שלו. <strong>דף</strong> הוא פשוט קבוצה של בתים רצופים, באורך קבוע. ככה מחלקים את השורה הארוכה לבלוקים שווים.</p>
+<h3 id="vmc-zoom">זום: מהזיכרון כולו ועד ביט אחד</h3>
+<p>הריבוע הגדול הוא כל הזיכרון הווירטואלי של התהליך. לוחצים עליו, והוא מתפצל לדפים. לוחצים על דף, והוא מתפצל לבתים. לוחצים על בית, והוא מתפצל ל-8 ביטים. בכל פיצול רואים כמה ביטים של הכתובת צריך כדי לבחור ריבוע אחד, ובפס למטה הכתובת נבנית מהבחירות. „התמונה המלאה” מראה את כל הריבועים הקטנים יחד, בתוך הריבועים הגדולים.</p>
+<div class="vmw zoomw" id="zoomw">
+ <div class="zm-top">
+  <div class="chips" id="zm-mode"><button type="button" class="chip on" data-m="0">זיכרון קטן: 64 בתים</button><button type="button" class="chip" data-m="1">מחשב אמיתי: 32 ביט, דף 4KB</button></div>
+  <div class="zm-btns"><button type="button" class="btn ghost" id="zm-out">זום החוצה</button><button type="button" class="btn ghost" id="zm-all">התמונה המלאה</button></div>
+ </div>
+ <div class="zm-crumbs" id="zm-crumbs"></div>
+ <div class="zm-stage"><div class="zm-box" id="zm-box"></div></div>
+ <div class="zm-addr" id="zm-addr"></div>
+ <div class="zm-say" id="zm-say"></div>
+</div>
 <div class="box theory"><div class="box-title">דימוי: בניין דירות</div><div class="box-body">
 <ul>
 <li><strong>הזיכרון הווירטואלי</strong> הוא בניין שבו בכל קומה יש 16 דירות. כל <strong>קומה</strong> היא דף, וכל <strong>דירה</strong> היא בית.</li>
@@ -470,26 +527,31 @@ code.gloss{border-bottom-style:dashed}
 <tr><td><bdi dir="ltr">offset</bdi></td><td>מיקום הבית בתוך הדף: הביטים הנמוכים</td><td>4 ביטים, 16 בתים בדף</td></tr>
 <tr><td><bdi dir="ltr">PTE</bdi></td><td>שורה בטבלת הדפים. גם היא יושבת בזיכרון, בבתים.</td><td>בית אחד לכל דף, במסגרת 0</td></tr>
 </table></div>
-<p>במעבדה: לחצו על כל ריבוע בזיכרון הווירטואלי, או הקלידו כתובת, ותראו איך היא מתפרקת לביטים, איזו שורה בטבלה משמשת, ולאיזה בית ב-<bdi dir="ltr">RAM</bdi> היא מגיעה. אפשר לשנות את הגדלים ולראות איך משתנים מספר הביטים והחלוקה.</p>
-<div class="vmw anat" id="anat">
- <div class="an-ctrl">
-  <div class="chips" id="an-pre"></div>
-  <div class="an-sel">
-   <label>זיכרון וירטואלי <select id="an-vm"></select></label>
-   <label>גודל דף <select id="an-pg"></select></label>
-   <label>זיכרון פיזי <select id="an-pm"></select></label>
-   <label>כתובת <input id="an-va" type="number" min="0" inputmode="numeric"></label>
-   <button type="button" class="btn ghost" id="an-shuffle">מיפוי חדש</button>
-  </div>
- </div>
- <div class="an-steps" id="an-steps"></div>
- <div class="an-grids">
-  <div class="an-col"><div class="an-h">זיכרון וירטואלי של התהליך</div><div id="an-vgrid"></div></div>
-  <div class="an-col an-ptcol"><div class="an-h">טבלת הדפים</div><div id="an-pt"></div></div>
-  <div class="an-col"><div class="an-h">זיכרון פיזי (<bdi dir="ltr">RAM</bdi>)</div><div id="an-pgrid"></div></div>
- </div>
- <div class="an-note" id="an-note"></div>
+<h3 id="vmc-anat-ex">שאלות לדוגמה, עם פירוק</h3>
+<p>בכל שאלה: קודם הנתונים והשאלה, אחר כך איך חושבים, ואז הפירוק המלא, צעד אחרי צעד, על התמונה. אפשר לשנות את הכתובת ולראות מה משתנה.</p>
+<div class="vmex">
+ <div class="vmex-q"><b>שאלה 1 · תרגום כתובת</b><p>זיכרון וירטואלי של 64 בתים, דף של 16 בתים, וזיכרון פיזי של 128 בתים. טבלת הדפים של התהליך: דף 0 במסגרת 3, דף 1 במסגרת 2, דף 2 במסגרת 6, ודף 3 לא חוקי. התהליך ניגש לכתובת הווירטואלית 37. מה הכתובת הפיזית?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p>שואלים „באיזה דף נמצא בית 37, ואיפה בתוך הדף?”. 16 בתים בדף, אז דף 0 הוא בתים 0–15, דף 1 הוא 16–31, ודף 2 הוא 32–47. בית 37 הוא בדף 2, במקום 5. הטבלה אומרת שדף 2 נמצא במסגרת 6, ושם לוקחים את אותו מקום 5: מסגרת 6 מתחילה ב-96, אז הכתובת הפיזית היא 101.</p></div>
+ <div class="vmw anat" data-anat="ex1"></div>
 </div>
+<div class="vmex">
+ <div class="vmex-q"><b>שאלה 2 · שקפים 27–28, בגדלים של השקף</b><p>מרחב כתובות של <bdi dir="ltr">64KB</bdi>, דף של <bdi dir="ltr">16KB</bdi>, ו-<bdi dir="ltr">RAM</bdi> של <bdi dir="ltr">128KB</bdi>. טבלת הדפים של <bdi dir="ltr">P1</bdi> היא 3, 7, 5, 2. <bdi dir="ltr">P1</bdi> ניגש לכתובת <bdi dir="ltr">33K</bdi>, כלומר 33792. מה הכתובת הפיזית?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p>בדיוק כמו בשאלה 1, רק עם מספרים גדולים. כל דף הוא 16384 בתים, ולכן כאן כל ריבוע בתמונה מייצג 1024 בתים. 33792 הוא דף 2 (שמתחיל ב-32768), במקום 1024 בתוכו.</p></div>
+ <div class="vmw anat" data-anat="ex2"></div>
+</div>
+<div class="vmex">
+ <div class="vmex-q"><b>שאלה 3 · גישה לדף לא חוקי</b><p>אותה מערכת כמו בשאלה 1. התהליך ניגש לכתובת 50. מה קורה?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p>50 נמצא בדף 3 (בתים 48–63). בטבלה, דף 3 מסומן כלא חוקי, כלומר הוא לא שייך לתהליך בכלל. לכן אין מסגרת ואין כתובת פיזית. ה-<bdi dir="ltr">MMU</bdi> עוצר, ומערכת ההפעלה מסיימת את התהליך: שגיאת זיכרון.</p></div>
+ <div class="vmw anat" data-anat="ex3"></div>
+</div>
+<div class="vmex">
+ <div class="vmex-q"><b>שאלה 4 · דפים קטנים, יותר ביטים ל-VPN</b><p>זיכרון וירטואלי של 64 בתים, דף של 8 בתים, וזיכרון פיזי של 64 בתים. הטבלה: 5, 2, 7, 1, 4, 6, 3, ודף 7 לא חוקי. מה הכתובת הפיזית של 45?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p>אותו זיכרון כמו בשאלה 1, אבל הדפים קטנים פי 2. לכן יש פי 2 דפים: 8 במקום 4, ו-3 ביטים ל-VPN במקום 2. ה-offset קטן בביט אחד, כי בדף יש רק 8 בתים. סך הביטים בכתובת לא משתנה: עדיין 6.</p></div>
+ <div class="vmw anat" data-anat="ex4"></div>
+</div>
+<h3 id="vmc-anat-lab">מעבדה חופשית</h3>
+<p>כאן אפשר לבחור גדלים משלכם, לערבב את המיפוי וללחוץ על כל ריבוע.</p>
+<div class="vmw anat" data-anat="lab"></div>
 <div class="box example"><div class="box-title">ובגדלים אמיתיים?</div><div class="box-body">
 <p>אותה תמונה בדיוק, רק עם יותר ריבועים. דף של <bdi dir="ltr">4KB</bdi> הוא שורה של 4096 בתים, ולכן צריך 12 ביטים כדי לציין מיקום בתוכו. במחשב של 32 ביט יש 2 בחזקת 20 דפים כאלה, ולכן ה-<bdi dir="ltr">VPN</bdi> הוא 20 ביטים.</p>
 <span class="fline">4KB = 2^12, offset = 12 bits</span>
@@ -830,108 +892,270 @@ for (j = 0; j &lt; 1024; j++)         // by columns
 </script>
 <script>
 (function () {
-  /* ---------- address anatomy lab: bytes, pages, frames ---------- */
-  var root = document.getElementById('anat'); if (!root) return;
-  var $ = function (id) { return document.getElementById(id); };
+  /* ---------- address anatomy: bytes, pages, frames (used by the lab and by the example cards) ---------- */
   var fmt = function (n) { return n >= 1024 && n % 1024 === 0 ? (n / 1024) + 'KB' : n + 'B'; };
   var lg = function (n) { return Math.round(Math.log2(n)); };
   var bin = function (n, w) { var s = n.toString(2); while (s.length < w) s = '0' + s; return s; };
   var B = function (t) { return '<bdi dir="ltr">' + t + '</bdi>'; };
   var PRE = [
-    { label: 'דוגמה קטנה: כל ריבוע הוא בית', vm: 64, pg: 16, pm: 128, va: 37, pt: [3, 6, 2, -1] },
+    { label: 'דוגמה קטנה: כל ריבוע הוא בית', vm: 64, pg: 16, pm: 128, va: 37, pt: [3, 2, 6, -1] },
     { label: 'שקף 27: דף של 16KB', vm: 65536, pg: 16384, pm: 131072, va: 33792, pt: [3, 7, 5, 2] },
-    { label: 'דפים של 8 בתים', vm: 64, pg: 8, pm: 64, va: 45, pt: null }
+    { label: 'דפים של 8 בתים', vm: 64, pg: 8, pm: 64, va: 45, pt: [5, 2, 7, 1, 4, 6, 3, -1] }
   ];
-  var S = { vm: 64, pg: 16, pm: 128, va: 37, pt: [3, 6, 2, -1] };
   var VMS = [32, 64, 128, 256], PGS = [4, 8, 16, 32], PMS = [32, 64, 128, 256];
-  function opts(sel, arr, v) {
-    var a = arr.slice(); if (a.indexOf(v) < 0) a.push(v); a.sort(function (x, y) { return x - y; });
-    sel.innerHTML = a.map(function (x) { return '<option value="' + x + '"' + (x === v ? ' selected' : '') + '>' + fmt(x) + '</option>'; }).join('');
-  }
-  function shuffleMap() {
-    var n = S.vm / S.pg, m = S.pm / S.pg, fr = [];
-    for (var i = 1; i < m; i++) fr.push(i);                    /* frame 0 is the kernel: it holds the page table */
-    for (i = fr.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = fr[i]; fr[i] = fr[j]; fr[j] = t; }
-    S.pt = [];
-    for (i = 0; i < n; i++) S.pt.push(i < fr.length ? fr[i] : -1);
-    if (n >= 4 && fr.length >= n) S.pt[n - 1] = -1;            /* one unused page, to show an invalid entry */
-  }
-  function pick(p) { S.vm = p.vm; S.pg = p.pg; S.pm = p.pm; S.va = p.va; if (p.pt) S.pt = p.pt.slice(); else shuffleMap(); draw(); }
-  $('an-pre').innerHTML = PRE.map(function (p, i) { return '<button type="button" class="chip" data-i="' + i + '">' + p.label + '</button>'; }).join('');
-  $('an-pre').onclick = function (e) { var b = e.target.closest('[data-i]'); if (b) pick(PRE[+b.dataset.i]); };
-  function sizeChange() {
-    S.vm = +$('an-vm').value; S.pg = +$('an-pg').value; S.pm = +$('an-pm').value;
-    if (S.pg >= S.vm) S.pg = S.vm / 2; if (S.pg >= S.pm) S.pg = S.pm / 2;
-    if (S.va >= S.vm) S.va = S.vm - 1;
-    shuffleMap(); draw();
-  }
-  $('an-vm').onchange = $('an-pg').onchange = $('an-pm').onchange = sizeChange;
-  $('an-va').oninput = function () { var v = parseInt($('an-va').value, 10); if (!isNaN(v) && v >= 0 && v < S.vm) { S.va = v; draw(true); } };
-  $('an-shuffle').onclick = function () { shuffleMap(); draw(); };
-  function cellsPerRow() { return Math.min(S.pg, 16); }
-  function grid(kind) {
-    var n = (kind === 'v' ? S.vm : S.pm) / S.pg, per = cellsPerRow(), unit = S.pg / per, h = '';
-    var vpn = Math.floor(S.va / S.pg), off = S.va % S.pg, pfn = S.pt[vpn];
-    var owner = {}; S.pt.forEach(function (f, p) { if (f >= 0) owner[f] = p; });
-    for (var r = 0; r < n; r++) {
-      var lo = r * S.pg, hi = lo + S.pg - 1, cls = '', lab;
-      if (kind === 'v') { lab = 'דף ' + r + (S.pt[r] < 0 ? ' ✗' : ''); if (r === vpn) cls = ' sel'; }
-      else { lab = 'מסגרת ' + r; if (r === pfn) cls = ' psel'; }
-      h += '<div class="an-row' + cls + '"><div class="an-rlab">' + lab + '<small>' + lo + '–' + hi + '</small></div>';
-      h += '<div class="an-cells" style="grid-template-columns:repeat(' + per + ',minmax(0,1fr))">';
-      for (var c = 0; c < per; c++) {
-        var a0 = lo + c * unit, k = 'an-cell', txt = unit === 1 ? c : '', title;
-        if (kind === 'v') {
-          if (S.pt[r] < 0) k += ' inv';
-          if (r === vpn && Math.floor(off / unit) === c) k += ' hit';
-          title = unit === 1 ? 'כתובת ' + a0 + ' = דף ' + r + ', offset ' + c : 'בתים ' + a0 + '–' + (a0 + unit - 1);
-          h += '<button type="button" class="' + k + '" data-a="' + a0 + '" title="' + title + '">' + txt + '</button>';
-        } else {
-          if (r === 0) { k += c < S.pt.length && unit === 1 ? ' pt' + (c === vpn ? ' on' : '') : ' pt'; title = unit === 1 && c < S.pt.length ? 'PTE של דף ' + c : 'קרנל (כולל טבלת הדפים)'; txt = unit === 1 && c < S.pt.length ? 'P' + c : ''; }
-          else if (owner[r] === undefined) { k += ' free'; title = 'מסגרת פנויה'; }
-          else { k += ' mine'; if (r === pfn && Math.floor(off / unit) === c) k += ' hit'; title = unit === 1 ? 'כתובת פיזית ' + a0 + ' (דף ' + owner[r] + ' של התהליך)' : 'בתים ' + a0 + '–' + (a0 + unit - 1); }
-          h += '<div class="' + k + '" title="' + title + '">' + txt + '</div>';
-        }
-      }
-      h += '</div></div>';
-      if (kind === 'p' && r === 0) h = h.replace('מסגרת 0<small>', 'מסגרת 0 · קרנל<small>');
-      else if (kind === 'p' && owner[r] !== undefined) h = h.replace('מסגרת ' + r + '<small>', 'מסגרת ' + r + ' · דף ' + owner[r] + '<small>');
+  function mount(root, init, full) {
+    var S = { vm: init.vm, pg: init.pg, pm: init.pm, va: init.va, pt: init.pt.slice() };
+    var q = function (c) { return root.querySelector('.' + c); };
+    root.innerHTML =
+      (full ? '<div class="an-ctrl"><div class="chips an-pre">' + PRE.map(function (p, i) { return '<button type="button" class="chip" data-i="' + i + '">' + p.label + '</button>'; }).join('') + '</div>' +
+        '<div class="an-sel"><label>זיכרון וירטואלי <select class="an-vm"></select></label><label>גודל דף <select class="an-pg"></select></label><label>זיכרון פיזי <select class="an-pm"></select></label>' +
+        '<label>כתובת <input class="an-va" type="number" min="0" inputmode="numeric"></label><button type="button" class="btn ghost an-shuffle">מיפוי חדש</button></div></div>'
+        : '<div class="an-sel"><label>נסו כתובת אחרת: <input class="an-va" type="number" min="0" inputmode="numeric"></label><button type="button" class="btn ghost an-reset">חזרה לכתובת שבשאלה</button><span class="an-hint">או לחצו על ריבוע בזיכרון הווירטואלי</span></div>') +
+      '<div class="an-steps"></div><div class="an-grids"><div class="an-col"><div class="an-h">זיכרון וירטואלי של התהליך</div><div class="an-vgrid"></div></div>' +
+      '<div class="an-col"><div class="an-h">טבלת הדפים</div><div class="an-pt"></div></div><div class="an-col"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')</div><div class="an-pgrid"></div></div></div><div class="an-note"></div>';
+    function opts(sel, arr, v) {
+      if (!sel) return;
+      var a = arr.slice(); if (a.indexOf(v) < 0) a.push(v); a.sort(function (x, y) { return x - y; });
+      sel.innerHTML = a.map(function (x) { return '<option value="' + x + '"' + (x === v ? ' selected' : '') + '>' + fmt(x) + '</option>'; }).join('');
     }
-    return h;
-  }
-  function bits(val, w, cls) { var s = bin(val, w), h = ''; for (var i = 0; i < s.length; i++) h += '<span class="an-bit ' + cls + '">' + s[i] + '</span>'; return '<span class="an-bitrow">' + h + '</span>'; }
-  function draw(keepInput) {
-    opts($('an-vm'), VMS, S.vm); opts($('an-pg'), PGS, S.pg); opts($('an-pm'), PMS, S.pm);
-    if (!keepInput) $('an-va').value = S.va;
-    $('an-va').max = S.vm - 1;
-    var vaB = lg(S.vm), offB = lg(S.pg), vpnB = vaB - offB, paB = lg(S.pm), pfnB = paB - offB;
-    var vpn = Math.floor(S.va / S.pg), off = S.va % S.pg, pfn = S.pt[vpn];
-    var h = '';
-    h += '<p><strong>הגדלים:</strong> ' + B(fmt(S.vm) + ' = 2^' + vaB) + ', ולכן בכתובת וירטואלית יש ' + vaB + ' ביטים. דף של ' + B(fmt(S.pg) + ' = 2^' + offB) + ', ולכן ' + offB + ' ביטים ל-offset, ו-' + vpnB + ' ביטים ל-VPN (' + (S.vm / S.pg) + ' דפים).</p>';
-    h += '<p><strong>הפירוק של הכתובת ' + S.va + ':</strong> מחלקים בגודל הדף. המנה היא מספר הדף, והשארית היא המקום בתוך הדף.</p>';
-    h += '<span class="fline">' + S.va + ' = ' + vpn + ' × ' + S.pg + ' + ' + off + '</span>';
-    h += '<div class="an-bits"><span class="an-bitgrp">' + bits(vpn, vpnB, 'v') + '<span class="an-bitlbl">VPN = ' + vpn + '<br>איזה דף</span></span><span class="an-bitgrp">' + bits(off, offB, 'o') + '<span class="an-bitlbl">offset = ' + off + '<br>איזה בית בתוך הדף</span></span></div>';
-    if (pfn < 0) {
-      h += '<p class="an-bad">בטבלה, דף ' + vpn + ' מסומן כלא חוקי (✗): הוא לא שייך לתהליך. גישה לכתובת הזו היא שגיאת זיכרון.</p>';
+    function shuffleMap() {
+      var n = S.vm / S.pg, m = S.pm / S.pg, fr = [], i;
+      for (i = 1; i < m; i++) fr.push(i);                  /* frame 0 is the kernel: it holds the page table */
+      for (i = fr.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = fr[i]; fr[i] = fr[j]; fr[j] = t; }
+      S.pt = [];
+      for (i = 0; i < n; i++) S.pt.push(i < fr.length ? fr[i] : -1);
+      if (n >= 4 && fr.length >= n) S.pt[n - 1] = -1;          /* one unused page, to show an invalid entry */
+    }
+    if (full) {
+      q('an-pre').onclick = function (e) { var b = e.target.closest('[data-i]'); if (!b) return; var p = PRE[+b.dataset.i]; S.vm = p.vm; S.pg = p.pg; S.pm = p.pm; S.va = p.va; S.pt = p.pt.slice(); draw(); };
+      var sz = function () {
+        S.vm = +q('an-vm').value; S.pg = +q('an-pg').value; S.pm = +q('an-pm').value;
+        if (S.pg >= S.vm) S.pg = S.vm / 2; if (S.pg >= S.pm) S.pg = S.pm / 2;
+        if (S.va >= S.vm) S.va = S.vm - 1;
+        shuffleMap(); draw();
+      };
+      q('an-vm').onchange = q('an-pg').onchange = q('an-pm').onchange = sz;
+      q('an-shuffle').onclick = function () { shuffleMap(); draw(); };
     } else {
-      h += '<p><strong>בטבלת הדפים:</strong> בשורה ' + vpn + ' כתוב שהדף נמצא במסגרת ' + pfn + '. ב-RAM של ' + B(fmt(S.pm) + ' = 2^' + paB) + ' יש ' + (S.pm / S.pg) + ' מסגרות, אז ל-PFN יש ' + pfnB + ' ביטים.</p>';
-      h += '<p><strong>הכתובת הפיזית:</strong> מחליפים את ה-VPN ב-PFN, וה-offset נשאר כמו שהוא.</p>';
-      h += '<span class="fline">PA = ' + pfn + ' × ' + S.pg + ' + ' + off + ' = ' + (pfn * S.pg + off) + '</span>';
-      h += '<div class="an-bits"><span class="an-bitgrp">' + bits(pfn, pfnB, 'p') + '<span class="an-bitlbl">PFN = ' + pfn + '<br>איזו מסגרת</span></span><span class="an-bitgrp">' + bits(off, offB, 'o') + '<span class="an-bitlbl">offset = ' + off + '<br>אותו בית בתוך המסגרת</span></span></div>';
+      q('an-reset').onclick = function () { S.va = init.va; draw(); };
     }
-    $('an-steps').innerHTML = h;
-    $('an-vgrid').innerHTML = grid('v'); $('an-pgrid').innerHTML = grid('p');
-    var t = '<table><tr><th>VPN</th><th>PFN</th><th>V</th></tr>';
-    S.pt.forEach(function (f, p) { t += '<tr' + (p === vpn ? ' class="on"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
-    $('an-pt').innerHTML = t + '</table>';
-    var unit = S.pg / cellsPerRow();
-    $('an-note').innerHTML = (unit === 1 ? 'כל ריבוע הוא בית אחד, והמספר בו הוא ה-offset שלו בתוך הדף. ' : 'כל ריבוע כאן מייצג ' + unit + ' בתים, כי בדף יש ' + S.pg + ' בתים. ') +
-      'מסגרת 0 שמורה לקרנל, ושם גם יושבת טבלת הדפים' + (unit === 1 ? ': כל ' + B('PTE') + ' הוא בית אחד (P0, P1 וכן הלאה).' : '.') +
-      ' מסגרות שלא שייכות לתהליך מסומנות באפור בהיר.';
-    Array.prototype.forEach.call(root.querySelectorAll('#an-pre .chip'), function (b, i) { var p = PRE[i]; b.classList.toggle('on', p.vm === S.vm && p.pg === S.pg && p.pm === S.pm); });
+    q('an-va').oninput = function () { var v = parseInt(q('an-va').value, 10); if (!isNaN(v) && v >= 0 && v < S.vm) { S.va = v; draw(true); } };
+    q('an-vgrid').onclick = function (e) { var b = e.target.closest('[data-a]'); if (!b) return; S.va = +b.dataset.a; draw(); };
+    function cellsPerRow() { return Math.min(S.pg, 16); }
+    function grid(kind) {
+      var n = (kind === 'v' ? S.vm : S.pm) / S.pg, per = cellsPerRow(), unit = S.pg / per, h = '';
+      var vpn = Math.floor(S.va / S.pg), off = S.va % S.pg, pfn = S.pt[vpn];
+      var owner = {}; S.pt.forEach(function (f, p) { if (f >= 0) owner[f] = p; });
+      for (var r = 0; r < n; r++) {
+        var lo = r * S.pg, hi = lo + S.pg - 1, cls = '', lab;
+        if (kind === 'v') { lab = 'דף ' + r + (S.pt[r] < 0 ? ' ✗' : ''); if (r === vpn) cls = ' sel'; }
+        else { lab = 'מסגרת ' + r + (r === 0 ? ' · קרנל' : owner[r] !== undefined ? ' · דף ' + owner[r] : ''); if (r === pfn) cls = ' psel'; }
+        h += '<div class="an-row' + cls + '"><div class="an-rlab">' + lab + '<small>' + lo + '–' + hi + '</small></div>';
+        h += '<div class="an-cells" style="grid-template-columns:repeat(' + per + ',minmax(0,1fr))">';
+        for (var c = 0; c < per; c++) {
+          var a0 = lo + c * unit, k = 'an-cell', txt = unit === 1 ? c : '', title;
+          if (kind === 'v') {
+            if (S.pt[r] < 0) k += ' inv';
+            if (r === vpn && Math.floor(off / unit) === c) k += ' hit';
+            title = unit === 1 ? 'כתובת ' + a0 + ' = דף ' + r + ', offset ' + c : 'בתים ' + a0 + '–' + (a0 + unit - 1);
+            h += '<button type="button" class="' + k + '" data-a="' + a0 + '" title="' + title + '">' + txt + '</button>';
+          } else {
+            if (r === 0) { var isPte = unit === 1 && c < S.pt.length; k += ' pt' + (isPte && c === vpn ? ' on' : ''); title = isPte ? 'PTE של דף ' + c : 'קרנל (כולל טבלת הדפים)'; txt = isPte ? 'P' + c : ''; }
+            else if (owner[r] === undefined) { k += ' free'; title = 'מסגרת שלא שייכת לתהליך'; }
+            else { k += ' mine'; if (r === pfn && Math.floor(off / unit) === c) k += ' hit'; title = unit === 1 ? 'כתובת פיזית ' + a0 + ' (דף ' + owner[r] + ' של התהליך)' : 'בתים ' + a0 + '–' + (a0 + unit - 1); }
+            h += '<div class="' + k + '" title="' + title + '">' + txt + '</div>';
+          }
+        }
+        h += '</div></div>';
+      }
+      return h;
+    }
+    function bits(val, w, cls) { var s = bin(val, w), h = ''; for (var i = 0; i < s.length; i++) h += '<span class="an-bit ' + cls + '">' + s[i] + '</span>'; return '<span class="an-bitrow">' + h + '</span>'; }
+    function draw(keepInput) {
+      opts(q('an-vm'), VMS, S.vm); opts(q('an-pg'), PGS, S.pg); opts(q('an-pm'), PMS, S.pm);
+      if (!keepInput) q('an-va').value = S.va;
+      q('an-va').max = S.vm - 1;
+      var vaB = lg(S.vm), offB = lg(S.pg), vpnB = vaB - offB, paB = lg(S.pm), pfnB = paB - offB;
+      var vpn = Math.floor(S.va / S.pg), off = S.va % S.pg, pfn = S.pt[vpn], h = '';
+      h += '<p><strong>1. הגדלים.</strong> ' + B(fmt(S.vm) + ' = 2^' + vaB) + ', ולכן בכתובת וירטואלית יש ' + vaB + ' ביטים. דף של ' + B(fmt(S.pg) + ' = 2^' + offB) + ', ולכן ' + offB + ' ביטים ל-offset, ו-' + vpnB + ' ביטים ל-VPN (' + (S.vm / S.pg) + ' דפים).</p>';
+      h += '<p><strong>2. מפרקים את הכתובת ' + S.va + '.</strong> מחלקים בגודל הדף. המנה היא מספר הדף, והשארית היא המקום בתוך הדף.</p>';
+      h += '<span class="fline">' + S.va + ' = ' + vpn + ' × ' + S.pg + ' + ' + off + '</span>';
+      h += '<div class="an-bits"><span class="an-bitgrp">' + bits(vpn, vpnB, 'v') + '<span class="an-bitlbl">VPN = ' + vpn + '<br>איזה דף</span></span><span class="an-bitgrp">' + bits(off, offB, 'o') + '<span class="an-bitlbl">offset = ' + off + '<br>איזה בית בתוך הדף</span></span></div>';
+      if (pfn < 0) {
+        h += '<p class="an-bad">3. בטבלה, דף ' + vpn + ' מסומן כלא חוקי (✗): הוא לא שייך לתהליך. אין כתובת פיזית, וזו שגיאת זיכרון.</p>';
+      } else {
+        h += '<p><strong>3. בטבלת הדפים.</strong> בשורה ' + vpn + ' כתוב שהדף נמצא במסגרת ' + pfn + '. ב-RAM של ' + B(fmt(S.pm) + ' = 2^' + paB) + ' יש ' + (S.pm / S.pg) + ' מסגרות, אז ל-PFN יש ' + pfnB + ' ביטים.</p>';
+        h += '<p><strong>4. הכתובת הפיזית.</strong> מחליפים את ה-VPN ב-PFN, וה-offset נשאר כמו שהוא.</p>';
+        h += '<span class="fline">PA = ' + pfn + ' × ' + S.pg + ' + ' + off + ' = ' + (pfn * S.pg + off) + '</span>';
+        h += '<div class="an-bits"><span class="an-bitgrp">' + bits(pfn, pfnB, 'p') + '<span class="an-bitlbl">PFN = ' + pfn + '<br>איזו מסגרת</span></span><span class="an-bitgrp">' + bits(off, offB, 'o') + '<span class="an-bitlbl">offset = ' + off + '<br>אותו בית בתוך המסגרת</span></span></div>';
+      }
+      q('an-steps').innerHTML = h;
+      q('an-vgrid').innerHTML = grid('v'); q('an-pgrid').innerHTML = grid('p');
+      var t = '<table><tr><th>VPN</th><th>PFN</th><th>V</th></tr>';
+      S.pt.forEach(function (f, p) { t += '<tr' + (p === vpn ? ' class="on"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
+      q('an-pt').innerHTML = t + '</table>';
+      var unit = S.pg / cellsPerRow();
+      q('an-note').innerHTML = (unit === 1 ? 'כל ריבוע הוא בית אחד, והמספר בו הוא ה-offset שלו בתוך הדף. ' : 'כל ריבוע כאן מייצג ' + unit + ' בתים, כי בדף יש ' + S.pg + ' בתים. ') +
+        'מסגרת 0 שמורה לקרנל, ושם גם יושבת טבלת הדפים' + (unit === 1 ? ': כל ' + B('PTE') + ' הוא בית אחד (P0, P1 וכן הלאה).' : '.') + ' מסגרות שלא שייכות לתהליך מסומנות באפור בהיר.';
+      if (full) Array.prototype.forEach.call(root.querySelectorAll('.an-pre .chip'), function (b, i) { var p = PRE[i]; b.classList.toggle('on', p.vm === S.vm && p.pg === S.pg && p.pm === S.pm); });
+    }
+    draw();
   }
-  $('an-vgrid').onclick = function (e) { var b = e.target.closest('[data-a]'); if (!b) return; S.va = +b.dataset.a; draw(); };
-  draw();
+  var EX = {
+    ex1: { vm: 64, pg: 16, pm: 128, va: 37, pt: [3, 2, 6, -1] },
+    ex2: { vm: 65536, pg: 16384, pm: 131072, va: 33792, pt: [3, 7, 5, 2] },
+    ex3: { vm: 64, pg: 16, pm: 128, va: 50, pt: [3, 2, 6, -1] },
+    ex4: { vm: 64, pg: 8, pm: 64, va: 45, pt: [5, 2, 7, 1, 4, 6, 3, -1] }
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('[data-anat]'), function (el) {
+    var k = el.dataset.anat; mount(el, k === 'lab' ? PRE[0] : EX[k], k === 'lab');
+  });
+})();
+</script>
+
+<script>
+(function () {
+  /* ---------- zoom into memory: memory -> pages -> bytes -> bits ---------- */
+  var root = document.getElementById('zoomw'); if (!root) return;
+  var box = document.getElementById('zm-box');
+  var B = function (t) { return '<bdi dir="ltr">' + t + '</bdi>'; };
+  var MODES = [
+    { total: 64, addrBits: 6, hex: false, title: 'כל הזיכרון הווירטואלי', size: '64 בתים',
+      lv: [ { one: 'דף', many: 'דפים', bits: 2, cls: 'l1', unit: 16, seg: 'VPN · איזה דף' },
+            { one: 'בית', many: 'בתים', bits: 4, cls: 'l3', unit: 1, seg: 'offset · איזה בית בדף' } ] },
+    { total: Math.pow(2, 32), addrBits: 32, hex: true, title: 'כל הזיכרון הווירטואלי', size: '4GB',
+      lv: [ { one: 'קבוצה', many: 'קבוצות של 1024 דפים', bits: 10, cls: 'l2', unit: 4194304, seg: 'איזו קבוצה (רמה 1)' },
+            { one: 'דף', many: 'דפים', bits: 10, cls: 'l1', unit: 4096, seg: 'איזה דף בקבוצה (רמה 2)' },
+            { one: 'בית', many: 'בתים', bits: 12, cls: 'l3', unit: 1, seg: 'offset · איזה בית בדף' } ] }
+  ];
+  var M = MODES[0], path = [], atRoot = true, full = false, busy = false;
+  var bin = function (n, w) { var s = n.toString(2); while (s.length < w) s = '0' + s; return s; };
+  var fmtA = function (a) { if (!M.hex) return String(a); var s = a.toString(16).toUpperCase(); while (s.length < 8) s = '0' + s; return '0x' + s; };
+  function base() { var b = 0; for (var i = 0; i < path.length; i++) b += path[i] * M.lv[i].unit; return b; }
+  function dims(bits) { return { c: Math.pow(2, Math.ceil(bits / 2)), r: Math.pow(2, Math.floor(bits / 2)) }; }
+  function level() { return atRoot ? -1 : path.length; }   /* index into M.lv, or M.lv.length = bits of one byte */
+  function tilesSpec() {
+    var k = level(), out = [];
+    if (k < 0) return [{ cls: 'l0', n: M.title + ' · ' + M.size, r: fmtA(0) + '–' + fmtA(M.total - 1), bits: false }];
+    if (k === M.lv.length) {
+      var addr = base(), v = (addr * 37 + 11) & 255;                       /* sample contents of the byte */
+      for (var i = 7; i >= 0; i--) out.push({ cls: 'l4 bit', n: String((v >> i) & 1), r: 'ביט ' + i, bit: true });
+      return out;
+    }
+    var L = M.lv[k], cnt = Math.pow(2, L.bits), b0 = base(), tiny = cnt > 64;
+    for (i = 0; i < cnt; i++) {
+      var lo = b0 + i * L.unit, hi = lo + L.unit - 1;
+      out.push({ cls: L.cls + (tiny ? ' tiny' : ''), n: tiny ? '' : (L.unit === 1 ? (M.hex ? '' : String(lo)) : L.one + ' ' + i), r: tiny ? '' : (L.unit === 1 ? (M.hex ? '' : 'offset ' + i) : fmtA(lo) + '–' + fmtA(hi)),
+                title: L.one + ' ' + i + ': ' + (L.unit === 1 ? 'כתובת ' + fmtA(lo) : fmtA(lo) + '–' + fmtA(hi)) });
+    }
+    return out;
+  }
+  function pos(i, k, n) {
+    if (k < 0) return [0, 0, 100, 100];
+    var d = k === M.lv.length ? { c: 4, r: 2 } : dims(M.lv[k].bits), g = n > 256 ? 0 : 1.2;
+    var w = 100 / d.c, h = 100 / d.r, col = i % d.c, row = Math.floor(i / d.c);
+    if (k === M.lv.length) return [col * w + g / 2, row * h + g / 2, w - g, h - g];   /* bits: 7..0 left to right, like a binary number */
+    return [100 - (col + 1) * w + g / 2, row * h + g / 2, w - g, h - g];   /* RTL: first tile on the right */
+  }
+  function place(el, p) { el.style.left = p[0] + '%'; el.style.top = p[1] + '%'; el.style.width = p[2] + '%'; el.style.height = p[3] + '%'; }
+  function render(mode) {    /* mode: 'split' children fly out of the full square, 'still' no animation */
+    full = false; var spec = tilesSpec(), k = level(), n = spec.length, anim = mode === 'split' && n <= 256;
+    box.innerHTML = '';
+    spec.forEach(function (s, i) {
+      var el = document.createElement(s.bit ? 'div' : 'button');
+      if (!s.bit) el.type = 'button';
+      el.className = 'zm-t ' + s.cls; if (s.title) el.title = s.title;
+      el.innerHTML = (s.n ? '<span class="n">' + s.n + '</span>' : '') + (s.r ? '<span class="r">' + s.r + '</span>' : '');
+      el.dataset.i = i;
+      place(el, anim ? [0, 0, 100, 100] : pos(i, k, n));
+      if (anim) el.style.opacity = '.35';
+      box.appendChild(el);
+    });
+    if (anim) { void box.offsetWidth; Array.prototype.forEach.call(box.children, function (el, i) { el.style.opacity = ''; place(el, pos(i, k, n)); }); }
+    text();
+  }
+  function zoomIn(i) {
+    if (busy) return;
+    var k = level();
+    if (k === M.lv.length) return;
+    if (k < 0) { atRoot = false; render('split'); return; }
+    busy = true;
+    var kids = box.children, t = kids[i];
+    t.style.zIndex = 2; place(t, [0, 0, 100, 100]);
+    Array.prototype.forEach.call(kids, function (el, j) { if (j !== i) el.classList.add('gone'); });
+    setTimeout(function () { path.push(i); render('split'); busy = false; }, kids.length > 256 ? 0 : 380);
+  }
+  function zoomOut() {
+    if (busy) return;
+    if (full) { render('still'); return; }
+    if (atRoot) return;
+    if (!path.length) { atRoot = true; render('still'); return; }
+    var c = path.pop(), k = level(), spec;
+    render('still'); spec = box.children;
+    if (spec.length > 256) return;
+    var t = spec[c]; t.style.zIndex = 2; t.style.transition = 'none'; place(t, [0, 0, 100, 100]);
+    Array.prototype.forEach.call(spec, function (el, j) { if (j !== c) { el.style.transition = 'none'; el.classList.add('gone'); } });
+    void box.offsetWidth;
+    Array.prototype.forEach.call(spec, function (el, j) { el.style.transition = ''; if (j === c) place(el, pos(j, k, spec.length)); else el.classList.remove('gone'); });
+    setTimeout(function () { t.style.zIndex = ''; }, 400);
+  }
+  function showAll() {
+    if (M.hex) return;
+    full = true; box.innerHTML = '';
+    var L0 = M.lv[0], L1 = M.lv[1], d0 = dims(L0.bits), d1 = dims(L1.bits), g = document.createElement('div');
+    g.className = 'zm-all'; g.style.gridTemplateColumns = 'repeat(' + d0.c + ',1fr)'; g.style.direction = 'rtl';
+    for (var p = 0; p < Math.pow(2, L0.bits); p++) {
+      var pg = document.createElement('div'); pg.className = 'zm-allpg'; pg.style.gridTemplateColumns = 'repeat(' + d1.c + ',1fr)';
+      pg.innerHTML = '<span class="pl">דף ' + p + '</span>';
+      for (var b = 0; b < Math.pow(2, L1.bits); b++) pg.innerHTML += '<span class="zm-allb" title="דף ' + p + ', offset ' + b + '">' + (p * L0.unit + b) + '</span>';
+      g.appendChild(pg);
+    }
+    box.appendChild(g); text();
+  }
+  function seg(val, w, cls, lb) {
+    var s = val === null ? null : bin(val, w), h = '';
+    for (var i = 0; i < w; i++) h += '<span class="zm-bit ' + (s ? '' : 'q') + '" style="--c:var(--' + cls + ');--cb:var(--' + cls + '-bg)">' + (s ? s[i] : '?') + '</span>';
+    return '<div class="zm-seg"><div class="zm-bits">' + h + '</div><div class="lb">' + lb + '</div></div>';
+  }
+  var SEGC = { l1: 'theory', l2: 'formula', l3: 'exercise' };
+  function text() {
+    var k = level(), cr = ['<b>' + M.title + '</b>'];
+    path.forEach(function (p, i) { cr.push(M.lv[i].one + ' ' + p); });
+    if (k === M.lv.length) cr.push('8 ביטים');
+    document.getElementById('zm-crumbs').innerHTML = full ? '<b>התמונה המלאה</b>' : cr.join(' ← ');
+    var a = '';
+    if (!full) M.lv.forEach(function (L, i) { a += seg(i < path.length ? path[i] : null, L.bits, SEGC[L.cls], L.seg + ' · ' + L.bits + ' ביטים'); });
+    document.getElementById('zm-addr').innerHTML = full ? '' : a;
+    var s = '', addr = base();
+    if (full) s = '<p>כל 64 הבתים יחד. כל ריבוע כחול הוא דף, וכל ריבוע קטן בתוכו הוא בית, עם הכתובת שלו. הריבוע הגדול נבחר לפי 2 הביטים העליונים של הכתובת, והריבוע הקטן בתוכו לפי 4 הביטים התחתונים.</p><p>למשל 37 = 100101: הביטים 10 בוחרים את דף 2, והביטים 0101 בוחרים את בית 5 בתוכו.</p>';
+    else if (k < 0) s = M.hex
+      ? '<p>במחשב של 32 ביט, מרחב הכתובות של תהליך הוא ' + B('2^32') + ' בתים, כלומר 4GB. כל כתובת היא מספר של 32 ביט. לחצו על הריבוע כדי לפצל אותו.</p>'
+      : '<p>זה כל הזיכרון הווירטואלי של התהליך: 64 בתים, עם הכתובות 0 עד 63. כדי לכתוב 63 בבינארי צריך 6 ביטים, כי ' + B('64 = 2^6') + '. לחצו על הריבוע כדי לפצל אותו לדפים.</p>';
+    else if (k === M.lv.length) s = '<p>בית ' + (M.hex ? B(fmtA(addr)) : addr) + ' הוא 8 ביטים. הכתובת מצביעה על הבית כולו, לא על ביט בודד, ולכן הביטים האלה לא חלק מהכתובת. הערכים כאן הם רק דוגמה לתוכן.</p>' + (M.hex ? '' : '<p>והכתובת עצמה: ' + B(addr + ' = ' + path[0] + ' × 16 + ' + path[1]) + ', ובבינארי ' + B(bin(addr, 6)) + '. זה בדיוק מה שהבחירות בנו בפס למטה.</p>');
+    else {
+      var L = M.lv[k], cnt = Math.pow(2, L.bits);
+      s = '<p>' + (k === 0 ? 'הזיכרון' : M.lv[k - 1].one + ' ' + path[k - 1]) + ' מתפצל ל-' + cnt + ' ' + L.many + (L.unit > 1 ? ', ובכל אחד ' + (L.unit >= 1024 ? (L.unit / 1024 >= 1024 ? L.unit / 1048576 + 'MB' : L.unit / 1024 + 'KB') : L.unit + ' בתים') : '') + '. ' +
+        'כי ' + B(cnt + ' = 2^' + L.bits) + ', צריך ' + L.bits + ' ביטים כדי לבחור ' + L.one + ' אחד.</p>';
+      if (!M.hex && k === 0) s += '<p>2 הביטים האלה הם הביטים הגבוהים של הכתובת: ה-' + B('VPN') + '. לחצו על דף.</p>';
+      if (!M.hex && k === 1) s += '<p>4 הביטים האלה הם הביטים הנמוכים: ה-' + B('offset') + '. הכתובת של בית היא מספר הדף כפול 16, ועוד המקום בדף. לחצו על בית.</p>';
+      if (M.hex && k === 0) s += '<p>זו בדיוק החלוקה של טבלה היררכית בשתי רמות: 10 הביטים העליונים בוחרים שורה ב-' + B('page directory') + '. הריבועים קטנים מכדי לכתוב עליהם, אז מעבירים עליהם את העכבר.</p>';
+      if (M.hex && k === 1) s += '<p>10 הביטים הבאים בוחרים שורה בטבלת הדפים של הרמה השנייה. ביחד, 20 הביטים העליונים הם ה-' + B('VPN') + '.</p>';
+      if (M.hex && k === 2) s += '<p>דף של 4KB הוא 4096 בתים, 64 על 64. ‏12 הביטים האחרונים הם ה-' + B('offset') + '. אותה תמונה כמו בזיכרון הקטן, רק עם הרבה יותר ריבועים.</p>';
+    }
+    document.getElementById('zm-say').innerHTML = s;
+    document.getElementById('zm-out').disabled = atRoot && !full;
+    document.getElementById('zm-all').disabled = !!M.hex;
+  }
+  box.onclick = function (e) { var t = e.target.closest('.zm-t'); if (t && !t.classList.contains('bit')) zoomIn(+t.dataset.i); };
+  document.getElementById('zm-out').onclick = zoomOut;
+  document.getElementById('zm-all').onclick = showAll;
+  document.getElementById('zm-mode').onclick = function (e) {
+    var b = e.target.closest('[data-m]'); if (!b) return;
+    M = MODES[+b.dataset.m]; path = []; atRoot = true;
+    Array.prototype.forEach.call(this.children, function (c) { c.classList.toggle('on', c === b); });
+    render('still');
+  };
+  render('still');
 })();
 </script>
 
