@@ -438,7 +438,13 @@ code.gloss{border-bottom-style:dashed}
 .zm-mini:hover .zm-mbox{outline:2px dashed var(--line);outline-offset:3px}
 .zm-arr{font-size:26px;color:var(--ink);font-weight:700;line-height:1}
 .zm-br{flex-basis:100%;height:0}
-.zm-stage .zm-box{width:min(100%,420px)}
+/* one screen: the steps and the address on the right, the square on the left, sized to the window height */
+.zm-main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
+.zm-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.zm-side .zm-trail{justify-content:flex-start}
+.zm-side .zm-mbox{width:84px}
+.zm-stage .zm-box{width:min(460px,calc(100vh - 170px),calc(100vw - 80px));min-width:240px}
+@media (max-width:900px){.zm-main{grid-template-columns:minmax(0,1fr)}.zm-stage{order:2}.zm-side .zm-say{order:5}.zm-arr.last{transform:rotate(-90deg)}.zm-stage .zm-box{width:min(100%,420px)}}
 @media (max-width:760px){.zm-mbox{width:84px}}
 .zm-box{position:relative;width:min(100%,460px);aspect-ratio:1;max-width:100%}
 .zm-t{position:absolute;box-sizing:border-box;border:2px solid var(--c);background:var(--cb);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:2px;overflow:hidden;text-align:center;
@@ -579,10 +585,10 @@ html.vmc-folded .mta-expand{animation:vmcpulse 1s ease-in-out 4}
   <div class="chips" id="zm-mode"><button type="button" class="chip on" data-m="0">זיכרון קטן: 64 בתים</button><button type="button" class="chip" data-m="1">מחשב אמיתי: 32 ביט, דף 4KB</button></div>
   <div class="zm-btns"><button type="button" class="btn ghost" id="zm-out">זום החוצה</button><button type="button" class="btn ghost" id="zm-all">התמונה המלאה</button></div>
  </div>
- <div class="zm-crumbs" id="zm-crumbs"></div>
- <div class="zm-stage"><div class="zm-trail" id="zm-trail"></div><div class="zm-box" id="zm-box"></div></div>
- <div class="zm-addr" id="zm-addr"></div>
- <div class="zm-say" id="zm-say"></div>
+ <div class="zm-main">
+  <div class="zm-side"><div class="zm-crumbs" id="zm-crumbs"></div><div class="zm-trail" id="zm-trail"></div><div class="zm-addr" id="zm-addr"></div><div class="zm-say" id="zm-say"></div></div>
+  <div class="zm-stage"><div class="zm-box" id="zm-box"></div></div>
+ </div>
 </div>
 <div class="box theory"><div class="box-title">דימוי: בניין דירות</div><div class="box-body">
 <ul>
@@ -1330,7 +1336,7 @@ for (j = 0; j &lt; 1024; j++)         // by columns
         for (var i = 0; i < cnt; i++) { var p = pos(i, k, cnt); mt += '<span class="zm-mt ' + cls + (i === ch ? ' ch' : '') + '" style="left:' + p[0] + '%;top:' + p[1] + '%;width:' + p[2] + '%;height:' + p[3] + '%' + '"></span>'; }
         var lab = k < 0 ? M.title.replace('כל ', '') : M.lv[k].one + ' ' + path[k];
         if (k >= 0 && k === M.lv.length - 1 && !M.hex) lab += ' · כתובת ' + base();
-        h += '<button type="button" class="zm-mini" data-k="' + k + '" title="חזרה לשלב הזה"><span class="zm-mbox">' + mt + '</span><span class="zm-mlab">' + lab + '</span></button>' + (k === path.length - 1 ? '<span class="zm-br"></span><span class="zm-arr">↓</span>' : '<span class="zm-arr">←</span>');
+        h += '<button type="button" class="zm-mini" data-k="' + k + '" title="חזרה לשלב הזה"><span class="zm-mbox">' + mt + '</span><span class="zm-mlab">' + lab + '</span></button>' + (k === path.length - 1 ? '<span class="zm-arr last">←</span>' : '<span class="zm-arr">←</span>');
       }
     }
     tr.innerHTML = h;
