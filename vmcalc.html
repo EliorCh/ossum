@@ -512,6 +512,14 @@ main > section > .vmex{max-width:none}
 .an-row.blk .an-cells{outline:1.5px solid var(--theory);outline-offset:1px;border-radius:2px}
 .vmex .an-h{margin-bottom:3px}
 @media (max-width:900px){.vmex{grid-template-columns:minmax(0,1fr);max-height:none}.vx-vis,.vx-txt,.vx-steps{max-height:none;overflow:visible}}
+.vx-lk{border-bottom:2px dotted var(--ink);cursor:help;border-radius:3px;transition:background .15s}
+.vx-lk:hover,.vx-lk.on,.vx-lk:focus-visible{background:color-mix(in srgb,var(--ink) 14%,transparent);outline:none}
+.vmex .lit{outline:3px solid var(--ink)!important;outline-offset:2px;border-radius:4px;position:relative;z-index:1;animation:vxpulse .8s ease-in-out infinite alternate}
+@keyframes vxpulse{from{outline-color:var(--ink)}to{outline-color:color-mix(in srgb,var(--ink) 35%,transparent)}}
+@media (prefers-reduced-motion:reduce){.vmex .lit{animation:none}}
+.vx-exp{min-height:58px;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px}
+.vx-exp .fline{margin:4px 0 0;font-size:13.5px}
+.vx-ehint{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -578,21 +586,21 @@ main > section > .vmex{max-width:none}
 <tr><td><bdi dir="ltr">PTE</bdi></td><td>שורה בטבלת הדפים. גם היא יושבת בזיכרון, בבתים.</td><td>בית אחד לכל דף, במסגרת 0</td></tr>
 </table></div>
 <h3 id="vmc-anat-ex">שאלות לדוגמה, עם פירוק</h3>
-<p>כל שאלה במסך אחד: מימין השאלה והפתרון, שלב אחרי שלב (כל שלב נפתח מתחת לקודם), ומשמאל הנתונים מצוירים. „הבא” מתקדם בפתרון, והציור מסמן מה השתנה בכל שלב. אפשר גם להקליד כתובת אחרת או ללחוץ על ריבוע.</p>
+<p>כל שאלה במסך אחד: מימין השאלה והפתרון, שלב אחרי שלב (כל שלב נפתח מתחת לקודם), ומשמאל הנתונים מצוירים. מעבר עם העכבר (או לחיצה) על מונח עם קו מנוקד מסמן אותו בציור, ומראה איך הוא מתקבל מהמספרים. „הבא” מתקדם בפתרון, והציור מסמן מה השתנה בכל שלב. אפשר גם להקליד כתובת אחרת או ללחוץ על ריבוע.</p>
 <div class="vmex" data-card="ex1">
- <div class="vmex-q"><b>שאלה 1 · תרגום כתובת</b><p>זיכרון וירטואלי של 64 בתים, דף של 16 בתים, וזיכרון פיזי של 128 בתים. טבלת הדפים של התהליך: דף 0 במסגרת 3, דף 1 במסגרת 2, דף 2 במסגרת 6, ודף 3 לא חוקי. התהליך ניגש לכתובת הווירטואלית 37. מה הכתובת הפיזית?</p></div>
- <div class="vmex-how"><b>איך חושבים</b><p>שואלים „באיזה דף נמצא בית 37, ואיפה בתוך הדף?”. 16 בתים בדף, אז דף 0 הוא בתים 0–15, דף 1 הוא 16–31, ודף 2 הוא 32–47. בית 37 הוא בדף 2, במקום 5. הטבלה אומרת שדף 2 נמצא במסגרת 6, ושם לוקחים את אותו מקום 5: מסגרת 6 מתחילה ב-96, אז הכתובת הפיזית היא 101.</p></div>
+ <div class="vmex-q"><b>שאלה 1 · תרגום כתובת</b><p>זיכרון וירטואלי של <span class="vx-lk" data-k="vm" tabindex="0">64 בתים</span>, דף של <span class="vx-lk" data-k="pg" tabindex="0">16 בתים</span>, וזיכרון פיזי של <span class="vx-lk" data-k="pm" tabindex="0">128 בתים</span>. טבלת הדפים של התהליך: דף 0 במסגרת 3, דף 1 במסגרת 2, <span class="vx-lk" data-k="pt" tabindex="0">דף 2 במסגרת 6</span>, ודף 3 לא חוקי. התהליך ניגש לכתובת הווירטואלית <span class="vx-lk" data-k="va" tabindex="0">37</span>. מה <span class="vx-lk" data-k="pa" tabindex="0">הכתובת הפיזית</span>?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p>שואלים „באיזה דף נמצא בית 37, ואיפה בתוך הדף?”. 16 בתים בדף, אז דף 0 הוא בתים 0–15, דף 1 הוא 16–31, ודף 2 הוא 32–47. בית <span class="vx-lk" data-k="va" tabindex="0">37</span> הוא <span class="vx-lk" data-k="vpn" tabindex="0">בדף 2</span>, <span class="vx-lk" data-k="off" tabindex="0">במקום 5</span>. הטבלה אומרת שדף 2 נמצא <span class="vx-lk" data-k="pfn" tabindex="0">במסגרת 6</span>, ושם לוקחים את אותו מקום 5: מסגרת 6 מתחילה ב-96, אז הכתובת הפיזית היא <span class="vx-lk" data-k="pa" tabindex="0">101</span>.</p></div>
 </div>
 <div class="vmex" data-card="ex2">
- <div class="vmex-q"><b>שאלה 2 · שקפים 27–28, בגדלים של השקף</b><p>מרחב כתובות של <bdi dir="ltr">64KB</bdi>, דף של <bdi dir="ltr">16KB</bdi>, ו-<bdi dir="ltr">RAM</bdi> של <bdi dir="ltr">128KB</bdi>. טבלת הדפים של <bdi dir="ltr">P1</bdi> היא 3, 7, 5, 2. <bdi dir="ltr">P1</bdi> ניגש לכתובת <bdi dir="ltr">33K</bdi>, כלומר 33792. מה הכתובת הפיזית?</p></div>
- <div class="vmex-how"><b>איך חושבים</b><p>בדיוק כמו בשאלה 1, רק עם מספרים גדולים. כל דף הוא 16384 בתים, ולכן כאן כל ריבוע בתמונה מייצג 1024 בתים. 33792 הוא דף 2 (שמתחיל ב-32768), במקום 1024 בתוכו.</p></div>
+ <div class="vmex-q"><b>שאלה 2 · שקפים 27–28, בגדלים של השקף</b><p>מרחב כתובות של <span class="vx-lk" data-k="vm" tabindex="0"><bdi dir="ltr">64KB</bdi></span>, דף של <span class="vx-lk" data-k="pg" tabindex="0"><bdi dir="ltr">16KB</bdi></span>, ו-<bdi dir="ltr">RAM</bdi> של <span class="vx-lk" data-k="pm" tabindex="0"><bdi dir="ltr">128KB</bdi></span>. <span class="vx-lk" data-k="pt" tabindex="0">טבלת הדפים</span> של <bdi dir="ltr">P1</bdi> היא 3, 7, 5, 2. <bdi dir="ltr">P1</bdi> ניגש לכתובת <span class="vx-lk" data-k="va" tabindex="0"><bdi dir="ltr">33K</bdi>, כלומר 33792</span>. מה <span class="vx-lk" data-k="pa" tabindex="0">הכתובת הפיזית</span>?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p>בדיוק כמו בשאלה 1, רק עם מספרים גדולים. כל דף הוא 16384 בתים, ולכן כאן כל ריבוע בתמונה מייצג 1024 בתים. <span class="vx-lk" data-k="va" tabindex="0">33792</span> הוא <span class="vx-lk" data-k="vpn" tabindex="0">דף 2</span> (שמתחיל ב-32768), <span class="vx-lk" data-k="off" tabindex="0">במקום 1024</span> בתוכו.</p></div>
 </div>
 <div class="vmex" data-card="ex3">
- <div class="vmex-q"><b>שאלה 3 · גישה לדף לא חוקי</b><p>אותה מערכת כמו בשאלה 1. התהליך ניגש לכתובת 50. מה קורה?</p></div>
- <div class="vmex-how"><b>איך חושבים</b><p>50 נמצא בדף 3 (בתים 48–63). בטבלה, דף 3 מסומן כלא חוקי, כלומר הוא לא שייך לתהליך בכלל. לכן אין מסגרת ואין כתובת פיזית. ה-<bdi dir="ltr">MMU</bdi> עוצר, ומערכת ההפעלה מסיימת את התהליך: שגיאת זיכרון.</p></div>
+ <div class="vmex-q"><b>שאלה 3 · גישה לדף לא חוקי</b><p>אותה מערכת כמו בשאלה 1: <span class="vx-lk" data-k="vm" tabindex="0">64 בתים</span>, דף של <span class="vx-lk" data-k="pg" tabindex="0">16 בתים</span>, <span class="vx-lk" data-k="pm" tabindex="0">128 בתים</span> של RAM, ו<span class="vx-lk" data-k="pt" tabindex="0">טבלת הדפים</span> 3, 2, 6, ודף 3 לא חוקי. התהליך ניגש לכתובת <span class="vx-lk" data-k="va" tabindex="0">50</span>. מה קורה?</p></div>
+ <div class="vmex-how"><b>איך חושבים</b><p><span class="vx-lk" data-k="va" tabindex="0">50</span> נמצא <span class="vx-lk" data-k="vpn" tabindex="0">בדף 3</span> (בתים 48–63). בטבלה, דף 3 מסומן כלא חוקי, כלומר הוא לא שייך לתהליך בכלל. לכן אין מסגרת ואין כתובת פיזית. ה-<bdi dir="ltr">MMU</bdi> עוצר, ומערכת ההפעלה מסיימת את התהליך: שגיאת זיכרון.</p></div>
 </div>
 <div class="vmex" data-card="ex4">
- <div class="vmex-q"><b>שאלה 4 · דפים קטנים, יותר ביטים ל-VPN</b><p>זיכרון וירטואלי של 64 בתים, דף של 8 בתים, וזיכרון פיזי של 64 בתים. הטבלה: 5, 2, 7, 1, 4, 6, 3, ודף 7 לא חוקי. מה הכתובת הפיזית של 45?</p></div>
+ <div class="vmex-q"><b>שאלה 4 · דפים קטנים, יותר ביטים ל-VPN</b><p>זיכרון וירטואלי של <span class="vx-lk" data-k="vm" tabindex="0">64 בתים</span>, דף של <span class="vx-lk" data-k="pg" tabindex="0">8 בתים</span>, וזיכרון פיזי של <span class="vx-lk" data-k="pm" tabindex="0">64 בתים</span>. <span class="vx-lk" data-k="pt" tabindex="0">הטבלה</span>: 5, 2, 7, 1, 4, 6, 3, ודף 7 לא חוקי. מה <span class="vx-lk" data-k="pa" tabindex="0">הכתובת הפיזית</span> של <span class="vx-lk" data-k="va" tabindex="0">45</span>?</p></div>
  <div class="vmex-how"><b>איך חושבים</b><p>אותו זיכרון כמו בשאלה 1, אבל הדפים קטנים פי 2. לכן יש פי 2 דפים: 8 במקום 4, ו-3 ביטים ל-VPN במקום 2. ה-offset קטן בביט אחד, כי בדף יש רק 8 בתים. סך הביטים בכתובת לא משתנה: עדיין 6.</p></div>
 </div>
 <h3 id="vmc-anat-lab">מעבדה חופשית</h3>
@@ -1061,10 +1069,11 @@ for (j = 0; j &lt; 1024; j++)         // by columns
     root.appendChild(txt); root.appendChild(vis);   /* RTL: the solution steps on the right, the drawing on the left */
     var q = function (c) { return root.querySelector('.' + c); };
     var vaB = lg(cfg.vm), offB = lg(cfg.pg), vpnB = vaB - offB, paB = lg(cfg.pm), pfnB = paB - offB, per = Math.min(cfg.pg, 16), unit = cfg.pg / per;
-    function bitsRow(val, w, cls, lbl) {
+    var L = function (k, t) { return '<span class="vx-lk" data-k="' + k + '" tabindex="0">' + t + '</span>'; };
+    function bitsRow(val, w, cls, lbl, key) {
       var s = val === null ? null : bin(val, w), h = '';
       for (var i = 0; i < w; i++) h += '<span class="an-bit ' + cls + (s ? '' : ' q') + '">' + (s ? s[i] : '?') + '</span>';
-      return '<span class="an-bitgrp"><span class="an-bitrow">' + h + '</span><span class="an-bitlbl">' + lbl + '</span></span>';
+      return '<span class="an-bitgrp" data-k="' + key + '"><span class="an-bitrow">' + h + '</span><span class="an-bitlbl">' + lbl + '</span></span>';
     }
     function grid(kind, vpn, off, pfn) {
       var n = (kind === 'v' ? cfg.vm : cfg.pm) / cfg.pg, h = '', owner = {};
@@ -1073,44 +1082,74 @@ for (j = 0; j &lt; 1024; j++)         // by columns
         var lo = r * cfg.pg, cls = '', lab;
         if (kind === 'v') { lab = 'דף ' + r + (cfg.pt[r] < 0 ? ' ✗' : ''); if (step >= 2 && r === vpn) cls = ' sel'; }
         else { lab = 'מסגרת ' + r + (r === 0 ? ' · קרנל' : owner[r] !== undefined ? ' · דף ' + owner[r] : ''); if (step >= 3 && r === pfn) cls = ' psel'; }
-        h += '<div class="an-row' + cls + (step >= 1 ? ' blk' : '') + '"><div class="an-rlab">' + lab + '<small>' + lo + '–' + (lo + cfg.pg - 1) + '</small></div><div class="an-cells" style="grid-template-columns:repeat(' + per + ',minmax(0,1fr))">';
+        var rk = kind === 'v' ? (r === vpn ? ' data-k="vpn pg"' : '') : (r === pfn ? ' data-k="pfn"' : '');
+        h += '<div class="an-row' + cls + (step >= 1 ? ' blk' : '') + '"' + rk + '><div class="an-rlab">' + lab + '<small>' + lo + '–' + (lo + cfg.pg - 1) + '</small></div><div class="an-cells" style="grid-template-columns:repeat(' + per + ',minmax(0,1fr))">';
         for (var c = 0; c < per; c++) {
           var a0 = lo + c * unit, k = 'an-cell', t = unit === 1 ? c : '';
           if (kind === 'v') {
             if (cfg.pt[r] < 0) k += ' inv';
             if (step >= 2 && r === vpn && Math.floor(off / unit) === c) k += ' hit';
-            h += '<button type="button" class="' + k + '" data-a="' + a0 + '" title="' + (unit === 1 ? 'כתובת ' + a0 : 'בתים ' + a0 + '–' + (a0 + unit - 1)) + '">' + t + '</button>';
+            h += '<button type="button" class="' + k + '"' + (r === vpn && Math.floor(off / unit) === c ? ' data-k="va off"' : '') + ' data-a="' + a0 + '" title="' + (unit === 1 ? 'כתובת ' + a0 : 'בתים ' + a0 + '–' + (a0 + unit - 1)) + '">' + t + '</button>';
           } else {
             if (r === 0) { var pte = unit === 1 && c < cfg.pt.length; k += ' pt' + (pte && step >= 3 && c === vpn ? ' on' : ''); t = pte ? 'P' + c : ''; }
             else if (owner[r] === undefined) k += ' free';
             else { k += ' mine'; if (step >= 4 && r === pfn && Math.floor(off / unit) === c) k += ' hit'; }
-            h += '<div class="' + k + '">' + t + '</div>';
+            h += '<div class="' + k + '"' + (r === pfn && Math.floor(off / unit) === c ? ' data-k="pa off"' : r === 0 && unit === 1 && c === vpn ? ' data-k="pt"' : '') + '>' + t + '</div>';
           }
         }
         h += '</div></div>';
       }
       return h;
     }
+    var curK = '';
+    function expl(k, vpn, off, pfn, bad, pa) {   /* where a term of the question comes from, in two lines: words, then the arithmetic */
+      var E = {
+        vm: ['גודל הזיכרון הווירטואלי קובע כמה ביטים יש בכתובת', cfg.vm + ' = 2^' + vaB + '   ⇒   ' + vaB + ' bits'],
+        pg: ['גודל הדף הוא גודל הבלוק, שורה אחת בציור. הוא קובע כמה ביטים יש ב-offset', cfg.pg + ' = 2^' + offB + '   ⇒   offset = ' + offB + ' bits'],
+        pm: ['גודל הזיכרון הפיזי קובע כמה מסגרות יש, וכמה ביטים יש ב-PFN', cfg.pm + ' / ' + cfg.pg + ' = ' + (cfg.pm / cfg.pg) + ' frames   ⇒   PFN = ' + pfnB + ' bits'],
+        va: ['הכתובת היא מספר אחד. בבינארי היא מתחלקת לבלוק ולמקום בתוכו', S.va + ' = ' + bin(S.va, vaB) + ' = ' + vpn + ' × ' + cfg.pg + ' + ' + off],
+        vpn: ['מספר הבלוק (הדף) הוא המנה של החלוקה בגודל הדף: הביטים הגבוהים', S.va + ' div ' + cfg.pg + ' = ' + vpn + ' = ' + bin(vpn, vpnB)],
+        off: ['ה-offset הוא השארית: המקום של הבית בתוך הבלוק. הביטים הנמוכים', S.va + ' mod ' + cfg.pg + ' = ' + off + ' = ' + bin(off, offB)],
+        pt: ['טבלת הדפים: שורה לכל דף. בשורה של הדף כתובה המסגרת שלו', bad ? 'PT[' + vpn + '] = invalid' : 'PT[' + vpn + '] = ' + pfn],
+        pfn: ['מספר המסגרת מגיע מהטבלה, והוא מחליף את מספר הדף', bad ? 'PT[' + vpn + '] = invalid' : 'PFN = PT[' + vpn + '] = ' + pfn + ' = ' + bin(pfn, pfnB)],
+        pa: ['הכתובת הפיזית: המסגרת בביטים הגבוהים, ואותו offset בנמוכים', bad ? 'no physical address' : pfn + ' × ' + cfg.pg + ' + ' + off + ' = ' + pa + ' = ' + bin(pfn, pfnB) + ' ' + bin(off, offB)]
+      };
+      if (!k || !E[k]) return '<span class="vx-ehint">העבירו את העכבר (או לחצו) על מונח מסומן בשאלה או בפתרון, ותראו אותו כאן בציור, ואיך הוא מתקבל מהמספרים.</span>';
+      return '<div>' + E[k][0] + '</div><span class="fline">' + E[k][1] + '</span>';
+    }
+    function light(k) {
+      curK = k || '';
+      Array.prototype.forEach.call(vis.querySelectorAll('.lit'), function (e) { e.classList.remove('lit'); });
+      Array.prototype.forEach.call(root.querySelectorAll('.vx-lk.on'), function (e) { e.classList.remove('on'); });
+      var vpn = Math.floor(S.va / cfg.pg), off = S.va % cfg.pg, pfn = cfg.pt[vpn];
+      vis.querySelector('.vx-exp').innerHTML = expl(curK, vpn, off, pfn, pfn < 0, pfn * cfg.pg + off);
+      if (!curK) return;
+      Array.prototype.forEach.call(vis.querySelectorAll('[data-k~="' + curK + '"]'), function (e) { e.classList.add('lit'); });
+      Array.prototype.forEach.call(root.querySelectorAll('.vx-lk[data-k="' + curK + '"]'), function (e) { e.classList.add('on'); });
+    }
+    root.addEventListener('mouseover', function (e) { var t = e.target.closest('.vx-lk'); if (t) light(t.dataset.k); });
+    root.addEventListener('mouseout', function (e) { var t = e.target.closest('.vx-lk'); if (t && !t.contains(e.relatedTarget)) light(''); });
+    root.addEventListener('focusin', function (e) { var t = e.target.closest('.vx-lk'); if (t) light(t.dataset.k); });
     function draw(keep) {
       var vpn = Math.floor(S.va / cfg.pg), off = S.va % cfg.pg, pfn = cfg.pt[vpn], bad = pfn < 0, pa = pfn * cfg.pg + off;
       var last = bad ? 3 : 4;
       if (step > last) step = last;
       /* the visual */
       var t = '<table><tr><th>VPN</th><th>PFN</th><th>V</th></tr>';
-      cfg.pt.forEach(function (f, p) { t += '<tr' + (step >= 3 && p === vpn ? ' class="on"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
-      var va = step >= 1 ? '<div class="vx-strip"><span class="vx-sl">כתובת וירטואלית' + (step >= 2 ? ' ' + S.va : '') + '</span><div class="an-bits">' + bitsRow(step >= 2 ? vpn : null, vpnB, 'v', B('VPN' + (step >= 2 ? ' = ' + vpn : '')) + '<br>' + vpnB + ' ביטים') + bitsRow(step >= 2 ? off : null, offB, 'o', B('offset' + (step >= 2 ? ' = ' + off : '')) + '<br>' + offB + ' ביטים') + '</div></div>' : '';
-      var paS = step >= 3 && !bad ? '<div class="vx-strip"><span class="vx-sl">כתובת פיזית' + (step >= 4 ? ' ' + pa : '') + '</span><div class="an-bits">' + bitsRow(pfn, pfnB, 'p', B('PFN = ' + pfn) + '<br>' + pfnB + ' ביטים') + bitsRow(step >= 4 ? off : null, offB, 'o', B('offset' + (step >= 4 ? ' = ' + off : '')) + '<br>' + offB + ' ביטים') + '</div></div>' : '';
-      vis.innerHTML = '<div class="vx-strips">' + va + paS + '</div>' +
-        '<div class="vx-top"><div class="an-col"><div class="an-h">זיכרון וירטואלי</div>' + grid('v', vpn, off, pfn) + '</div><div class="an-col vx-ptc"><div class="an-h">טבלת הדפים</div><div class="an-pt">' + t + '</table></div></div></div>' +
-        '<div class="an-col"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')' + (unit > 1 ? ' · כל ריבוע = ' + unit + ' בתים' : '') + '</div>' + grid('p', vpn, off, pfn) + '</div>';
+      cfg.pt.forEach(function (f, p) { t += '<tr' + (step >= 3 && p === vpn ? ' class="on"' : '') + (p === vpn ? ' data-k="pt pfn"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
+      var va = step >= 1 ? '<div class="vx-strip" data-k="va"><span class="vx-sl">כתובת וירטואלית' + (step >= 2 ? ' ' + S.va : '') + '</span><div class="an-bits">' + bitsRow(step >= 2 ? vpn : null, vpnB, 'v', B('VPN' + (step >= 2 ? ' = ' + vpn : '')) + '<br>' + vpnB + ' ביטים', 'vpn') + bitsRow(step >= 2 ? off : null, offB, 'o', B('offset' + (step >= 2 ? ' = ' + off : '')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>' : '';
+      var paS = step >= 3 && !bad ? '<div class="vx-strip" data-k="pa"><span class="vx-sl">כתובת פיזית' + (step >= 4 ? ' ' + pa : '') + '</span><div class="an-bits">' + bitsRow(pfn, pfnB, 'p', B('PFN = ' + pfn) + '<br>' + pfnB + ' ביטים', 'pfn') + bitsRow(step >= 4 ? off : null, offB, 'o', B('offset' + (step >= 4 ? ' = ' + off : '')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>' : '';
+      vis.innerHTML = '<div class="vx-exp">' + expl(curK, vpn, off, pfn, bad, pa) + '</div><div class="vx-strips">' + va + paS + '</div>' +
+        '<div class="vx-top"><div class="an-col" data-k="vm"><div class="an-h">זיכרון וירטואלי</div>' + grid('v', vpn, off, pfn) + '</div><div class="an-col vx-ptc"><div class="an-h">טבלת הדפים</div><div class="an-pt">' + t + '</table></div></div></div>' +
+        '<div class="an-col" data-k="pm"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')' + (unit > 1 ? ' · כל ריבוע = ' + unit + ' בתים' : '') + '</div>' + grid('p', vpn, off, pfn) + '</div>';
       /* the text of the current step */
       var st = [
         ['איך חושבים', how],
-        ['1. הגדלים', '<p>הזיכרון הווירטואלי הוא ' + B(fmt(cfg.vm)) + ', ולכן בכתובת יש ' + vaB + ' ביטים. דף של ' + B(fmt(cfg.pg)) + ' צריך ' + offB + ' ביטים ל-offset, והשאר, ' + vpnB + ' ביטים, הם מספר הבלוק (VPN).</p><span class="fline">' + fmt(cfg.vm) + ' = 2^' + vaB + '</span><span class="fline">' + fmt(cfg.pg) + ' = 2^' + offB + '</span><span class="fline">VPN = ' + vaB + ' − ' + offB + ' = ' + vpnB + '</span><p>בתמונה: כל שורה היא דף, כלומר בלוק של ' + cfg.pg + ' בתים.</p>'],
-        ['2. מפרקים את הכתובת', '<p>מחלקים את ' + S.va + ' בגודל הדף. המנה היא מספר הדף, והשארית היא המקום בתוך הדף.</p><span class="fline">' + S.va + ' = ' + vpn + ' × ' + cfg.pg + ' + ' + off + '</span><p>זה הדף המסומן בכחול, והבית הכתום בתוכו. בביטים: ' + vpnB + ' הביטים הגבוהים הם ' + vpn + ', ו-' + offB + ' הנמוכים הם ' + off + '.</p>'],
+        ['1. הגדלים', '<p>הזיכרון הווירטואלי הוא ' + L('vm', B(fmt(cfg.vm))) + ', ולכן בכתובת יש ' + vaB + ' ביטים. דף של ' + L('pg', B(fmt(cfg.pg))) + ' צריך ' + offB + ' ביטים ל-' + L('off', 'offset') + ', והשאר, ' + vpnB + ' ביטים, הם ' + L('vpn', 'מספר הבלוק (VPN)') + '.</p><span class="fline">' + fmt(cfg.vm) + ' = 2^' + vaB + '</span><span class="fline">' + fmt(cfg.pg) + ' = 2^' + offB + '</span><span class="fline">VPN = ' + vaB + ' − ' + offB + ' = ' + vpnB + '</span><p>בתמונה: כל שורה היא דף, כלומר בלוק של ' + cfg.pg + ' בתים.</p>'],
+        ['2. מפרקים את הכתובת', '<p>מחלקים את ' + L('va', S.va) + ' בגודל הדף. ' + L('vpn', 'המנה היא מספר הדף') + ', ו' + L('off', 'השארית היא המקום בתוך הדף') + '.</p><span class="fline">' + S.va + ' = ' + vpn + ' × ' + cfg.pg + ' + ' + off + '</span><p>זה הדף המסומן בכחול, והבית הכתום בתוכו. בביטים: ' + vpnB + ' הביטים הגבוהים הם ' + vpn + ', ו-' + offB + ' הנמוכים הם ' + off + '.</p>'],
         ['3. טבלת הדפים', bad ? '<p class="an-bad">בשורה ' + vpn + ' של הטבלה הדף מסומן כלא חוקי (✗). הוא לא שייך לתהליך, ולכן אין מסגרת ואין כתובת פיזית. זו שגיאת זיכרון.</p>'
-          : '<p>בשורה ' + vpn + ' כתוב שהדף נמצא במסגרת ' + pfn + '. ב-RAM יש ' + (cfg.pm / cfg.pg) + ' מסגרות, ולכן ל-PFN יש ' + pfnB + ' ביטים.</p><span class="fline">PT[' + vpn + '] = ' + pfn + '</span><p>שימו לב שגם הטבלה יושבת ב-RAM, במסגרת 0' + (unit === 1 ? ': השורה שקראנו היא הבית P' + vpn + '.' : '.') + '</p>'],
-        ['4. הכתובת הפיזית', '<p>מחליפים רק את מספר הבלוק: VPN ' + vpn + ' הופך ל-PFN ' + pfn + '. ה-offset נשאר כמו שהוא.</p><span class="fline">PA = ' + pfn + ' × ' + cfg.pg + ' + ' + off + ' = ' + pa + '</span><p>זה הבית הכתום במסגרת ' + pfn + ': אותו מקום, ' + off + ', בתוך בלוק אחר.</p>']
+          : '<p>' + L('pt', 'בשורה ' + vpn) + ' כתוב שהדף נמצא ' + L('pfn', 'במסגרת ' + pfn) + '. ב-RAM יש ' + (cfg.pm / cfg.pg) + ' מסגרות, ולכן ל-PFN יש ' + pfnB + ' ביטים.</p><span class="fline">PT[' + vpn + '] = ' + pfn + '</span><p>שימו לב שגם הטבלה יושבת ב-RAM, במסגרת 0' + (unit === 1 ? ': השורה שקראנו היא הבית P' + vpn + '.' : '.') + '</p>'],
+        ['4. הכתובת הפיזית', '<p>מחליפים רק את מספר הבלוק: ' + L('vpn', 'VPN ' + vpn) + ' הופך ל-' + L('pfn', 'PFN ' + pfn) + '. ה-' + L('off', 'offset') + ' נשאר כמו שהוא, והתוצאה היא ' + L('pa', 'הכתובת הפיזית') + '.</p><span class="fline">PA = ' + pfn + ' × ' + cfg.pg + ' + ' + off + ' = ' + pa + '</span><p>זה הבית הכתום במסגרת ' + pfn + ': אותו מקום, ' + off + ', בתוך בלוק אחר.</p>']
       ];
       var box = q('vx-steps'), sh = '';
       for (var i = 0; i <= step; i++) sh += '<div class="vx-step' + (i === step ? ' cur' : ' done') + '"><div class="vx-sh">' + st[i][0] + '</div>' + st[i][1] + '</div>';
@@ -1122,6 +1161,7 @@ for (j = 0; j &lt; 1024; j++)         // by columns
       q('vx-prev').disabled = step === 0; q('vx-next').disabled = step === last;
       if (!keep) q('vx-va').value = S.va;
       q('vx-va').max = cfg.vm - 1;
+      if (curK) light(curK);
     }
     q('vx-prev').onclick = function () { if (step > 0) { step--; draw(); } };
     q('vx-next').onclick = function () { step++; draw(); };
