@@ -376,6 +376,49 @@ code.gloss{border-bottom-style:dashed}
 .vmc-fields i.ok{color:var(--example)} .vmc-fields i.bad{color:var(--warn)}
 .vmc-out{padding:4px 14px 14px;font-size:15px}
 #prac-type .chip.on,#repl-alg .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+/* address anatomy lab */
+.anat{padding:12px 14px;display:grid;gap:12px}
+.an-ctrl{display:grid;gap:8px}
+.an-sel{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px}
+.an-sel label{display:flex;gap:6px;align-items:center}
+.an-sel select,.an-sel input{font:inherit;font-size:14px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.an-sel input{width:7em;direction:ltr}
+.anat .btn.ghost{background:transparent;color:var(--ink)}
+.an-steps{display:grid;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.an-steps p{margin:0}
+.an-bits{display:flex;gap:14px;flex-wrap:wrap;direction:ltr;justify-content:center;margin:4px 0}
+.an-bitgrp{display:flex;flex-direction:column;align-items:center;gap:3px}
+.an-bitrow{display:flex;gap:2px}
+.an-bit{width:24px;height:30px;display:grid;place-items:center;font-family:var(--f-mono);font-size:15px;font-weight:700;border-radius:4px;border:1.5px solid}
+.an-bit.v{color:var(--theory);background:var(--theory-bg);border-color:var(--theory)}
+.an-bit.o{color:var(--exercise);background:var(--exercise-bg);border-color:var(--exercise)}
+.an-bit.p{color:var(--example);background:var(--example-bg);border-color:var(--example)}
+.an-bitlbl{font-size:12px;color:var(--muted);direction:rtl;text-align:center}
+.an-arrow{align-self:center;font-size:20px;color:var(--muted)}
+.an-grids{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr) minmax(0,1.3fr);gap:14px;align-items:start}
+.an-col{min-width:0}
+.an-h{font-weight:700;font-size:13px;color:var(--muted);margin-bottom:6px}
+.an-row{display:grid;grid-template-columns:5.6em minmax(0,1fr);gap:6px;align-items:center;margin-bottom:3px;border-radius:6px;padding:2px}
+.an-row.sel{background:var(--theory-bg)}
+.an-row.psel{background:var(--example-bg)}
+.an-rlab{font-size:12px;line-height:1.25;color:var(--fg)}
+.an-rlab small{display:block;color:var(--muted);font-family:var(--f-mono);direction:ltr;text-align:right}
+.an-cells{display:grid;gap:1px;direction:ltr}
+.an-cell{height:22px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-mono);font-size:10px;color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0;border-radius:2px;min-width:0}
+.an-cell:hover{border-color:var(--ink)}
+.an-cell.inv{background:var(--sunk);cursor:pointer}
+.an-cell.pt{background:var(--formula-bg);color:var(--formula);border-color:var(--formula)}
+.an-cell.pt.on{background:var(--formula);color:var(--surface)}
+.an-cell.free{background:var(--bg);cursor:default}
+.an-cell.mine{background:var(--example-bg)}
+.an-cell.hit,.an-cell.mine.hit{background:var(--exercise);color:var(--surface);border-color:var(--exercise);font-weight:700}
+.an-pt table{width:100%;border-collapse:collapse;font-size:13px;font-family:var(--f-mono)}
+.an-pt th,.an-pt td{border:1px solid var(--line);padding:3px 6px;text-align:center}
+.an-pt th{font-family:var(--f-body);font-size:12px;color:var(--muted);font-weight:600}
+.an-pt tr.on td{background:var(--formula-bg);color:var(--formula);font-weight:700}
+.an-note{font-size:13.5px;color:var(--muted)}
+.an-bad{color:var(--warn);font-weight:700}
+@media (max-width:900px){.an-grids{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -406,8 +449,56 @@ code.gloss{border-bottom-style:dashed}
 <li><strong>ספרה הקסדצימלית = 4 ביטים.</strong> היסט של 12 ביט = 3 הספרות האחרונות בכתובת הקסה. זה מקצר מאוד תרגומים (בהמשך).</li>
 </ul>
 
+<h2 id="vmc-anatomy">מה זה דף, בפועל: בתים, דפים ומסגרות</h2>
+<p>לפני הנוסחאות, כדאי לראות את הדברים עצמם. הזיכרון הוא שורה ארוכה של <strong>בתים</strong>. לכל בית יש מספר, והמספר הזה הוא <strong>הכתובת</strong> שלו. <strong>דף</strong> הוא פשוט קבוצה של בתים רצופים, באורך קבוע. ככה מחלקים את השורה הארוכה לבלוקים שווים.</p>
+<div class="box theory"><div class="box-title">דימוי: בניין דירות</div><div class="box-body">
+<ul>
+<li><strong>הזיכרון הווירטואלי</strong> הוא בניין שבו בכל קומה יש 16 דירות. כל <strong>קומה</strong> היא דף, וכל <strong>דירה</strong> היא בית.</li>
+<li>הדירות ממוספרות ברצף בכל הבניין: בקומה 0 דירות 0 עד 15, בקומה 1 דירות 16 עד 31, וכן הלאה. המספר הזה הוא הכתובת.</li>
+<li>דירה 37 נמצאת בקומה 2 (כי 32 עד 47), והיא הדירה ה-5 בקומה. מספר הקומה הוא ה-<bdi dir="ltr">VPN</bdi>, ומספר הדירה בתוך הקומה הוא ה-<bdi dir="ltr">offset</bdi>.</li>
+<li><strong>הזיכרון הפיזי</strong> הוא בניין אחר, עם קומות באותו גודל בדיוק. קומה בו נקראת <strong>מסגרת</strong>. טבלת הדפים אומרת: „קומה 2 בבניין הווירטואלי נמצאת בפועל בקומה 6 בבניין האמיתי”.</li>
+<li>הדירה בתוך הקומה <strong>לא משתנה:</strong> דירה 5 בקומה 2 הופכת לדירה 5 בקומה 6. לכן ה-<bdi dir="ltr">offset</bdi> מועתק כמו שהוא.</li>
+</ul>
+</div></div>
+<div class="tbl"><table>
+<tr><th>מונח</th><th>מה זה בפועל</th><th>בדוגמה הקטנה למטה</th></tr>
+<tr><td>בית (<bdi dir="ltr">byte</bdi>)</td><td>תא אחד בזיכרון, 8 ביטים. הכתובת מצביעה על בית אחד.</td><td>ריבוע אחד בטבלה</td></tr>
+<tr><td>כתובת</td><td>המספר של הבית. כמה ביטים צריך כדי לכתוב את הכתובת הגדולה ביותר.</td><td>0 עד 63, כלומר 6 ביטים</td></tr>
+<tr><td>דף (<bdi dir="ltr">page</bdi>)</td><td>בלוק של בתים רצופים בזיכרון הווירטואלי</td><td>שורה של 16 ריבועים</td></tr>
+<tr><td>מסגרת (<bdi dir="ltr">frame</bdi>)</td><td>בלוק באותו גודל בזיכרון הפיזי</td><td>שורה של 16 ריבועים ב-<bdi dir="ltr">RAM</bdi></td></tr>
+<tr><td><bdi dir="ltr">VPN</bdi></td><td>מספר הדף: הביטים הגבוהים של הכתובת</td><td>2 ביטים, 4 דפים</td></tr>
+<tr><td><bdi dir="ltr">offset</bdi></td><td>מיקום הבית בתוך הדף: הביטים הנמוכים</td><td>4 ביטים, 16 בתים בדף</td></tr>
+<tr><td><bdi dir="ltr">PTE</bdi></td><td>שורה בטבלת הדפים. גם היא יושבת בזיכרון, בבתים.</td><td>בית אחד לכל דף, במסגרת 0</td></tr>
+</table></div>
+<p>במעבדה: לחצו על כל ריבוע בזיכרון הווירטואלי, או הקלידו כתובת, ותראו איך היא מתפרקת לביטים, איזו שורה בטבלה משמשת, ולאיזה בית ב-<bdi dir="ltr">RAM</bdi> היא מגיעה. אפשר לשנות את הגדלים ולראות איך משתנים מספר הביטים והחלוקה.</p>
+<div class="vmw anat" id="anat">
+ <div class="an-ctrl">
+  <div class="chips" id="an-pre"></div>
+  <div class="an-sel">
+   <label>זיכרון וירטואלי <select id="an-vm"></select></label>
+   <label>גודל דף <select id="an-pg"></select></label>
+   <label>זיכרון פיזי <select id="an-pm"></select></label>
+   <label>כתובת <input id="an-va" type="number" min="0" inputmode="numeric"></label>
+   <button type="button" class="btn ghost" id="an-shuffle">מיפוי חדש</button>
+  </div>
+ </div>
+ <div class="an-steps" id="an-steps"></div>
+ <div class="an-grids">
+  <div class="an-col"><div class="an-h">זיכרון וירטואלי של התהליך</div><div id="an-vgrid"></div></div>
+  <div class="an-col an-ptcol"><div class="an-h">טבלת הדפים</div><div id="an-pt"></div></div>
+  <div class="an-col"><div class="an-h">זיכרון פיזי (<bdi dir="ltr">RAM</bdi>)</div><div id="an-pgrid"></div></div>
+ </div>
+ <div class="an-note" id="an-note"></div>
+</div>
+<div class="box example"><div class="box-title">ובגדלים אמיתיים?</div><div class="box-body">
+<p>אותה תמונה בדיוק, רק עם יותר ריבועים. דף של <bdi dir="ltr">4KB</bdi> הוא שורה של 4096 בתים, ולכן צריך 12 ביטים כדי לציין מיקום בתוכו. במחשב של 32 ביט יש 2 בחזקת 20 דפים כאלה, ולכן ה-<bdi dir="ltr">VPN</bdi> הוא 20 ביטים.</p>
+<span class="fline">4KB = 2^12, offset = 12 bits</span>
+<span class="fline">VPN = 32 − 12 = 20 bits, 2^20 pages</span>
+<p>בכפתור „שקף 27” למעלה הדפים הם של <bdi dir="ltr">16KB</bdi>. אז כל ריבוע מייצג 1024 בתים, ולא בית אחד, אבל החלוקה לביטים זהה.</p>
+</div></div>
+
 <h2 id="vmc-map">המפה: איך כל הגדלים קשורים</h2>
-<p>כל שאלה בפרק היא מסלול על המפה הזו: נותנים כמה ערכים, וצריך להגיע לאחרים. כדאי לסמן על המפה מה נתון, ואז ללכת לאורך הקווים.</p>
+<p>כל שאלה בפרק היא מסלול על המפה הזו: נותנים כמה ערכים, וצריך להגיע לאחרים. כדאי לסמן על המפה מה נתון, ואז ללכת לאורך הקווים. כל קופסה במפה היא משהו שראיתם במעבדה למעלה: „VA bits” הוא אורך הכתובת, „offset bits” הם הביטים הכתומים, ו-„#entries” הוא מספר השורות בטבלת הדפים.</p>
 <figure>
 <svg viewBox="0 0 720 330" width="720" role="img" aria-label="הקשרים בין גדלי הכתובות והטבלאות">
 <defs><marker id="vmc-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
@@ -737,6 +828,113 @@ for (j = 0; j &lt; 1024; j++)         // by columns
   fresh();
 })();
 </script>
+<script>
+(function () {
+  /* ---------- address anatomy lab: bytes, pages, frames ---------- */
+  var root = document.getElementById('anat'); if (!root) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return n >= 1024 && n % 1024 === 0 ? (n / 1024) + 'KB' : n + 'B'; };
+  var lg = function (n) { return Math.round(Math.log2(n)); };
+  var bin = function (n, w) { var s = n.toString(2); while (s.length < w) s = '0' + s; return s; };
+  var B = function (t) { return '<bdi dir="ltr">' + t + '</bdi>'; };
+  var PRE = [
+    { label: 'דוגמה קטנה: כל ריבוע הוא בית', vm: 64, pg: 16, pm: 128, va: 37, pt: [3, 6, 2, -1] },
+    { label: 'שקף 27: דף של 16KB', vm: 65536, pg: 16384, pm: 131072, va: 33792, pt: [3, 7, 5, 2] },
+    { label: 'דפים של 8 בתים', vm: 64, pg: 8, pm: 64, va: 45, pt: null }
+  ];
+  var S = { vm: 64, pg: 16, pm: 128, va: 37, pt: [3, 6, 2, -1] };
+  var VMS = [32, 64, 128, 256], PGS = [4, 8, 16, 32], PMS = [32, 64, 128, 256];
+  function opts(sel, arr, v) {
+    var a = arr.slice(); if (a.indexOf(v) < 0) a.push(v); a.sort(function (x, y) { return x - y; });
+    sel.innerHTML = a.map(function (x) { return '<option value="' + x + '"' + (x === v ? ' selected' : '') + '>' + fmt(x) + '</option>'; }).join('');
+  }
+  function shuffleMap() {
+    var n = S.vm / S.pg, m = S.pm / S.pg, fr = [];
+    for (var i = 1; i < m; i++) fr.push(i);                    /* frame 0 is the kernel: it holds the page table */
+    for (i = fr.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = fr[i]; fr[i] = fr[j]; fr[j] = t; }
+    S.pt = [];
+    for (i = 0; i < n; i++) S.pt.push(i < fr.length ? fr[i] : -1);
+    if (n >= 4 && fr.length >= n) S.pt[n - 1] = -1;            /* one unused page, to show an invalid entry */
+  }
+  function pick(p) { S.vm = p.vm; S.pg = p.pg; S.pm = p.pm; S.va = p.va; if (p.pt) S.pt = p.pt.slice(); else shuffleMap(); draw(); }
+  $('an-pre').innerHTML = PRE.map(function (p, i) { return '<button type="button" class="chip" data-i="' + i + '">' + p.label + '</button>'; }).join('');
+  $('an-pre').onclick = function (e) { var b = e.target.closest('[data-i]'); if (b) pick(PRE[+b.dataset.i]); };
+  function sizeChange() {
+    S.vm = +$('an-vm').value; S.pg = +$('an-pg').value; S.pm = +$('an-pm').value;
+    if (S.pg >= S.vm) S.pg = S.vm / 2; if (S.pg >= S.pm) S.pg = S.pm / 2;
+    if (S.va >= S.vm) S.va = S.vm - 1;
+    shuffleMap(); draw();
+  }
+  $('an-vm').onchange = $('an-pg').onchange = $('an-pm').onchange = sizeChange;
+  $('an-va').oninput = function () { var v = parseInt($('an-va').value, 10); if (!isNaN(v) && v >= 0 && v < S.vm) { S.va = v; draw(true); } };
+  $('an-shuffle').onclick = function () { shuffleMap(); draw(); };
+  function cellsPerRow() { return Math.min(S.pg, 16); }
+  function grid(kind) {
+    var n = (kind === 'v' ? S.vm : S.pm) / S.pg, per = cellsPerRow(), unit = S.pg / per, h = '';
+    var vpn = Math.floor(S.va / S.pg), off = S.va % S.pg, pfn = S.pt[vpn];
+    var owner = {}; S.pt.forEach(function (f, p) { if (f >= 0) owner[f] = p; });
+    for (var r = 0; r < n; r++) {
+      var lo = r * S.pg, hi = lo + S.pg - 1, cls = '', lab;
+      if (kind === 'v') { lab = 'דף ' + r + (S.pt[r] < 0 ? ' ✗' : ''); if (r === vpn) cls = ' sel'; }
+      else { lab = 'מסגרת ' + r; if (r === pfn) cls = ' psel'; }
+      h += '<div class="an-row' + cls + '"><div class="an-rlab">' + lab + '<small>' + lo + '–' + hi + '</small></div>';
+      h += '<div class="an-cells" style="grid-template-columns:repeat(' + per + ',minmax(0,1fr))">';
+      for (var c = 0; c < per; c++) {
+        var a0 = lo + c * unit, k = 'an-cell', txt = unit === 1 ? c : '', title;
+        if (kind === 'v') {
+          if (S.pt[r] < 0) k += ' inv';
+          if (r === vpn && Math.floor(off / unit) === c) k += ' hit';
+          title = unit === 1 ? 'כתובת ' + a0 + ' = דף ' + r + ', offset ' + c : 'בתים ' + a0 + '–' + (a0 + unit - 1);
+          h += '<button type="button" class="' + k + '" data-a="' + a0 + '" title="' + title + '">' + txt + '</button>';
+        } else {
+          if (r === 0) { k += c < S.pt.length && unit === 1 ? ' pt' + (c === vpn ? ' on' : '') : ' pt'; title = unit === 1 && c < S.pt.length ? 'PTE של דף ' + c : 'קרנל (כולל טבלת הדפים)'; txt = unit === 1 && c < S.pt.length ? 'P' + c : ''; }
+          else if (owner[r] === undefined) { k += ' free'; title = 'מסגרת פנויה'; }
+          else { k += ' mine'; if (r === pfn && Math.floor(off / unit) === c) k += ' hit'; title = unit === 1 ? 'כתובת פיזית ' + a0 + ' (דף ' + owner[r] + ' של התהליך)' : 'בתים ' + a0 + '–' + (a0 + unit - 1); }
+          h += '<div class="' + k + '" title="' + title + '">' + txt + '</div>';
+        }
+      }
+      h += '</div></div>';
+      if (kind === 'p' && r === 0) h = h.replace('מסגרת 0<small>', 'מסגרת 0 · קרנל<small>');
+      else if (kind === 'p' && owner[r] !== undefined) h = h.replace('מסגרת ' + r + '<small>', 'מסגרת ' + r + ' · דף ' + owner[r] + '<small>');
+    }
+    return h;
+  }
+  function bits(val, w, cls) { var s = bin(val, w), h = ''; for (var i = 0; i < s.length; i++) h += '<span class="an-bit ' + cls + '">' + s[i] + '</span>'; return '<span class="an-bitrow">' + h + '</span>'; }
+  function draw(keepInput) {
+    opts($('an-vm'), VMS, S.vm); opts($('an-pg'), PGS, S.pg); opts($('an-pm'), PMS, S.pm);
+    if (!keepInput) $('an-va').value = S.va;
+    $('an-va').max = S.vm - 1;
+    var vaB = lg(S.vm), offB = lg(S.pg), vpnB = vaB - offB, paB = lg(S.pm), pfnB = paB - offB;
+    var vpn = Math.floor(S.va / S.pg), off = S.va % S.pg, pfn = S.pt[vpn];
+    var h = '';
+    h += '<p><strong>הגדלים:</strong> ' + B(fmt(S.vm) + ' = 2^' + vaB) + ', ולכן בכתובת וירטואלית יש ' + vaB + ' ביטים. דף של ' + B(fmt(S.pg) + ' = 2^' + offB) + ', ולכן ' + offB + ' ביטים ל-offset, ו-' + vpnB + ' ביטים ל-VPN (' + (S.vm / S.pg) + ' דפים).</p>';
+    h += '<p><strong>הפירוק של הכתובת ' + S.va + ':</strong> מחלקים בגודל הדף. המנה היא מספר הדף, והשארית היא המקום בתוך הדף.</p>';
+    h += '<span class="fline">' + S.va + ' = ' + vpn + ' × ' + S.pg + ' + ' + off + '</span>';
+    h += '<div class="an-bits"><span class="an-bitgrp">' + bits(vpn, vpnB, 'v') + '<span class="an-bitlbl">VPN = ' + vpn + '<br>איזה דף</span></span><span class="an-bitgrp">' + bits(off, offB, 'o') + '<span class="an-bitlbl">offset = ' + off + '<br>איזה בית בתוך הדף</span></span></div>';
+    if (pfn < 0) {
+      h += '<p class="an-bad">בטבלה, דף ' + vpn + ' מסומן כלא חוקי (✗): הוא לא שייך לתהליך. גישה לכתובת הזו היא שגיאת זיכרון.</p>';
+    } else {
+      h += '<p><strong>בטבלת הדפים:</strong> בשורה ' + vpn + ' כתוב שהדף נמצא במסגרת ' + pfn + '. ב-RAM של ' + B(fmt(S.pm) + ' = 2^' + paB) + ' יש ' + (S.pm / S.pg) + ' מסגרות, אז ל-PFN יש ' + pfnB + ' ביטים.</p>';
+      h += '<p><strong>הכתובת הפיזית:</strong> מחליפים את ה-VPN ב-PFN, וה-offset נשאר כמו שהוא.</p>';
+      h += '<span class="fline">PA = ' + pfn + ' × ' + S.pg + ' + ' + off + ' = ' + (pfn * S.pg + off) + '</span>';
+      h += '<div class="an-bits"><span class="an-bitgrp">' + bits(pfn, pfnB, 'p') + '<span class="an-bitlbl">PFN = ' + pfn + '<br>איזו מסגרת</span></span><span class="an-bitgrp">' + bits(off, offB, 'o') + '<span class="an-bitlbl">offset = ' + off + '<br>אותו בית בתוך המסגרת</span></span></div>';
+    }
+    $('an-steps').innerHTML = h;
+    $('an-vgrid').innerHTML = grid('v'); $('an-pgrid').innerHTML = grid('p');
+    var t = '<table><tr><th>VPN</th><th>PFN</th><th>V</th></tr>';
+    S.pt.forEach(function (f, p) { t += '<tr' + (p === vpn ? ' class="on"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
+    $('an-pt').innerHTML = t + '</table>';
+    var unit = S.pg / cellsPerRow();
+    $('an-note').innerHTML = (unit === 1 ? 'כל ריבוע הוא בית אחד, והמספר בו הוא ה-offset שלו בתוך הדף. ' : 'כל ריבוע כאן מייצג ' + unit + ' בתים, כי בדף יש ' + S.pg + ' בתים. ') +
+      'מסגרת 0 שמורה לקרנל, ושם גם יושבת טבלת הדפים' + (unit === 1 ? ': כל ' + B('PTE') + ' הוא בית אחד (P0, P1 וכן הלאה).' : '.') +
+      ' מסגרות שלא שייכות לתהליך מסומנות באפור בהיר.';
+    Array.prototype.forEach.call(root.querySelectorAll('#an-pre .chip'), function (b, i) { var p = PRE[i]; b.classList.toggle('on', p.vm === S.vm && p.pg === S.pg && p.pm === S.pm); });
+  }
+  $('an-vgrid').onclick = function (e) { var b = e.target.closest('[data-a]'); if (!b) return; S.va = +b.dataset.a; draw(); };
+  draw();
+})();
+</script>
+
 </main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
