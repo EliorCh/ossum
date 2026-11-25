@@ -524,14 +524,18 @@ html.vmc-folded .mta-expand{animation:vmcpulse 1s ease-in-out 4}
 .vmex .an-cell{height:13px;font-size:8px;line-height:1}
 .vmex .an-rlab{font-size:11px}
 .vmex .an-rlab small{font-size:9.5px}
-.an-row.blk .an-cells{outline:1.5px solid var(--theory);outline-offset:1px;border-radius:2px}
+.an-row.blk .an-cells{outline:1px solid var(--line);outline-offset:0;border-radius:2px}
 .vmex .an-h{margin-bottom:3px}
 @media (max-width:900px){.vmex{grid-template-columns:minmax(0,1fr);max-height:none}.vx-vis,.vx-txt,.vx-steps{max-height:none;overflow:visible}}
 .vx-lk{border-bottom:2px dotted var(--ink);cursor:help;border-radius:3px;transition:background .15s}
 .vx-lk:hover,.vx-lk.on,.vx-lk:focus-visible{background:color-mix(in srgb,var(--ink) 14%,transparent);outline:none}
-.vmex .lit{outline:3px solid var(--ink)!important;outline-offset:2px;border-radius:4px;position:relative;z-index:1;animation:vxpulse .8s ease-in-out infinite alternate}
+.vmex .lit{outline:2.5px solid var(--ink)!important;outline-offset:-2.5px!important;border-radius:4px;position:relative;z-index:1;animation:vxpulse .8s ease-in-out infinite alternate}
 @keyframes vxpulse{from{outline-color:var(--ink)}to{outline-color:color-mix(in srgb,var(--ink) 35%,transparent)}}
 @media (prefers-reduced-motion:reduce){.vmex .lit{animation:none}}
+.vmex .lit[data-tag]::after{content:attr(data-tag);position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);font:700 11px/1.3 var(--f-mono,monospace);letter-spacing:0;padding:2px 6px;border-radius:5px;white-space:nowrap;pointer-events:none;z-index:5;direction:rtl}
+.vmex .vx-vm.lit[data-tag]::after,.vmex .vx-pm.lit[data-tag]::after{bottom:auto;top:2px;left:auto;right:4px;transform:none}
+.vmex .an-cell.rng{background:color-mix(in srgb,var(--exercise) 22%,var(--surface))}
+.vmex .an-cells.lit{border-radius:3px}
 .vx-exp{height:88px;overflow:hidden;box-sizing:border-box;line-height:1.45;display:flex;flex-direction:column;justify-content:center;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;font-size:13.5px}
 .vx-exp .fline{margin:3px 0 0;padding:3px 6px;font-size:13.5px}
 .vx-ehint{color:var(--muted)}
@@ -1097,19 +1101,19 @@ for (j = 0; j &lt; 1024; j++)         // by columns
         var lo = r * cfg.pg, cls = '', lab;
         if (kind === 'v') { lab = 'דף ' + r + (cfg.pt[r] < 0 ? ' ✗' : ''); if (step >= 2 && r === vpn) cls = ' sel'; }
         else { lab = 'מסגרת ' + r + (r === 0 ? ' · קרנל' : owner[r] !== undefined ? ' · דף ' + owner[r] : ''); if (step >= 3 && r === pfn) cls = ' psel'; }
-        var rk = kind === 'v' ? (r === vpn ? ' data-k="vpn pg"' : '') : (r === pfn ? ' data-k="pfn"' : '');
+        var rk = '';
         h += '<div class="an-row' + cls + (step >= 1 ? ' blk' : '') + '"' + rk + '><div class="an-rlab">' + lab + '<small>' + lo + '–' + (lo + cfg.pg - 1) + '</small></div><div class="an-cells" style="grid-template-columns:repeat(' + per + ',minmax(0,1fr))">';
         for (var c = 0; c < per; c++) {
           var a0 = lo + c * unit, k = 'an-cell', t = unit === 1 ? c : '';
           if (kind === 'v') {
             if (cfg.pt[r] < 0) k += ' inv';
             if (step >= 2 && r === vpn && Math.floor(off / unit) === c) k += ' hit';
-            h += '<button type="button" class="' + k + '"' + (r === vpn && Math.floor(off / unit) === c ? ' data-k="va off"' : '') + ' data-a="' + a0 + '" title="' + (unit === 1 ? 'כתובת ' + a0 : 'בתים ' + a0 + '–' + (a0 + unit - 1)) + '">' + t + '</button>';
+            h += '<button type="button" class="' + k + '"' + ' data-a="' + a0 + '" title="' + (unit === 1 ? 'כתובת ' + a0 : 'בתים ' + a0 + '–' + (a0 + unit - 1)) + '">' + t + '</button>';
           } else {
             if (r === 0) { var pte = unit === 1 && c < cfg.pt.length; k += ' pt' + (pte && step >= 3 && c === vpn ? ' on' : ''); t = pte ? 'P' + c : ''; }
             else if (owner[r] === undefined) k += ' free';
             else { k += ' mine'; if (step >= 4 && r === pfn && Math.floor(off / unit) === c) k += ' hit'; }
-            h += '<div class="' + k + '"' + (r === pfn && Math.floor(off / unit) === c ? ' data-k="pa off"' : r === 0 && unit === 1 && c === vpn ? ' data-k="pt"' : '') + '>' + t + '</div>';
+            h += '<div class="' + k + '">' + t + '</div>';
           }
         }
         h += '</div></div>';
@@ -1138,8 +1142,25 @@ for (j = 0; j &lt; 1024; j++)         // by columns
       Array.prototype.forEach.call(root.querySelectorAll('.vx-lk.on'), function (e) { e.classList.remove('on'); });
       var vpn = Math.floor(S.va / cfg.pg), off = S.va % cfg.pg, pfn = cfg.pt[vpn];
       vis.querySelector('.vx-exp').innerHTML = expl(curK, vpn, off, pfn, pfn < 0, pfn * cfg.pg + off);
+      Array.prototype.forEach.call(vis.querySelectorAll('.rng,[data-tag]'), function (e) { e.classList.remove('rng'); e.removeAttribute('data-tag'); });
       if (!curK) return;
       Array.prototype.forEach.call(vis.querySelectorAll('[data-k~="' + curK + '"]'), function (e) { e.classList.add('lit'); });
+      var bad = pfn < 0, pa = pfn * cfg.pg + off, ci = Math.floor(off / unit);
+      var vrow = function (r) { return vis.querySelectorAll('.vx-vm .an-row')[r]; }, prow = function (r) { return vis.querySelectorAll('.vx-pm .an-row')[r]; };
+      var cells = function (row) { return row ? row.querySelectorAll('.an-cells > *') : []; };
+      var mark = function (el, tag) { if (!el) return; el.classList.add('lit'); if (tag !== undefined) el.setAttribute('data-tag', tag); };
+      var range = function (lo, n) { return '\u2066' + lo + '–' + (lo + n - 1) + '\u2069'; };   /* isolated, so the numbers stay in order inside Hebrew */
+      var offRange = function (row) { var c = cells(row); for (var i = 0; i < ci; i++) c[i].classList.add('rng'); mark(c[ci], 'מקום ' + off); };
+      var ptRow = function () { mark(vis.querySelectorAll('.an-pt tr')[vpn + 1]); if (unit === 1) mark(cells(prow(0))[vpn], 'P' + vpn); };
+      if (curK === 'vm') mark(vis.querySelector('.vx-vm'), 'בתים ' + range(0, cfg.vm));
+      if (curK === 'pm') mark(vis.querySelector('.vx-pm'), 'בתים ' + range(0, cfg.pm));
+      if (curK === 'pg') mark(vrow(vpn).querySelector('.an-cells'), cfg.pg + ' בתים: ' + range(vpn * cfg.pg, cfg.pg));
+      if (curK === 'va') mark(cells(vrow(vpn))[ci], unit === 1 ? 'כתובת ' + S.va : S.va + ' בתוך ' + range(vpn * cfg.pg + ci * unit, unit));
+      if (curK === 'vpn') { mark(vrow(vpn).querySelector('.an-cells'), 'דף ' + vpn + ': ' + range(vpn * cfg.pg, cfg.pg)); mark(vis.querySelectorAll('.an-pt tr')[vpn + 1]); }
+      if (curK === 'off') { offRange(vrow(vpn)); if (!bad) offRange(prow(pfn)); }
+      if (curK === 'pt') ptRow();
+      if (curK === 'pfn') { ptRow(); if (!bad) mark(prow(pfn).querySelector('.an-cells'), 'מסגרת ' + pfn + ': ' + range(pfn * cfg.pg, cfg.pg)); }
+      if (curK === 'pa' && !bad) mark(cells(prow(pfn))[ci], unit === 1 ? 'כתובת ' + pa : pa + ' בתוך ' + range(pfn * cfg.pg + ci * unit, unit));
       Array.prototype.forEach.call(root.querySelectorAll('.vx-lk[data-k="' + curK + '"]'), function (e) { e.classList.add('on'); });
     }
     root.addEventListener('mouseover', function (e) { var t = e.target.closest('.vx-lk'); if (t) light(t.dataset.k); });
@@ -1151,12 +1172,12 @@ for (j = 0; j &lt; 1024; j++)         // by columns
       if (step > last) step = last;
       /* the visual */
       var t = '<table><tr><th>VPN</th><th>PFN</th><th>V</th></tr>';
-      cfg.pt.forEach(function (f, p) { t += '<tr' + (step >= 3 && p === vpn ? ' class="on"' : '') + (p === vpn ? ' data-k="pt pfn"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
+      cfg.pt.forEach(function (f, p) { t += '<tr' + (step >= 3 && p === vpn ? ' class="on"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
       var va = '<div class="vx-strip" data-k="va"><span class="vx-sl">כתובת וירטואלית' + (step >= 2 ? ' ' + S.va : '') + '</span><div class="an-bits">' + bitsRow(step >= 2 ? vpn : null, vpnB, 'v', B('VPN = ' + (step >= 2 ? vpn : '?')) + '<br>' + vpnB + ' ביטים', 'vpn') + bitsRow(step >= 2 ? off : null, offB, 'o', B('offset = ' + (step >= 2 ? off : '?')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>';
       var paS = '<div class="vx-strip" data-k="pa"><span class="vx-sl">כתובת פיזית' + (step >= 4 && !bad ? ' ' + pa : step >= 3 && bad ? ': אין' : '') + '</span><div class="an-bits">' + bitsRow(step >= 3 && !bad ? pfn : null, pfnB, 'p', B('PFN = ' + (step >= 3 && !bad ? pfn : '?')) + '<br>' + pfnB + ' ביטים', 'pfn') + bitsRow(step >= 4 && !bad ? off : null, offB, 'o', B('offset = ' + (step >= 4 && !bad ? off : '?')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>';
       vis.innerHTML = '<div class="vx-exp">' + expl(curK, vpn, off, pfn, bad, pa) + '</div><div class="vx-strips' + (vaB + paB > 16 ? ' long' : '') + '">' + va + paS + '</div>' +
-        '<div class="vx-top"><div class="an-col" data-k="vm"><div class="an-h">זיכרון וירטואלי</div>' + grid('v', vpn, off, pfn) + '</div><div class="an-col vx-ptc"><div class="an-h">טבלת הדפים</div><div class="an-pt">' + t + '</table></div></div></div>' +
-        '<div class="an-col" data-k="pm"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')' + (unit > 1 ? ' · כל ריבוע = ' + unit + ' בתים' : '') + '</div>' + grid('p', vpn, off, pfn) + '</div>';
+        '<div class="vx-top"><div class="an-col vx-vm"><div class="an-h">זיכרון וירטואלי</div>' + grid('v', vpn, off, pfn) + '</div><div class="an-col vx-ptc"><div class="an-h">טבלת הדפים</div><div class="an-pt">' + t + '</table></div></div></div>' +
+        '<div class="an-col vx-pm"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')' + (unit > 1 ? ' · כל ריבוע = ' + unit + ' בתים' : '') + '</div>' + grid('p', vpn, off, pfn) + '</div>';
       /* the text of the current step */
       var st = [
         ['איך חושבים', how],
