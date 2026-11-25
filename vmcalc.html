@@ -505,6 +505,17 @@ main > section > .vmex{max-width:none}
 .vx-strip .an-bit{width:19px;height:21px;font-size:12px}
 .vx-strip .an-bitlbl{font-size:11px;line-height:1.25}
 .vx-strips{grid-template-columns:1fr 1fr;align-items:start}
+.vx-strips.long{grid-template-columns:1fr}
+.vx-strips.long .an-bit{width:16px}
+.vx-strip .an-bits{flex-wrap:nowrap}
+/* this page needs width: when the side menu is folded away, the content may grow */
+html.mta-menu-collapsed .wrap{max-width:1500px!important}
+.vmc-fold-tip{position:fixed;top:calc(56px + env(safe-area-inset-top,0px));right:12px;z-index:60;background:var(--fg);color:var(--bg);font-size:14px;padding:8px 12px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transform:translateY(-6px);transition:opacity .3s,transform .3s;pointer-events:none;max-width:260px;line-height:1.4}
+.vmc-fold-tip::before{content:"";position:absolute;top:-7px;right:26px;border:7px solid transparent;border-top:0;border-bottom-color:var(--fg)}
+.vmc-fold-tip.show{opacity:1;transform:none}
+html.vmc-folded .mta-expand{animation:vmcpulse 1s ease-in-out 4}
+@keyframes vmcpulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ink) 35%,transparent)}}
+@media (prefers-reduced-motion:reduce){html.vmc-folded .mta-expand{animation:none}}
 .an-bit.q{opacity:.5;border-style:dashed}
 .vx-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}
 .vx-ptc .an-pt table{font-size:12px}
@@ -1143,7 +1154,7 @@ for (j = 0; j &lt; 1024; j++)         // by columns
       cfg.pt.forEach(function (f, p) { t += '<tr' + (step >= 3 && p === vpn ? ' class="on"' : '') + (p === vpn ? ' data-k="pt pfn"' : '') + '><td>' + p + '</td><td>' + (f < 0 ? '–' : f) + '</td><td>' + (f < 0 ? 0 : 1) + '</td></tr>'; });
       var va = '<div class="vx-strip" data-k="va"><span class="vx-sl">כתובת וירטואלית' + (step >= 2 ? ' ' + S.va : '') + '</span><div class="an-bits">' + bitsRow(step >= 2 ? vpn : null, vpnB, 'v', B('VPN = ' + (step >= 2 ? vpn : '?')) + '<br>' + vpnB + ' ביטים', 'vpn') + bitsRow(step >= 2 ? off : null, offB, 'o', B('offset = ' + (step >= 2 ? off : '?')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>';
       var paS = '<div class="vx-strip" data-k="pa"><span class="vx-sl">כתובת פיזית' + (step >= 4 && !bad ? ' ' + pa : step >= 3 && bad ? ': אין' : '') + '</span><div class="an-bits">' + bitsRow(step >= 3 && !bad ? pfn : null, pfnB, 'p', B('PFN = ' + (step >= 3 && !bad ? pfn : '?')) + '<br>' + pfnB + ' ביטים', 'pfn') + bitsRow(step >= 4 && !bad ? off : null, offB, 'o', B('offset = ' + (step >= 4 && !bad ? off : '?')) + '<br>' + offB + ' ביטים', 'off') + '</div></div>';
-      vis.innerHTML = '<div class="vx-exp">' + expl(curK, vpn, off, pfn, bad, pa) + '</div><div class="vx-strips">' + va + paS + '</div>' +
+      vis.innerHTML = '<div class="vx-exp">' + expl(curK, vpn, off, pfn, bad, pa) + '</div><div class="vx-strips' + (vaB + paB > 16 ? ' long' : '') + '">' + va + paS + '</div>' +
         '<div class="vx-top"><div class="an-col" data-k="vm"><div class="an-h">זיכרון וירטואלי</div>' + grid('v', vpn, off, pfn) + '</div><div class="an-col vx-ptc"><div class="an-h">טבלת הדפים</div><div class="an-pt">' + t + '</table></div></div></div>' +
         '<div class="an-col" data-k="pm"><div class="an-h">זיכרון פיזי (' + B('RAM') + ')' + (unit > 1 ? ' · כל ריבוע = ' + unit + ' בתים' : '') + '</div>' + grid('p', vpn, off, pfn) + '</div>';
       /* the text of the current step */
@@ -1351,6 +1362,26 @@ for (j = 0; j &lt; 1024; j++)         // by columns
 })();
 </script>
 
+<script>
+(function () {
+  /* this page has wide drawings: on a desktop, fold the side menu away once (with its slide animation) and point at where it went */
+  if (window.innerWidth < 1100) return;
+  var ls = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  var ss = function (k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } };
+  if (ls('mta-menu-collapsed') === '1' || ss('vmc-autofold')) return;
+  setTimeout(function () {
+    var b = document.querySelector('.mta-collapse'); if (!b) return;
+    ss('vmc-autofold', '1');
+    b.click();
+    document.documentElement.classList.add('vmc-folded');
+    var tip = document.createElement('div'); tip.className = 'vmc-fold-tip';
+    tip.textContent = 'התפריט קופל כדי לתת לשרטוטים יותר מקום. הוא כאן, בכפתור „תפריט”.';
+    document.body.appendChild(tip);
+    requestAnimationFrame(function () { tip.classList.add('show'); });
+    setTimeout(function () { tip.classList.remove('show'); setTimeout(function () { tip.remove(); }, 400); }, 5000);
+  }, 900);
+})();
+</script>
 </main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -1902,6 +1933,8 @@ document.querySelectorAll('.tree').forEach(el => {
     ['מסגרת — יחידה של הזיכרון הפיזי, בגודל של דף.', 'frame', 'frames', 'מסגרת', 'מסגרות'],
     ['טבלת דפים — טבלה (לכל תהליך) שממפה כל מספר דף וירטואלי (VPN) למספר מסגרת (PFN).', 'page table', 'Page table', 'טבלת דפים', 'טבלת הדפים', 'טבלאות דפים'],
     ['Page Table Entry — כניסה בטבלת הדפים: ה-PFN, וביטים כמו valid, present, dirty והרשאות.', 'PTE'],
+    ['ריפוד (padding) — ביטים ריקים שמוסיפים לרשומה בטבלת הדפים כדי שגודלה יהיה חזקה של 2 בבתים (1, 2, 4, 8). לדוגמה: PFN של 18 ביט + 2 ביטי סטטוס = 20 ביט, ולכן הרשומה 4 בתים ו-12 ביט ריפוד.', 'ריפוד', 'מרפדים', 'מרפד', 'padding'],
+    ['ביטים בכל רשומה בטבלת הדפים שמתארים את מצב הדף: valid (תקף), present (נמצא ב-RAM), dirty (נכתב), הרשאות. הם לא חלק מהכתובת.', 'ביטי סטטוס', 'ביטי הסטטוס'],
     ['Virtual Page Number — הביטים העליונים של הכתובת הווירטואלית: מספר הדף.', 'VPN'],
     ['Physical Frame Number — מספר המסגרת בזיכרון הפיזי.', 'PFN'],
     ['היסט — הביטים התחתונים של הכתובת: המיקום בתוך הדף. לא משתנה בתרגום.', 'offset', 'היסט'],
