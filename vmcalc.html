@@ -427,7 +427,19 @@ code.gloss{border-bottom-style:dashed}
 .zoomw .btn:disabled{opacity:.4;cursor:default}
 .zm-crumbs{font-size:14px;color:var(--muted)}
 .zm-crumbs b{color:var(--fg)}
-.zm-stage{display:flex;justify-content:center}
+.zm-stage{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+.zm-trail{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.zm-mini{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:0;padding:0;font:inherit;color:var(--fg)}
+.zm-mbox{position:relative;width:118px;aspect-ratio:1;border-radius:6px}
+.zm-mt{position:absolute;box-sizing:border-box;border:1px solid var(--c);background:var(--cb);border-radius:2px;opacity:.55}
+.zm-mt.l0{--c:var(--summary);--cb:var(--summary-bg)} .zm-mt.l1{--c:var(--theory);--cb:var(--theory-bg)} .zm-mt.l2{--c:var(--formula);--cb:var(--formula-bg)} .zm-mt.l3{--c:var(--exercise);--cb:var(--exercise-bg)}
+.zm-mt.ch{background:var(--ink);border-color:var(--ink);opacity:1;box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink);z-index:1}
+.zm-mlab{font-size:12px;font-weight:700;color:var(--ink);max-width:130px;text-align:center;line-height:1.3}
+.zm-mini:hover .zm-mbox{outline:2px dashed var(--line);outline-offset:3px}
+.zm-arr{font-size:26px;color:var(--ink);font-weight:700;line-height:1}
+.zm-br{flex-basis:100%;height:0}
+.zm-stage .zm-box{width:min(100%,420px)}
+@media (max-width:760px){.zm-mbox{width:84px}}
 .zm-box{position:relative;width:min(100%,460px);aspect-ratio:1;max-width:100%}
 .zm-t{position:absolute;box-sizing:border-box;border:2px solid var(--c);background:var(--cb);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:2px;overflow:hidden;text-align:center;
   transition:left .38s ease,top .38s ease,width .38s ease,height .38s ease,opacity .3s ease,transform .3s ease;font-family:var(--f-body);color:var(--fg)}
@@ -504,7 +516,7 @@ code.gloss{border-bottom-style:dashed}
   <div class="zm-btns"><button type="button" class="btn ghost" id="zm-out">זום החוצה</button><button type="button" class="btn ghost" id="zm-all">התמונה המלאה</button></div>
  </div>
  <div class="zm-crumbs" id="zm-crumbs"></div>
- <div class="zm-stage"><div class="zm-box" id="zm-box"></div></div>
+ <div class="zm-stage"><div class="zm-trail" id="zm-trail"></div><div class="zm-box" id="zm-box"></div></div>
  <div class="zm-addr" id="zm-addr"></div>
  <div class="zm-say" id="zm-say"></div>
 </div>
@@ -1118,7 +1130,27 @@ for (j = 0; j &lt; 1024; j++)         // by columns
     return '<div class="zm-seg"><div class="zm-bits">' + h + '</div><div class="lb">' + lb + '</div></div>';
   }
   var SEGC = { l1: 'theory', l2: 'formula', l3: 'exercise' };
+  function trail() {    /* every level already passed stays on the side, small, with the chosen square coloured */
+    var tr = document.getElementById('zm-trail'), h = '';
+    if (!full && !atRoot) {
+      for (var k = -1; k < path.length; k++) {
+        var ch = k < 0 ? 0 : path[k], cnt = k < 0 ? 1 : Math.pow(2, M.lv[k].bits), cls = k < 0 ? 'l0' : M.lv[k].cls, mt = '';
+        for (var i = 0; i < cnt; i++) { var p = pos(i, k, cnt); mt += '<span class="zm-mt ' + cls + (i === ch ? ' ch' : '') + '" style="left:' + p[0] + '%;top:' + p[1] + '%;width:' + p[2] + '%;height:' + p[3] + '%' + '"></span>'; }
+        var lab = k < 0 ? M.title.replace('כל ', '') : M.lv[k].one + ' ' + path[k];
+        if (k >= 0 && k === M.lv.length - 1 && !M.hex) lab += ' · כתובת ' + base();
+        h += '<button type="button" class="zm-mini" data-k="' + k + '" title="חזרה לשלב הזה"><span class="zm-mbox">' + mt + '</span><span class="zm-mlab">' + lab + '</span></button>' + (k === path.length - 1 ? '<span class="zm-br"></span><span class="zm-arr">↓</span>' : '<span class="zm-arr">←</span>');
+      }
+    }
+    tr.innerHTML = h;
+  }
+  document.getElementById('zm-trail').onclick = function (e) {
+    var b = e.target.closest('.zm-mini'); if (!b || busy) return;
+    var k = +b.dataset.k;
+    if (k < 0) { path = []; atRoot = true; } else path = path.slice(0, k);
+    render('still');
+  };
   function text() {
+    trail();
     var k = level(), cr = ['<b>' + M.title + '</b>'];
     path.forEach(function (p, i) { cr.push(M.lv[i].one + ' ' + p); });
     if (k === M.lv.length) cr.push('8 ביטים');
